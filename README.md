@@ -18,4 +18,4 @@ git push --set-upstream origin gh-pages
 
 ### 文件命名
 
-根据index.md中的命名规则，比如X1-meeting-records中创建第1次会议，文件名应为`X1-meeting-01`
+根据index.md中的命名规则，自行添加
