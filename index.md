@@ -42,7 +42,7 @@
 
   - [inception meeting（2019-03-17）](doc/X1/meeting-01-20190317.md)
 
-- X2  KANBAN
+- X2  [KANBAN](https://github.com/orgs/TimeForCoin/projects?tdsourcetag=s_pctim_aiomsg)
 
 - X3  Final Report
 
