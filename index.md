@@ -1,14 +1,14 @@
 # 目录
 
-- 1、[About](01-about.md)（项目概况）
+- 1、[About](doc/01/about.md)（项目概况）
 
-- 2、[Team profile](02-team-profile.md)（团队组建与分工）
+- 2、[Team profile](doc/02/team-profile.md)（团队组建与分工）
 
-- 3、[Investigation](03-investigation.md) （项目前期调研/竞品分析）
+- 3、[Investigation](doc/03/investigation.md) （项目前期调研/竞品分析）
 
-- 4、[Vision](04-vision.md)（项目愿景）
+- 4、[Vision](doc/04/vision.md)（项目愿景）
 
-- 5、[Product Backlog](05-product-backlog.md)（产品特性库）
+- 5、[Product Backlog](doc/05/product-backlog.md)（产品特性库）
 
 - 6、Requirement specification
 
@@ -40,7 +40,7 @@
 
 - X1  meeting-records
 
-  - [inception meeting（2019-03-17）](X1-meeting-records/X1-meeting-01.md)
+  - [inception meeting（2019-03-17）](doc/X1/meeting-01-20190317.md)
 
 - X2  KANBAN
 
