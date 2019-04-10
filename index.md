@@ -10,7 +10,7 @@
 
 5、[Product Backlog](doc/05/product-backlog.md)（产品特性库）
 
-6、Requirement specification（需求规格说明书）
+6、[Requirement specification](docs/requirement.md)（需求规格说明书）
 
 - 6.1 Use Case Diagram（用例图）
 - 6.2 Use Cases（用例+活动图）
