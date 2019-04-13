@@ -1,0 +1,330 @@
+openapi: 3.0.0
+servers:
+  - description: TimeForCoin
+    url: https://coin.xmatrix.studio/api/v1/
+info:
+  description: TimeForCoin API document
+  version: '1.0.0'
+  title: TimeForCoin API
+  contact:
+    email: a@zhenly.cn
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: Users
+    description: 用户
+  - name: Tasks
+    description: 任务
+  - name: Messages
+    description: 消息
+paths:
+  /users/login:
+    get:
+      tags:
+        - Users
+      summary: 获取Violet登陆授权URL
+      operationId: getLoginURL
+      description: |
+        用于Web端获取跳转到Violet登陆的URL，该URL由后端实时生成，绑定当前会话，并具有时效性和唯一性
+      responses:
+        '200':
+          description: 获取成功，返回登陆URL，前端应打开新窗口加载此URL
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - url
+                properties:
+                  url:
+                    type: string
+                    example: https://oauth.xmatrix.studio/verify/authorize?response_type=code&client_id=xxxxx&state=xxxxx&scope=basic&redicect_url=https%3a%2f%2fxx.xmatrix.studio%2fapi%2fv2%2fauth&quick_mode=true
+        '500':
+          description: 服务器内部错误，无法完成请求
+  /users/session/code:
+    post:
+      tags:
+        - Users
+      summary: 使用Code登陆
+      operationId: postLoginCode
+      description: 使用Violet返回的数据进行Oauth2授权登陆，该接口应由Violet直接调用
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionRequest'
+      responses:
+        '201':
+          description: 登陆成功
+        '401':
+          description: 参数不合法
+        '403':
+          description: 登陆失败
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+                    description: |
+                      illegal_state - 状态码无效<br/>
+                      illegal_code - 授权码无效
+                    example: illegal_state
+  /users/session/wechat:
+    post:
+      tags:
+        - Users
+      summary: 使用微信登陆
+      operationId: postWeChatLogin
+      description: |
+        使用微信授权后得到的Code进行登陆 <br/>
+        微信登陆后，如果是新用户可以选择绑定当前用户(未登陆的话跳转到Violet登陆)或者是新建用户
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - code
+              properties:
+                code:
+                  description: |
+                    授权码，对于用户和客户端具有唯一性和时效性
+                  type: string
+      responses:
+        '201':
+          description: 登陆成功
+        '401':
+          description: 参数不合法
+        '403':
+          description: 登陆失败
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+                    description: |
+                      illegal_state - 状态码无效<br/>
+                      illegal_code - 授权码无效
+                    example: illegal_state
+  /users/session:
+    delete:
+      tags: [Users]
+      summary: 退出登陆
+      description: 删除用户登陆状态
+      responses:
+        '200':
+          description: 退出登陆成功
+  '/users/{name}':
+    get:
+      tags: [Users]
+      summary: 获取用户信息
+      description: |
+        获取用户信息，如果为`me`则获取当前用户信息。<br>
+        仅当获取当前用户信息时，才可获取用户登陆邮箱和用户登陆手机。<br>
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: 用户名
+          schema:
+            type: string
+            example: 'me'
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    description: 用户登陆邮箱
+                    format: email
+                  phone:
+                    type: string
+                    description: 用户登陆手机
+                    format: phone
+                    example: '12345678901'
+                  name:
+                    type: string
+                    description: 用户名
+                    example: 'XMatrixStudio'
+                  createTime:
+                    type: string
+                    description: 用户注册的时间
+                    format: date-time
+                  info:
+                    $ref: '#/components/schemas/UserInfo'
+                  data:
+                    $ref: '#/components/schemas/UserData'
+
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+
+  /users/info:
+    patch:
+      tags: [Users]
+      summary: 修改用户个人信息
+      description: |
+        可用该方法修改密码以及个人信息<br>
+        如果两项共同使用，修改密码失败时将不会修改个人信息<br>
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/UserInfo'
+      responses:
+        '200':
+          description: 修改成功
+        '400':
+          description: 修改失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      error_password - 旧密码错误<br>
+                      invalid_avatar - 非法头像Base64字符串<br>
+                      invalid_bio - 非法个人简介<br>
+                      invalid_birthday - 非法生日<br>
+                      invalid_email - 非法联系邮箱<br>
+                      invalid_gender - 非法性别<br>
+                      invalid_location - 非法地址<br>
+                      invalid_new_password - 非法新密码散列值<br>
+                      invalid_nickname - 非法昵称<br>
+                      invalid_old_password - 非法旧密码散列值<br>
+                      invalid_phone - 非法联系电话<br>
+                      invalid_url - 非法个人主页<br>
+                      same_password - 新旧密码相同<br>
+                    example: 'error_password'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+        '403':
+          $ref: '#/components/responses/403BannedUserError'
+
+components:
+  responses:
+    401NotLoginError:
+      description: 身份验证未通过
+      content:
+        'application/json':
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: |
+                  invalid_token - 未进行身份验证<br>
+                  timeout_token - 身份验证已过期<br>
+                example: 'invalid_token'
+    403PermissionDenyError:
+      description: 权限不足
+      content:
+        'application/json':
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: |
+                  permission_deny - 权限不足<br>
+                example: 'permission_deny'
+    403BannedUserError:
+      description: 权限不足
+      content:
+        'application/json':
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: |
+                  ban_user - 封禁用户<br>
+                example: 'ban_user'
+  schemas:
+    SessionRequest:
+      type: object
+      required:
+        - code
+        - state
+      properties:
+        code:
+          description: |
+            授权码，对于用户和客户端具有唯一性和时效性
+          type: string
+        state:
+          description: |
+            状态码，用于防止CSRF攻击
+          type: string
+    UserData:
+      type: object
+      description: 用户数据
+      properties:
+        money:
+          type: number
+          description: 闲币
+          example: 1743
+
+    UserInfo:
+      type: object
+      description: 用户个人信息
+      properties:
+        avatar:
+          type: string
+          description: 头像URL
+          format: url
+          example: 'http://violet-1252808268.cosgz.myqcloud.com/0.png'
+        bio:
+          type: string
+          description: |
+            个人简介，最多128位<br>
+          example: 'Hello, world!'
+        school:
+          type: string
+          description: 学校
+          example: '中山大学'
+        email:
+          type: string
+          description: 联系邮箱
+          format: email
+        gender:
+          type: number
+          description: |
+            性别<br>
+            0 - 未知<br>
+            1 - 男<br>
+            2 - 女<br>
+          enum:
+            - 0
+            - 1
+            - 2
+        location:
+          type: string
+          description: |
+            详细地址，最多64位<br>
+          example: '中山大学东校区至善园2号'
+        nickname:
+          type: string
+          description: |
+            昵称，最多32位<br>
+          example: '未知矩阵'
+        phone:
+          type: string
+          description: 联系电话
+          format: phone
+          example: '12345678901'
