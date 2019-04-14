@@ -171,78 +171,91 @@
 ### 用户数据库
 
 ```go
+// UserGender 用户性别
 const (
-    // 性别
-    Gender_Man   = "man"   // 男
-    Gender_Woman = "woman" // 女
-    Gender_Other = "other" // 其他
-    // 用户类型
-    User_Type_Ban    = "ban"    // 禁封用户
-    User_Type_Normal = "normal" // 正式用户
-    User_Type_Admin  = "admin"  // 管理员
+    GenderMan   UserGender = "man"   // 男
+    GenderWoman UserGender = "woman" // 女
+    GenderOther UserGender = "other" // 其他
 )
 
-// bson 默认为名字小写
+// UserType 用户类型
+const (
+    UserTypeBan    UserType = "ban"    // 禁封用户
+    UserTypeNormal UserType = "normal" // 正式用户
+    UserTypeAdmin  UserType = "admin"  // 管理员
+)
+
 // UserSchema User 基本数据结构
 type UserSchema struct {
-    ID       primitive.ObjectID `bson:"_id,omitempty"` // 用户ID
+    ID       primitive.ObjectID `bson:"_id,omitempty"` // 用户ID [索引]
     OpenID   string             `bson:"open_id"`       // 微信OpenID
     VioletID string             `bson:"violet_id"`     // VioletID
     Name     string             `bson:"name"`          // 用户名， 唯一
-    Info     struct {
-        Email    string // 联系邮箱
-        Phone    string // 联系手机
-        Avatar   string // 头像
-        Nickname string // 用户昵称
-        Bio      string // 个人简介
-        School   string // 学校
-        Gender   string // 性别
-        Location string // 具体位置
-    } // 用户个性信息
+    // 用户个性信息
+    Info struct {
+        Email    string     // 联系邮箱
+        Phone    string     // 联系手机
+        Avatar   string     // 头像
+        Nickname string     // 用户昵称
+        Bio      string     // 个人简介
+        School   string     // 学校
+        Gender   UserGender // 性别
+        Location string     // 具体位置
+    }
+    // 用户数据
     Data struct {
         Money          int64                // 当前持有闲币
         Exp            int64                // 等级经验
         Value          int64                // 用户积分
         Credit         int64                // 个人信誉
-        Type           int                  // 用户类型
+        Type           UserType             // 用户类型
         AttendanceDate int                  // 签到时间戳
         CollectTasks   []primitive.ObjectID `bson:"collect_tasks"` // 收藏的任务
         // 冗余数据
         PublishFinishTasks int64 `bson:"publish_finish_tasks"` // 发布并完成任务数
         ReceiveTasks       int64 `bson:"receive_tasks"`        // 领取任务数
         ReceiveFinishTasks int64 `bson:"receive_finish_tasks"` // 领取并完成任务数
-    } // 用户数据
+    }
 }
 ```
 
 ### 任务数据库
 
 ```go
+// TaskType 任务类型
 const (
-    // 任务类型
-    Task_Type_Running       = "run"           // 跑腿任务
-    Task_Type_Questionnaire = "questionnaire" // 问卷任务
-    Task_Type_Info          = "info"          // 信息任务
-    // 酬劳类型
-    Reward_Money    = "money"     // 闲钱币酬劳
-    Reward_RMB      = "rmb"       // 人民币酬劳
-    Reward_Physical = "physical " // 实物酬劳
-    // 任务状态
-    Task_Status_Draft   = "draft"   // 草稿
-    Task_Status_Wait    = "wait"    // 等待接受
-    Task_Status_Close   = "close"   // 已关闭
-    Task_Status_Finish  = "finish"  // 已完成
-    Task_Status_Overdue = "overdue" // 已过期
-    // 附件类型
-    Attach_Image = "image" // 图片
-    Attach_File  = "file"  // 文件
+    TaskTypeRunning       TaskType = "run"           // 跑腿任务
+    TaskTypeQuestionnaire TaskType = "questionnaire" // 问卷任务
+    TaskTypeInfo          TaskType = "info"          // 信息任务
 )
 
-// 附件存储在本地文件系统中 ./{任务ID}/{附件ID}
+// RewardType 酬劳类型
+const (
+    RewardMoney    RewardType = "money"     // 闲钱币酬劳
+    RewardRMB      RewardType = "rmb"       // 人民币酬劳
+    RewardPhysical RewardType = "physical " // 实物酬劳
+)
+
+// TaskStatus 任务状态
+const (
+    TaskStatusDraft   TaskStatus = "draft"   // 草稿
+    TaskStatusWait    TaskStatus = "wait"    // 等待接受
+    TaskStatusClose   TaskStatus = "close"   // 已关闭
+    TaskStatusFinish  TaskStatus = "finish"  // 已完成
+    TaskStatusOverdue TaskStatus = "overdue" // 已过期
+)
+
+// AttachType 附件类型
+const (
+    AttachImage AttachType = "image" // 图片
+    AttachFile  AttachType = "file"  // 文件
+)
+
 // AttachmentSchema 附件数据结构
+// 附件存储在本地文件系统中 ./{任务ID}/{附件ID}
 type AttachmentSchema struct {
     ID       primitive.ObjectID // 附件ID
-    Type     string             // 附件类型
+    Type     AttachType         // 附件类型
     Name     string             // 附件名
     Describe string             // 附件描述
     Size     int64              // 附件大小
@@ -250,21 +263,20 @@ type AttachmentSchema struct {
     Use      bool               // 是否使用，未使用附件将定期处理
 }
 
-// bson 默认为名字小写
 // TaskSchema Task 基本数据结构
 type TaskSchema struct {
     ID        primitive.ObjectID `bson:"_id,omitempty"` // 任务ID
-    Publisher primitive.ObjectID // 任务发布者
+    Publisher primitive.ObjectID `bson:"publisher"`     // 任务发布者 [索引]
 
     Title      string             // 任务名称
-    Type       string             // 任务类型
+    Type       TaskType           // 任务类型
     Content    string             // 任务内容
     Attachment []AttachmentSchema // 任务附件
-    Status     string             // 任务状态
+    Status     TaskStatus         // 任务状态
 
-    Reward       string // 酬劳类型
-    RewardValue  int    `bson:"reward_value, omitempty"`  // 酬劳数值
-    RewardObject string `bson:"reward_object, omitempty"` // 酬劳物体
+    Reward       RewardType // 酬劳类型
+    RewardValue  int        `bson:"reward_value, omitempty"`  // 酬劳数值
+    RewardObject string     `bson:"reward_object, omitempty"` // 酬劳物体
 
     PublishDate int64 `bson:"publish_date"` // 任务发布时间
     EndDate     int64 `bson:"end_data"`     // 任务结束时间
@@ -278,28 +290,26 @@ type TaskSchema struct {
     LikeCount    int64                `bson:"like_count"`    // 点赞数(冗余)
     LikeID       []primitive.ObjectID `bson:"like_id"`       // 点赞用户ID
 }
-
 ```
 
 ### 接受任务数据库
 
 ```go
+// PlayerStatus 参与用户状态
 const (
-  // 参与用户状态
-    Player_Close   = "close"   // 发布者关闭任务
-    Player_Running = "running" // 用户进行中
-    Player_Finish  = "finish"  // 用户已完成
-    Player_GiveUp  = "give_up" // 用户已放弃
+    PlayerClose   PlayerStatus = "close"   // 发布者关闭任务
+    PlayerRunning PlayerStatus = "running" // 用户进行中
+    PlayerFinish  PlayerStatus = "finish"  // 用户已完成
+    PlayerGiveUp  PlayerStatus = "give_up" // 用户已放弃
 )
 
-// bson 默认为名字小写
 // TaskStatusSchema 接受的任务状态 基本数据结构
+// bson 默认为名字小写
 type TaskStatusSchema struct {
     ID     primitive.ObjectID `bson:"_id,omitempty"` // 任务状态ID
-    Task   primitive.ObjectID // 任务 ID [索引]
-    Owner  primitive.ObjectID // 用户 ID [索引]
-    Status string             // 状态
-
+    Task   primitive.ObjectID `bson:"task"`          // 任务 ID [索引]
+    Owner  primitive.ObjectID `bson:"owner"`         // 用户 ID [索引]
+    Status PlayerStatus       // 状态
     // 完成后的评价
     Degree int    // 完成度
     Remark string // 评语
@@ -312,42 +322,43 @@ type TaskStatusSchema struct {
 ### 评论数据库
 
 ```go
-// bson 默认为名字小写
 // CommentSchema 评论数据结构
 type CommentSchema struct {
     ID         primitive.ObjectID   `bson:"_id,omitempty"` // 评论 ID
     ContentID  primitive.ObjectID   `bson:"content_id"`    // 被评论内容 ID [索引]
     ContentOwn primitive.ObjectID   `bson:"content_own"`   // 被评论内容 用户 ID
     UserID     primitive.ObjectID   `bson:"user_id"`       // 评论用户 ID
-    ReplyCount int64                // 回复数
-    Content    string               // 评论内容
-    Time       int64                // 评论时间
-    LikeCount  int64                // 点赞数(冗余)
-    LikeID     []primitive.ObjectID // 点赞用户ID
+    ReplyCount int64                `bson:"reply_count"`   // 回复数
+    LikeCount  int64                `bson:"like_count"`    // 点赞数(冗余)
+    LikeID     []primitive.ObjectID `bson:"like_id"`       // 点赞用户ID
+    Content    string               `bson:"content"`       // 评论内容
+    Time       int64                `bson:"time"`          // 评论时间
 }
-
 ```
 
 ### 问卷数据库
 
 ```go
+// ProblemType 问题类型
 const (
-    // 问题类型
-    Problem_None   = "none"   // 纯描述
-    Problem_Choose = "choose" // 选择题
-    Problem_Matrix = "matrix" // 矩阵题(多行单选)
-    Problem_Fill   = "fill"   // 填空题
-    Problem_Score  = "score"  // 评分题
-    Problem_Sort   = "sort"   // 排序题
-    // 填空类型
-    Fill_Phone  = "phone"  // 手机号码
-    Fill_Number = "number" // 数字
-    Fill_Date   = "date"   // 日期
-    Fill_Email  = "email"  // 电子邮箱
-    Fill_ID     = "id"     // 身份证
-    Fill_Web    = "web"    // 网址
-    Fill_File   = "file"   // 文件(用于资料征集)
-    Fill_All    = "all"    // 不限类型
+    ProblemNone   ProblemType = "none"   // 纯文字描述
+    ProblemChoose ProblemType = "choose" // 选择题
+    ProblemMatrix ProblemType = "matrix" // 矩阵题
+    ProblemFill   ProblemType = "fill"   // 填空题
+    ProblemScore  ProblemType = "score"  // 评分题
+    ProblemSort   ProblemType = "sort"   // 排序题
+)
+
+// Fill 填空类型
+const (
+    FillPhone  FillType = "phone"  // 手机号码
+    FillNumber FillType = "number" // 数字
+    FillDate   FillType = "date"   // 日期
+    FillEmail  FillType = "email"  // 电子邮箱
+    FillID     FillType = "id"     // 身份证
+    FillWeb    FillType = "web"    // 网址
+    FillFile   FillType = "file"   // 文件(用于资料征集)
+    FillAll    FillType = "all"    // 不限类型
 )
 
 // ProblemSchema 问卷问题
@@ -355,7 +366,7 @@ type ProblemSchema struct {
     Index   int64                // 题号
     Content string               // 问题本体
     Note    string               // 问题备注
-    Type    string               // 问题类型
+    Type    ProblemType          // 问题类型
     Images  []primitive.ObjectID // 图片附件ID
 
     // 选择题数据
@@ -370,9 +381,9 @@ type ProblemSchema struct {
 
     // 填空题数据
     FillProblem struct {
-        Type      string `bson:"type"`                  // 填空类型
-        MultiLine bool   `bson:"multi_line, omitempty"` // 是否多行
-        MaxWord   int64  `bson:"max_word, omitempty"`   // 最大字数
+        Type      FillType `bson:"type"`                  // 填空类型
+        MultiLine bool     `bson:"multi_line, omitempty"` // 是否多行
+        MaxWord   int64    `bson:"max_word, omitempty"`   // 最大字数
     } `bson:"fill_problem, omitempty"`
 
     // 评分题
@@ -411,37 +422,37 @@ type StatisticsSchema struct {
 type ProblemDataSchema struct {
     ProblemIndex int                `bson:"problem_index"`           // 题目序号
     StringValue  string             `bson:"string_value, omitempty"` // 填空题
-    ChooseValue  []int              `bson:"choose_value, omitempty"` //选择题、矩阵题、排序题数据
+    ChooseValue  []int              `bson:"choose_value, omitempty"` // 选择题、矩阵题、排序题数据
     ScoreValue   int                `bson:"score_value, omitempty"`  // 评分题数据
     FileValue    primitive.ObjectID `bson:"file_value, omitempty"`   // 文件题数据
 }
 
-// bson 默认为名字小写
 // QuestionnaireSchema 问卷数据结构
 type QuestionnaireSchema struct {
-    TaskID   primitive.ObjectID `bson:"_id"` // 问卷所属任务ID [索引]
+    TaskID    primitive.ObjectID `bson:"_id"`        // 问卷所属任务ID [索引]
+    ViewCount int64              `bson:"view_count"` // 问卷浏览数
+
     Title    string             // 问卷标题
     Describe string             // 问卷描述
     Owner    string             // 问卷创建者
     Problems []ProblemSchema    // 问卷问题
     Data     []StatisticsSchema // 问题统计数据
-
-    ViewCount int64 `bson:"view_count"` // 问卷浏览数
 }
 ```
 
 ### 消息数据库
 
 ```go
+// MessageType 消息类型
 const (
-    Message_Type_Chat    = "char"    // 聊天
-    Message_Type_System  = "system"  // 系统通知
-    Message_Type_Task    = "task"    // 任务通知
-    Message_Type_Comment = "comment" // 评论通知
+    MessageTypeChat    MessageType = "char"    // 聊天
+    MessageTypeSystem  MessageType = "system"  // 系统通知
+    MessageTypeTask    MessageType = "task"    // 任务通知
+    MessageTypeComment MessageType = "comment" // 评论通知
 )
 
-// bson 默认为名字小写
 // MessageSchema Message 数据结构
+// bson 默认为名字小写
 type MessageSchema struct {
     ID       primitive.ObjectID `bson:"_id,omitempty"` // 消息会话ID
     User1    primitive.ObjectID `bson:"user_1"`        // 用户1 [索引]
@@ -449,11 +460,11 @@ type MessageSchema struct {
     Unread1  int64              `bson:"unread_1"`      // 用户1 未读消息数量
     Unread2  int64              `bson:"unread_2"`      // 用户2 未读消息数量
     LastTime int64              `bson:"last_time"`     // 最新消息时间(冗余)
-    Type     string             // 会话类型
+    Type     MessageType        `bson:"type"`          // 会话类型
     Messages []struct {
-        Time    int64              // 发送时间
+        Time    int64              `bson:"time"`             // 发送时间
         Title   string             `bson:"title, omitempty"` // 消息标题 (系统通知/任务通知)
-        Content string             // 消息内容
+        Content string             `bson:"content"`          // 消息内容
         About   primitive.ObjectID `bson:"about, omitempty"` // 相关ID (被评论的任务)
     }
 }
@@ -462,27 +473,26 @@ type MessageSchema struct {
 ### 日志数据库
 
 ```go
+// LogType 日志类型
 const (
-    Log_Money  = "user_money"   // 金钱变动
-    Log_Value  = "user_value"   // 用户积分变动
-    Log_Credit = "user_credit"  // 信用变动
-    Log_Login  = "user_login"   // 用户登陆
-    Log_Clear  = "system_clear" // 系统清理
-    Log_Start  = "system_start" // 系统启动
-    Log_Error  = "system_error" // 系统运行时错误
+    LogTypeMoney  LogType = "user_money"   // 金钱变动
+    LogTypeValue  LogType = "user_value"   // 用户积分变动
+    LogTypeCredit LogType = "user_credit"  // 信用变动
+    LogTypeLogin  LogType = "user_login"   // 用户登陆
+    LogTypeClear  LogType = "system_clear" // 系统清理
+    LogTypeStart  LogType = "system_start" // 系统启动
+    LogTypeError  LogType = "system_error" // 系统运行时错误
 )
 
-// bson 默认为名字小写
 // LogSchema 日志数据结构
 type LogSchema struct {
     ID    primitive.ObjectID `bson:"_id,omitempty"` // 日志ID
     Time  int64              // 时间
-    Type  string             // 日志类型
+    Type  LogType            // 日志类型
     User  primitive.ObjectID // 相关用户
     Value int64              // 数值
     Msg   string             // 消息
 }
-
 ```
 
 ### 数据库关系图
