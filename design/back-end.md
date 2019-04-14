@@ -16,7 +16,8 @@
 
 日志库：[zerolog](https://github.com/rs/zerolog)
 
-API 规范：RESTful API
+API 规范：RES
+API
 
 API 文档：Swagger
 
@@ -28,10 +29,6 @@ API 文档：Swagger
 
 其中`Controllers`, `Service`, `Models`再按照不同的业务划分为不同的模块
 
-## 数据库设计
+结合前端，整体的服务器架构大概如下：
 
-暂无
-
-## API 设计
-
-暂无
+![ch6-08-frontend-backend](back-end/ch6-08-frontend-backend.png)
