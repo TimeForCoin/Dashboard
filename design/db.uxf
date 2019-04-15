@@ -300,7 +300,7 @@ TaskID   primitive.ObjectID  // 问卷所属任务ID [索引]
 --
 Title    string             // 问卷标题
 --
-Describe string             // 问卷描述
+Description string             // 问卷描述
 --
 Owner    string             // 问卷创建者
 --
@@ -373,7 +373,7 @@ LastTime int64               // 最新消息时间(冗余)
 --
 Type     string             // 会话类型
 --
-Messages []struct 
+Messages []struct
 -Time    int64              // 发送时间
 -Title   string            `// 消息标题 (系统通知/任务通知)
 -Content string             // 消息内容

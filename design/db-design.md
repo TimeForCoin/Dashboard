@@ -183,39 +183,44 @@ const (
     UserTypeBan    UserType = "ban"    // 禁封用户
     UserTypeNormal UserType = "normal" // 正式用户
     UserTypeAdmin  UserType = "admin"  // 管理员
+    UserTypeRoot   UserType = "root"   // 超级管理员
 )
+
+type UserInfoSchema struct {
+    Email    string     // 联系邮箱
+    Phone    string     // 联系手机
+    Avatar   string     // 头像
+    Nickname string     // 用户昵称
+    Bio      string     // 个人简介
+    School   string     // 学校
+    Gender   UserGender // 性别
+    Location string     // 具体位置
+}
+
+type UserDataSchema struct {
+    Money          int64                // 当前持有闲币
+    Exp            int64                // 等级经验
+    Value          int64                // 用户积分
+    Credit         int64                // 个人信誉
+    Type           UserType             // 用户类型
+    AttendanceDate int                  // 签到时间戳
+    CollectTasks   []primitive.ObjectID `bson:"collect_tasks"` // 收藏的任务
+    // 冗余数据
+    PublishCount    int64 `bson:"publish_count"`     // 发布任务数
+    PublishRunCount int64 `bson:"publish_run_count"` // 发布并进行中任务数
+    ReceiveCount    int64 `bson:"receive_count"`     // 领取任务数
+    ReceiveRunCount int64 `bson:"receive_run_count"` // 领取并进行中任务数
+}
 
 // UserSchema User 基本数据结构
 type UserSchema struct {
-    ID       primitive.ObjectID `bson:"_id,omitempty"` // 用户ID [索引]
-    OpenID   string             `bson:"open_id"`       // 微信OpenID
-    VioletID string             `bson:"violet_id"`     // VioletID
-    Name     string             `bson:"name"`          // 用户名， 唯一
-    // 用户个性信息
-    Info struct {
-        Email    string     // 联系邮箱
-        Phone    string     // 联系手机
-        Avatar   string     // 头像
-        Nickname string     // 用户昵称
-        Bio      string     // 个人简介
-        School   string     // 学校
-        Gender   UserGender // 性别
-        Location string     // 具体位置
-    }
-    // 用户数据
-    Data struct {
-        Money          int64                // 当前持有闲币
-        Exp            int64                // 等级经验
-        Value          int64                // 用户积分
-        Credit         int64                // 个人信誉
-        Type           UserType             // 用户类型
-        AttendanceDate int                  // 签到时间戳
-        CollectTasks   []primitive.ObjectID `bson:"collect_tasks"` // 收藏的任务
-        // 冗余数据
-        PublishFinishTasks int64 `bson:"publish_finish_tasks"` // 发布并完成任务数
-        ReceiveTasks       int64 `bson:"receive_tasks"`        // 领取任务数
-        ReceiveFinishTasks int64 `bson:"receive_finish_tasks"` // 领取并完成任务数
-    }
+    ID           primitive.ObjectID `bson:"_id,omitempty"` // 用户ID [索引]
+    OpenID       string             `bson:"open_id"`       // 微信OpenID
+    VioletID     string             `bson:"violet_id"`     // VioletID
+    Name         string             `bson:"name"`          // 用户名， 唯一
+    RegisterTime int64              `bson:"register_time"` // 用户注册时间
+    Info         UserInfoSchema     `bson:"info"`          // 用户个性信息
+    Data         UserDataSchema     `bson:"data"`          // 用户数据
 }
 ```
 
@@ -240,6 +245,7 @@ const (
 const (
     TaskStatusDraft   TaskStatus = "draft"   // 草稿
     TaskStatusWait    TaskStatus = "wait"    // 等待接受
+    TaskStatusRun     TaskStatus = "run"     // 执行中（人数已满）
     TaskStatusClose   TaskStatus = "close"   // 已关闭
     TaskStatusFinish  TaskStatus = "finish"  // 已完成
     TaskStatusOverdue TaskStatus = "overdue" // 已过期
@@ -254,13 +260,14 @@ const (
 // AttachmentSchema 附件数据结构
 // 附件存储在本地文件系统中 ./{任务ID}/{附件ID}
 type AttachmentSchema struct {
-    ID       primitive.ObjectID // 附件ID
-    Type     AttachType         // 附件类型
-    Name     string             // 附件名
-    Describe string             // 附件描述
-    Size     int64              // 附件大小
-    Time     int64              // 创建时间
-    Use      bool               // 是否使用，未使用附件将定期处理
+    ID          primitive.ObjectID // 附件ID
+    Type        AttachType         // 附件类型
+    Name        string             // 附件名
+    Description string             // 附件描述
+    Size        int64              // 附件大小
+    Time        int64              // 创建时间
+    Use         bool               // 是否使用，未使用附件将定期处理
+    Public      bool               // 公开
 }
 
 // TaskSchema Task 基本数据结构
@@ -268,21 +275,24 @@ type TaskSchema struct {
     ID        primitive.ObjectID `bson:"_id,omitempty"` // 任务ID
     Publisher primitive.ObjectID `bson:"publisher"`     // 任务发布者 [索引]
 
-    Title      string             // 任务名称
-    Type       TaskType           // 任务类型
-    Content    string             // 任务内容
-    Attachment []AttachmentSchema // 任务附件
-    Status     TaskStatus         // 任务状态
+    Title          string             // 任务名称
+    Type           TaskType           // 任务类型
+    Content        string             // 任务内容
+    Attachment     []AttachmentSchema // 任务附件
+    UserAttachment []AttachmentSchema // 用户上传附件
+    Status         TaskStatus         // 任务状态
 
     Reward       RewardType // 酬劳类型
-    RewardValue  int        `bson:"reward_value, omitempty"`  // 酬劳数值
+    RewardValue  float32    `bson:"reward_value, omitempty"`  // 酬劳数值
     RewardObject string     `bson:"reward_object, omitempty"` // 酬劳物体
 
     PublishDate int64 `bson:"publish_date"` // 任务发布时间
+    StartDate   int64 `bson:"start_date"`   // 任务开始时间
     EndDate     int64 `bson:"end_data"`     // 任务结束时间
 
-    Player    int64 `bson:"player"`     // 参与的用户
-    MaxPlayer int64 `bson:"max_player"` // 参与用户上限
+    PlayerCount int64 `bson:"player_count"` // 参与的用户
+    MaxPlayer   int64 `bson:"max_player"`   // 参与用户上限
+    AutoAccept  bool  `bson:"auto_accept"`  // 自动同意领取任务
 
     ViewCount    int64                `bson:"view_count"`    // 任务浏览数
     CollectCount int64                `bson:"collect_count"` // 收藏数
@@ -301,6 +311,7 @@ const (
     PlayerRunning PlayerStatus = "running" // 用户进行中
     PlayerFinish  PlayerStatus = "finish"  // 用户已完成
     PlayerGiveUp  PlayerStatus = "give_up" // 用户已放弃
+    PlayerFailure PlayerStatus = "failure" // 任务失败
 )
 
 // TaskStatusSchema 接受的任务状态 基本数据结构
@@ -310,6 +321,8 @@ type TaskStatusSchema struct {
     Task   primitive.ObjectID `bson:"task"`          // 任务 ID [索引]
     Owner  primitive.ObjectID `bson:"owner"`         // 用户 ID [索引]
     Status PlayerStatus       // 状态
+    Note   string             // 申请备注
+    Accept bool               // 是否同意加入
     // 完成后的评价
     Degree int    // 完成度
     Remark string // 评语
@@ -326,7 +339,7 @@ type TaskStatusSchema struct {
 type CommentSchema struct {
     ID         primitive.ObjectID   `bson:"_id,omitempty"` // 评论 ID
     ContentID  primitive.ObjectID   `bson:"content_id"`    // 被评论内容 ID [索引]
-    ContentOwn primitive.ObjectID   `bson:"content_own"`   // 被评论内容 用户 ID
+    ContentOwn primitive.ObjectID   `bson:"content_own"`   // 被评论内容 用户 ID (冗余)
     UserID     primitive.ObjectID   `bson:"user_id"`       // 评论用户 ID
     ReplyCount int64                `bson:"reply_count"`   // 回复数
     LikeCount  int64                `bson:"like_count"`    // 点赞数(冗余)
@@ -374,7 +387,7 @@ type ProblemSchema struct {
         Options []struct {
             Index   int64              // 选项序号
             Content string             // 选项内容
-            Image   primitive.ObjectID // 图片附件ID
+            Image   primitive.ObjectID `bson:"image,omitempty"` // 图片附件ID
         } `bson:"options"` // 问题选项
         MaxChoose int64 `bson:"max_choose"` // 最大可选项
     } `bson:"choose_problem,omitempty"`
@@ -410,7 +423,6 @@ type ProblemSchema struct {
 
 // StatisticsSchema 用户填写数据
 type StatisticsSchema struct {
-    ID       primitive.ObjectID  `bson:"_id, omitempty"`
     UserID   primitive.ObjectID  `bson:"user_id"` // 填写用户ID
     Data     []ProblemDataSchema // 问题答案
     Time     int64               // 提交时间
@@ -430,13 +442,13 @@ type ProblemDataSchema struct {
 // QuestionnaireSchema 问卷数据结构
 type QuestionnaireSchema struct {
     TaskID    primitive.ObjectID `bson:"_id"`        // 问卷所属任务ID [索引]
-    ViewCount int64              `bson:"view_count"` // 问卷浏览数
 
-    Title    string             // 问卷标题
-    Describe string             // 问卷描述
-    Owner    string             // 问卷创建者
-    Problems []ProblemSchema    // 问卷问题
-    Data     []StatisticsSchema // 问题统计数据
+    Title       string             // 问卷标题
+    Description string             // 问卷描述
+    Owner       string             // 问卷创建者(冗余)
+    Anonymous   bool               // 匿名收集
+    Problems    []ProblemSchema    // 问卷问题
+    Data        []StatisticsSchema // 问题统计数据
 }
 ```
 
