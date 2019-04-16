@@ -659,6 +659,11 @@ paths:
                   description: |
                     参与用户上限
                   example: 30
+                max_finish:
+                  type: integer
+                  description: |
+                    完成用户上限，与上面的选项互斥
+                  example: 30
                 auto_accpet:
                   type: boolean
                   description: |
@@ -695,6 +700,8 @@ paths:
                       invalid_start_date    - 无效开始时间<br/>
                       invalid_end_data      - 无效结束时间<br/>
                       invalid_max_player    - 无效最大参与人员<br/>
+                      invalid_max_finish    - 无效最大完成人员<br/>
+                      not_allow_max         - 不允许同时限制参与与完成人员
                     example: 'invalid_title'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -703,7 +710,7 @@ paths:
       summary: 修改任务信息
       description: |
         修改任务的部分信息
-        需要任务处于状态[draft, wait, run]
+        需要任务处于状态[draft, wait, run, finish]
       requestBody:
         content:
           'application/json':
@@ -729,7 +736,7 @@ paths:
                   example: 'close'
                   description: |
                     任务状态<br/>
-                    wait     - 等待接受(需要前置状态[draft])<br/>
+                    wait     - 等待接受(需要前置状态[draft, finish])<br/>
                     close    - 已关闭(需要前置状态[wait, run])<br/>
                     finish   - 已完成(需要前置状态[wait, run])<br/>
                 reward_value:
@@ -757,6 +764,11 @@ paths:
                   description: |
                     参与用户上限，不可小于当前用户数量
                   example: 30
+                max_finish:
+                  type: integer
+                  description: |
+                    完成用户上限，不可小于当前用户数量
+                  example: 30
       responses:
         '200':
           description: 修改任务成功
@@ -775,11 +787,13 @@ paths:
                       invalid_reward_value  - 无效酬劳值<br/>
                       invalid_start_date    - 无效开始时间<br/>
                       invalid_end_data      - 无效结束时间<br/>
+                      invalid_max_finish    - 无效最大完成人员<br/>
                       invalid_max_player    - 无效最大参与人员<br/>
                       invalid_auto_accpet   - 无效自动同意<br/>
                       invalid_status        - 无效状态<br/>
                       not_allow_date        - 不允许的时间<br/>
                       not_allow_max_player  - 不允许的参与用户上限<br/>
+                      not_allow_max_finish  - 不允许的完成用户上限<br/>
                       not_allow_status      - 不允许的状态变换<br/>
                       not_allow_reward_value- 不允许降低酬劳数值<br/>
                     example: 'invalid_title'
@@ -1211,7 +1225,7 @@ paths:
       tags: [Tasks]
       summary: 添加任务附件
       description: |
-        添加任务附件
+        添加任务附件，若任务创建者添加则加入任务题目中
         需要任务处于状态[draft, wait, run]
       parameters:
         - name: task_id
@@ -1326,10 +1340,12 @@ paths:
                       invalid_reward_value  - 无效酬劳值<br/>
                       invalid_start_date    - 无效开始时间<br/>
                       invalid_end_data      - 无效结束时间<br/>
-                      invalid_max_player    - 无效最大参与人员<br/>
+                      invalid_max_player    - 无效最大参与人员(1-10000)<br/>
+                      invalid_max_finish    - 无效最大完成人员(1-10000)<br/>
                       invalid_status        - 无效状态<br/>
                       not_allow_date        - 不允许的时间<br/>
                       not_allow_max_player  - 不允许的参与用户上限<br/>
+                      not_allow_max_finish  - 不允许的完成用户上限<br/>
                       not_allow_status      - 不允许的状态变换<br/>
                       not_allow_reward_value- 不允许降低酬劳数值<br/>
                       not_allow_status      - 当前任务状态不允许修改<br/>
@@ -1680,6 +1696,14 @@ paths:
                     type: boolean
                     description: 是否匿名
                     example: false
+                  question_count:
+                    type: integer
+                    description: 问卷问题数量
+                    example: 24
+                  answer:
+                    type: integer
+                    description: 当前回答数量
+                    example: 213
         '400':
           description: 获取问题信息失败
           content:
@@ -1851,6 +1875,22 @@ paths:
           schema:
             type: string
             example: '5c9ecbbba4a3f52e3195fa68'
+        - name: page
+          in: query
+          required: true
+          description: |
+            获取列表页面，从1开始计数
+          schema:
+            type: number
+            example: 1
+        - name: size
+          in: query
+          required: true
+          description: |
+            每页获取的内容数量
+          schema:
+            type: number
+            example: 10
       responses:
         '200':
           description: 获取数据成功
@@ -1859,6 +1899,10 @@ paths:
               schema:
                 type: object
                 properties:
+                  count:
+                    type: integer
+                    description: 问卷回答总数
+                    example: 121
                   data:
                     type: array
                     description: 统计数据
@@ -1893,6 +1937,8 @@ paths:
                   error:
                     type: string
                     description: |
+                      invalid_page      - 无效页数<br>
+                      invalid_size      - 无效内容数量<br>
                       invalid_id     - 无效任务ID<br/>
                       faked_task     - 任务不存在<br/>
                     example: 'faked_task'
@@ -1900,7 +1946,53 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
         '403':
           $ref: '#/components/responses/403PermissionDenyError'
-
+    post:
+      tags: [Questionnaire]
+      summary: 添加回答
+      description: |
+        回答问卷，需要任务处于[wait]状态
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: 问卷所属任务ID
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                problems:
+                  type: array
+                  description: 题目答案
+                  items:
+                    $ref: '#/components/schemas/AnswerData'
+      responses:
+        '200':
+          description: 回答问题成功
+        '400':
+          description: 回答问题失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_[name]          - 无效的问题参数<br/>
+                      invalid_answer          - 无效的问题回答(不完整等)<br/>
+                      not_allow_status        - 此状态不允许回答问卷<br/>
+                      not_allow_index         - 题号不符合顺序或存在重复<br/>
+                    example: 'not_allow_index'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+        '403':
+          $ref: '#/components/responses/403PermissionDenyError'
+    
   /messages:
     get:
       tags: [Messages]
@@ -1932,10 +2024,14 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
-                    type: string
-                    description: 会话id
-                    example: '5c9ecbbba4a3f52e3195fa68'
+                  count:
+                    type: integer
+                    description: 会话数量
+                    example: 123
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MessageSession'
         '400':
           description: 获取用户失败
           content:
@@ -1946,10 +2042,165 @@ paths:
                   error:
                     type: string
                     description: |
+                      invalid_page      - 无效页数<br>
+                      invalid_size      - 无效内容数量<br>
                       faked_users   - 用户不存在<br>
                     example: 'faked_users'
         '401':
           $ref: '#/components/responses/401NotLoginError'
+  /messages/{id}:
+    get:
+      tags: [Messages]
+      summary: 获取会话消息
+      description: |
+        分页获取指定会话消息内容
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: |
+            会话ID
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
+        - name: page
+          in: query
+          required: true
+          description: |
+            获取列表页面，从1开始计数
+          schema:
+            type: number
+            example: 1
+        - name: size
+          in: query
+          required: true
+          description: |
+            每页获取的内容数量
+          schema:
+            type: number
+            example: 10
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    description: 消息总数量
+                    example: 123
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MessageData'
+        '400':
+          description: 获取用户失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_page   - 无效页数<br>
+                      invalid_size   - 无效内容数量<br>
+                      invalid_id     - 无效会话ID<br/>
+                      faked_message  - 会话不存在<br/>
+                    example: 'invalid_id'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+        '403':
+          $ref: '#/components/responses/403PermissionDenyError'
+    patch:
+      tags: [Messages]
+      summary: 将会话标记为已读
+      description: |
+        将会话标记为已读
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: |
+            会话ID
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
+      responses:
+        '200':
+          description: 标记成功
+        '400':
+          description: 标记失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_id     - 无效会话ID<br/>
+                      faked_message  - 会话不存在<br/>
+                    example: 'invalid_id'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+        '403':
+          $ref: '#/components/responses/403PermissionDenyError'
+    post:
+      tags: [Messages]
+      summary: 发送消息
+      description: |
+        发送消息
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 对方用户ID
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 消息标题， 一般为空
+                content:
+                  type: string
+                  description: 消息内容
+                  example: '你好骚啊'
+                about:
+                  type: string
+                  description: 相关ID, 可用于分享任务
+                  example: '5c9ecbbba4a3f52e3195fa68'
+      responses:
+        '200':
+          description: 发送消息成功
+        '400':
+          description: 发送消息失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_id          - 无效会话ID<br/>
+                      invalid_about       - 无效相关ID<br/>
+                      invalid_content     - 无效内容<br/>
+                      faked_user          - 用户不存在<br/>
+                    example: 'invalid_content_id'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+        '403':
+          $ref: '#/components/responses/403PermissionDenyError'
+
 components:
   responses:
     401NotLoginError:
@@ -1978,6 +2229,56 @@ components:
                   permission_deny - 权限不足<br>
                 example: 'permission_deny'
   schemas:
+    MessageData:
+      type: object
+      description: 消息数据
+      required:
+        - time
+        - content
+      properties:
+        time:
+          type: integer
+          description: 消息发送时间
+          example: 12344512
+        title:
+          type: string
+          description: 消息标题
+          example: '系统通知'
+        content:
+          type: string
+          description: 消息内容
+          example: '你好强啊'
+        about:
+          type: string
+          description: 相关ID
+          example: '5c9ecbbba4a3f52e3195fa68'
+    MessageSession:
+      type: object
+      description: 消息会话数据
+      properties:
+        id:
+          type: string
+          description: 会话ID
+          example: '5c9ecbbba4a3f52e3195fa68'
+        type:
+          type: string
+          description: |
+            会话类型<br/>
+            chat    - 聊天
+            system  - 系统通知
+            task    - 任务通知
+            comment - 评论通知
+          example: 'chat'
+        user:
+          $ref: '#/components/schemas/UserBaseInfo'
+        unread:
+          type: string
+          description: 未读消息数量
+          example: '5c9ecbbba4a3f52e3195fa68'
+        last_time:
+          type: integer
+          description: 最新消息时间
+          example: 12344512
     UserBaseInfo:
       type: object
       description: 用户基本信息
@@ -2153,6 +2454,8 @@ components:
     AnswerData:
       type: object
       description: 回答数据
+      required:
+        - problem_index
       properties:
         problem_index:
           type: integer
@@ -2332,6 +2635,11 @@ components:
             type: integer
             description: |
               参与用户上限
+            example: 30
+          max_finish:
+            type: integer
+            description: |
+              完成用户上限
             example: 30
           auto_accpet:
             type: boolean

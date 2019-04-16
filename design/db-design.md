@@ -291,7 +291,8 @@ type TaskSchema struct {
     EndDate     int64 `bson:"end_data"`     // 任务结束时间
 
     PlayerCount int64 `bson:"player_count"` // 参与的用户
-    MaxPlayer   int64 `bson:"max_player"`   // 参与用户上限
+    MaxPlayer   int64 `bson:"max_player"`   // 参与用户上限, -1为无限制
+    MaxFinsih   int64 `bson:"max_finish"`   // 完成用户上限, 可用于收集指定数量问卷
     AutoAccept  bool  `bson:"auto_accept"`  // 自动同意领取任务
 
     ViewCount    int64                `bson:"view_count"`    // 任务浏览数
@@ -457,7 +458,7 @@ type QuestionnaireSchema struct {
 ```go
 // MessageType 消息类型
 const (
-    MessageTypeChat    MessageType = "char"    // 聊天
+    MessageTypeChat    MessageType = "chat"    // 聊天
     MessageTypeSystem  MessageType = "system"  // 系统通知
     MessageTypeTask    MessageType = "task"    // 任务通知
     MessageTypeComment MessageType = "comment" // 评论通知
