@@ -32,3 +32,7 @@ API 文档：Swagger
 结合前端，整体的服务器架构大概如下：
 
 ![ch6-08-frontend-backend](back-end/ch6-08-frontend-backend.png)
+
+## 帮助文档
+
+[Golang 中 Json 的一些操作](https://colobu.com/2017/06/21/json-tricks-in-Go/)
