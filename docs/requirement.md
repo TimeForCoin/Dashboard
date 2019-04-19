@@ -59,7 +59,9 @@
 
 
 
-![登陆逻辑](../design/API/登陆逻辑.png)
+登陆逻辑图：
+
+![登陆逻辑](./requirement/loginLogic.png)
 
 #### 1.2 小程序功能
 
