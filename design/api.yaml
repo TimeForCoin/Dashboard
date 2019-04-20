@@ -91,6 +91,24 @@ paths:
                       exist_wechat  - 当前账号已绑定微信<br/>
                     example: illegal_state
   /session/wechat:
+    get:
+      tags: [Session]
+      summary: 生成微信小程序码
+      description: |
+        生成特定的微信小程序码，通过扫码可以快捷绑定当前Violet账号，扫描后在小程序中可以获得一个10分钟有效的token，用于绑定账号
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    description: 图片Base64字符串
+                    type: string
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
     post:
       tags: [Session]
       summary: 使用微信登陆
@@ -112,6 +130,10 @@ paths:
                   description: |
                     授权码，对于用户和客户端具有唯一性和时效性
                   type: string
+                token:
+                  description: |
+                    绑定令牌，绑定指定的Violet账户，可以为空。<br/>
+                    为空时登陆后需要手动绑定Violet
       responses:
         '201':
           description: 登陆成功
@@ -129,9 +151,10 @@ paths:
                   message:
                     type: string
                     description: |
-                      illegal_state - 状态码无效<br/>
-                      illegal_code  - 授权码无效<br/>
-                      exist_wechat  - 当前账号已绑定微信<br/>
+                      illegal_[value] - 参数无效<br/>
+                      timeout_token   - Token已过期<br/>
+                      error_token     - Token不正确<br/>
+                      exist_wechat    - 当前账号已绑定微信<br/>
                     example: illegal_state
     delete:
       tags: [Session]
@@ -479,7 +502,7 @@ paths:
       description: |
         签到获取积分
       responses:
-        '200':
+        '201':
           description: 签到成功
         '400':
           description: 签到失败
@@ -677,7 +700,7 @@ paths:
                   description: 是否发布，若不发布则保存为草稿
                   example: false
       responses:
-        '200':
+        '201':
           description: 发布任务成功
         '400':
           description: 发布任务失败
@@ -943,7 +966,7 @@ paths:
             example: '5c9ecbbba4a3f52e3195fa68'
 
       responses:
-        '200':
+        '201':
           description: 参加成功
           content:
             'application/json':
@@ -1154,7 +1177,7 @@ paths:
             type: string
             example: '5c9ecbbba4a3f52e3195fa68'
       responses:
-        '200':
+        '201':
           description: 收藏成功
         '400':
           description: 收藏失败
@@ -1218,7 +1241,7 @@ paths:
             type: string
             example: '5c9ecbbba4a3f52e3195fa68'
       responses:
-        '200':
+        '201':
           description: 点赞成功
         '400':
           description: 点赞失败
@@ -1290,7 +1313,7 @@ paths:
                   items:
                     $ref: '#/components/schemas/EditAttachment'
       responses:
-        '200':
+        '201':
           description: 添加附件成功
         '400':
           description: 添加附件失败
@@ -1542,7 +1565,7 @@ paths:
                   description: 评论内容
                   example: '你好骚啊'
       responses:
-        '200':
+        '201':
           description: 评论成功
         '400':
           description: 评论失败
@@ -1681,7 +1704,7 @@ paths:
                   description: 是否匿名收集
                   example: true
       responses:
-        '200':
+        '201':
           description: 新建问卷成功
         '400':
           description: 新建问卷失败
@@ -2015,7 +2038,7 @@ paths:
                   items:
                     $ref: '#/components/schemas/AnswerData'
       responses:
-        '200':
+        '201':
           description: 回答问题成功
         '400':
           description: 回答问题失败
@@ -2223,7 +2246,7 @@ paths:
                   description: 相关ID, 可用于分享任务
                   example: '5c9ecbbba4a3f52e3195fa68'
       responses:
-        '200':
+        '201':
           description: 发送消息成功
         '400':
           description: 发送消息失败
