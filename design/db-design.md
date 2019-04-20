@@ -1,10 +1,12 @@
 # 数据库设计文档
 
-| 版本 | 修订人     | 修订日期   |
-| ---- | ---------- | ---------- |
-| 1.0  | ZhenlyChen | 2019-04-13 |
+| 版本 | 修订人     | 修订日期   | 内容     |
+| ---- | ---------- | ---------- | -------- |
+| 1.0  | ZhenlyChen | 2019-04-13 | 初始版本 |
 
-## 基本数据库划分
+
+
+## 设计原则
 
 根据[MongoDB 的模式设计的六大经验原则](https://www.mongodb.com/blog/post/6-rules-of-thumb-for-mongodb-schema-design-part-1)
 
@@ -69,8 +71,14 @@
   在 MongoDB 中，如何对数据建模完全**取决于特定应用程序的数据访问模式**
 
   需要使数据的结构与应用程序查询和更新数据的方式相匹配
+  
+  
+  
+  
+  
+## 基本数据库划分
 
-结合以上的经验，根据`TimeForCoin`的需求，目前数据库的数据分为**7 个部分**：
+结合以上的经验，根据`TimeForCoin`的需求，目前数据库的数据分为**10 个部分**：
 
 ### 用户数据
 
@@ -84,6 +92,16 @@
 对于用户昵称，头像等经常需要批量获取（比如在评论列表中）的数据，这里会使用 Redis 对其进行缓存。
 
 这里其他相关的数据都属于反范式的冗余数据，但是考虑到这些数据读取次数远大于写入次数，写读比率很低，因此使用冗余数据可以很好提高读取效率，而不需要每次都查看相关数据的数组长度。
+
+
+
+### 关注系统
+
+- 用户的关注关系
+
+本系统除了有问卷系统，跑腿任务也是本系统一大特色，这种线下任务自然很容易形成一个圈子，因此本应用通过维护用户关系，使得用户更容易得到自身可以接受的任务的信息，由此来增强用户粘性。同时借助关注系统，可以为用户生成个性的信息流。
+
+
 
 ### 任务数据
 
@@ -99,7 +117,7 @@
 
 而参与的用户数为反范式的冗余数据，因为这个数据的写读比比较低，使用反范式的设计，可以极大提高了读取的效率。否则每次读取都需要对下面的整个集合做一次查询
 
-### 接受的任务
+### 接受任务
 
 - 用户与任务的状态
   - 任务 ID、用户 ID
@@ -139,6 +157,22 @@
 因为问卷题目和统计数据都是依附于问卷的，因此以一个问卷为一个对象进行存储，分别存储问卷的题目和数据。
 
 虽然我们也有获取所有数据选项有多少人选的需求，但是这个需求不大，仅仅发布者具有这个需求，而填写数据的需求往往比这个多很多，如果添加反范式的冗余数据，那么写读比就会很高，完全违背了反范式的目的。
+
+### 文件系统
+
+- 文件信息
+
+由于任务、问卷、用户认证等多个地方都需要用到上传和管理文件，这里将其统一起来，将文件集中管理，并统一做好权限管理，将文件部分模块化。
+
+
+
+### 公告系统
+
+- 公告文章
+
+用于存储一些显示在首页的公告文章，比如：使用帮助、系统升级提示、重要通知等文章，主要用作应用的运营。
+
+
 
 ### 消息系统
 
@@ -186,6 +220,11 @@ const (
     UserTypeRoot   UserType = "root"   // 超级管理员
 )
 
+// UserIdentity 用户认证身份
+const (
+	IdentityStudent UserIdentity = "student" // 目前仅支持学生认证
+)
+
 type UserInfoSchema struct {
     Email    string     // 联系邮箱
     Phone    string     // 联系手机
@@ -212,6 +251,14 @@ type UserDataSchema struct {
     ReceiveRunCount int64 `bson:"receive_run_count"` // 领取并进行中任务数
 }
 
+// UserCertificationSchema 用户认证信息
+type UserCertificationSchema struct {
+    Identity UserIdentity       `bson:"identity"` // 认证身份类型
+    Data     string             `bson:"data"`     // 认证内容
+    Valid    bool               `bson:"valid"`    // 认证是否生效，需要管理员审核之后才能生效
+    Material []AttachmentSchema `bson:"material"` // 认证材料，附件存储在本地文件系统中： ./{用户ID}/{附件ID}
+}
+
 // UserSchema User 基本数据结构
 type UserSchema struct {
     ID           primitive.ObjectID `bson:"_id,omitempty"` // 用户ID [索引]
@@ -222,6 +269,12 @@ type UserSchema struct {
     Info         UserInfoSchema     `bson:"info"`          // 用户个性信息
     Data         UserDataSchema     `bson:"data"`          // 用户数据
 }
+```
+
+### 关注数据库
+
+```go
+
 ```
 
 ### 任务数据库
@@ -275,12 +328,11 @@ type TaskSchema struct {
     ID        primitive.ObjectID `bson:"_id,omitempty"` // 任务ID
     Publisher primitive.ObjectID `bson:"publisher"`     // 任务发布者 [索引]
 
-    Title          string             // 任务名称
-    Type           TaskType           // 任务类型
-    Content        string             // 任务内容
-    Attachment     []AttachmentSchema // 任务附件
-    UserAttachment []AttachmentSchema // 用户上传附件
-    Status         TaskStatus         // 任务状态
+    Title      string               // 任务名称
+    Type       TaskType             // 任务类型
+    Content    string               // 任务内容
+    Attachment []primitive.ObjectID // 任务附件
+    Status     TaskStatus           // 任务状态
 
     Reward       RewardType // 酬劳类型
     RewardValue  float32    `bson:"reward_value, omitempty"`  // 酬劳数值
@@ -453,6 +505,56 @@ type QuestionnaireSchema struct {
 }
 ```
 
+### 文件数据库
+
+```go
+// FileType 文件类型
+const (
+    FileImage FileType = "image" // 图片
+    FileFile  FileType = "file"  // 文件
+)
+
+// OwnerType 文件归属类型
+const (
+    FileForUser OwnerType = "user" // 用户文件，非公开内容仅用户本人查看[认证材料、问卷/数据征集提交内容]
+    FileForTask OwnerType = "task" // 任务文件，非公开内容仅任务参与者查看[任务附件]
+)
+
+// AttachmentSchema 文件数据结构
+type FileSchema struct {
+    ID          primitive.ObjectID // 文件ID[索引]
+    OwnerID     primitive.ObjectID `bson:"owner_id"` // 拥有者ID[索引]
+    Owner       OwnerType          // 问卷归属类型
+    Type        FileType           // 文件类型
+    Name        string             // 文件名
+    Description string             // 文件描述
+    Size        int64              // 文件大小
+    Time        int64              // 创建时间
+    Use         bool               // 是否使用，未使用文件将定期处理
+    Public      bool               // 公开，非公开文件需要验证权限
+}
+```
+
+### 公告数据库
+
+```go
+// ArticleModel 文章数据库
+type ArticleModel struct {
+	Collection *mongo.Collection
+}
+
+// ArticleSchemas 文章数据结构
+type ArticleSchemas struct {
+	ID        primitive.ObjectID `bson:"_id,omitempty"` // ID
+	ViewCount int64              `bson:"view_count"`    // 文章阅读数
+	Title     string             // 文章标题
+	Content   string             // 文章内容
+	Publisher string             // 发布者名字
+	Date      int64              // 发布时间
+	Image     primitive.ObjectID // 首页图片
+}
+```
+
 ### 消息数据库
 
 ```go
@@ -512,3 +614,47 @@ type LogSchema struct {
 ### 数据库关系图
 
 ![1555257418073](db-design/1555257418073.png)
+
+
+
+## Redis数据
+
+### 统计信息
+
+- 用户搜索关键词
+- 任务标签关键词
+
+这一部分使用redis实现，因为这些数据重要性不高，但是读写很频繁，通常需要重复访问数据库，因此将其使用redis缓存起来，并且对于非缓存内容定时进行持久化。
+
+通过这些信息，可以为用户提供搜索关键词联想、热门搜索、推荐标签、推荐内容等服务，可以极大地提高用户体验。
+
+
+
+### 缓存信息
+
+- 热门任务列表[缓存]
+- 任务浏览量(热度)[缓存]
+- 用户基本信息(头像、昵称)[缓存]
+
+这些信息的特点是大量的重复请求，因此可以缓存在Redis中缓解数据库的压力
+
+排行榜以浏览量、评论数、收藏数、参与人数、时间[负权]加权计算进行排序，每10分钟更新一次
+
+
+
+### 个性信息流
+
+- 用户感兴趣的信息队列
+
+根据用户的关注以及搜索为用户生成个性的信息流的话，如果在读的时候实时生成信息流，需要多次访问数据库根据关注关系和关键词获取相关数据，必然会给服务器带来很大的压力。因此这里将读写压力分散。当有新内容产生的时候，添加到对此感兴趣的用户信息流队列中(避免关注内容被用户刷新忽略掉，增加曝光率，可以给每条信息一个复活机会，重新加入队列尾。)，在用户获取热门内容的时候，从队列中随机抽取穿插在内容中，形成用户个性信息流。
+
+写入时加入：
+
+ - 任务创建时：从用户搜索记录判断是否感兴趣、为用户粉丝推荐、为同(城/校/地点)用户推荐
+ - 任务被点赞时：一定概率(以粉丝数量、是否互相关注加权计算)为点赞人的的被关注人推荐
+
+读取时加入：
+
+- 热门信息(随机加入热门信息到队列尾)
+
+个性信息流以任务的时间排序为基准，穿插定制的个性信息

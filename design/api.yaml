@@ -24,6 +24,8 @@ tags:
     description: 问卷
   - name: Messages
     description: 消息
+  - name: File
+    description: 文件系统
   - name: Logs
     description: 日志相关
 
@@ -518,6 +520,16 @@ paths:
                     example: 'already_attend'
         '401':
           $ref: '#/components/responses/401NotLoginError'
+  /users/certification:
+    post:
+      tags: [Users]
+      summary: 用户认证
+      description: |
+        用户认证服务，实名认证学生身份，需要上传学生证或校园卡等资料辅助审核
+  /users/certification/{user_id}:
+    get:
+    patch:
+    delete:
 
   /tasks:
     get:
@@ -591,6 +603,14 @@ paths:
           schema:
             type: string
             example: 'money'
+        - name: keyword
+          in: query
+          required: false
+          description: |
+            关键词搜索，对任务名称和内容进行搜索
+          schema:
+            type: string
+            example: '秀秀'
       responses:
         '200':
           description: 获取成功
@@ -643,7 +663,9 @@ paths:
                 attachment:
                   type: array
                   items:
-                    $ref: '#/components/schemas/EditAttachment'
+                    type: string
+                    description: 附件ID
+                    example: '5c9ecbbba4a3f52e3195fa68'
                 type:
                   type: string
                   description: |
@@ -811,6 +833,12 @@ paths:
                   description: |
                     酬劳数值，只能追加不能减少
                   example: 100
+                attachment:
+                  type: array
+                  items:
+                    type: string
+                    description: 附件ID
+                    example: '5c9ecbbba4a3f52e3195fa68'
                 start_date:
                   type: integer
                   description: |
@@ -868,6 +896,46 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
         ’403‘:
           $ref: '#/components/responses/403PermissionDenyError'
+  /tasks/{task_id}/wechat:
+    get:
+      tags: [Tasks]
+      summary: 生成活动微信小程序码
+      description: |
+        生成活动微信小程序码，用于分享，可扫码查看活动详情
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: |
+            任务ID
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  data:
+                    description: 图片的Base64字符串
+                    type: string
+        '400':
+          description: 获取失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_id        - 无效任务ID<br>
+                      faked_task        - 任务不存在<br>
+                      not_allow_status  - 当前任务状态不能分享[draft]<br>
+                    example: 'faked_task'
   /tasks/{task_id}/player:
     get:
       tags: [Tasks]
@@ -1287,57 +1355,10 @@ paths:
                     example: 'exist_like'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-  /tasks/{task_id}/attachment:
-    post:
-      tags: [Tasks]
-      summary: 添加任务附件
-      description: |
-        添加任务附件，若任务创建者添加则直接加入任务题目中<br/>
-        需要任务处于状态[draft, wait, run]
-      parameters:
-        - name: task_id
-          in: path
-          required: true
-          description: 任务ID
-          schema:
-            type: string
-            example: '5c9ecbbba4a3f52e3195fa68'
-      requestBody:
-        content:
-          'application/json':
-            schema:
-              type: object
-              properties:
-                attachment:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/EditAttachment'
-      responses:
-        '201':
-          description: 添加附件成功
-        '400':
-          description: 添加附件失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_task_id       - 无效任务ID<br/>
-                      invalid_attachment_id - 无效附件ID<br/>
-                      faked_task_id         - 任务不存在<br/>
-                      faked_attachment_id   - 附件不存在<br/>
-                      not_allow_status      - 当前任务状态不允许修改<br/>
-                    example: 'invalid_task_id'
-        '401':
-          $ref: '#/components/responses/401NotLoginError'
-        ’403‘:
-          $ref: '#/components/responses/403PermissionDenyError'
-  /tasks/{task_id}/attachment/{attachment_id}:
+
+  /file/{id}:
     get:
-      tags: [Tasks]
+      tags: [File]
       summary: 下载附件
       description: |
         下载附件，对于非公开附件需要领取任务才能下载
@@ -1363,8 +1384,66 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
         ’403‘:
           $ref: '#/components/responses/403PermissionDenyError'
+    post:
+      tags: [File]
+      summary: 添加任务附件
+      description: |
+        添加任务附件，若任务创建者添加则直接加入任务题目中<br/>
+        需要任务处于状态[draft, wait, run]<br/>
+        非任务创建者上传的附件都处于未使用状态，只有当提交问题时才会被标记为使用，未使用文件将定期清除
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: 任务ID
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                attachment:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/EditAttachment'
+      responses:
+        '201':
+          description: 添加附件成功
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: |
+                      上传的附件ID
+                    example: '5c9ecbbba4a3f52e3195fa68'
+        '400':
+          description: 添加附件失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_task_id       - 无效任务ID<br/>
+                      invalid_attachment_id - 无效附件ID<br/>
+                      faked_task_id         - 任务不存在<br/>
+                      faked_attachment_id   - 附件不存在<br/>
+                      not_allow_status      - 当前任务状态不允许修改<br/>
+                    example: 'invalid_task_id'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+        ’403‘:
+          $ref: '#/components/responses/403PermissionDenyError'
     patch:
-      tags: [Tasks]
+      tags: [File]
       summary: 修改附件信息
       description: |
         修改附件的部分信息
@@ -1422,7 +1501,7 @@ paths:
         ’403‘:
           $ref: '#/components/responses/403PermissionDenyError'
     delete:
-      tags: [Tasks]
+      tags: [File]
       summary: 删除任务附件
       description: 删除任务附件
       parameters:
@@ -2115,6 +2194,48 @@ paths:
                     example: 'faked_users'
         '401':
           $ref: '#/components/responses/401NotLoginError'
+    post:
+      tags: [Messages]
+      summary: 发送系统消息
+      description: |
+        发送系统消息，仅管理员可使用
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 消息标题
+                content:
+                  type: string
+                  description: 消息内容
+                  example: '你好骚啊'
+                about:
+                  type: string
+                  description: 相关ID, 结合前端使用
+                  example: '5c9ecbbba4a3f52e3195fa68'
+      responses:
+        '201':
+          description: 发送消息成功
+        '400':
+          description: 发送消息失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_[value]     - 无效参数<br/>
+                    example: 'invalid_title'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+        '403':
+          $ref: '#/components/responses/403PermissionDenyError'
+
   /messages/{id}:
     get:
       tags: [Messages]
