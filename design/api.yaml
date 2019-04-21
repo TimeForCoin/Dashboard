@@ -30,6 +30,8 @@ tags:
     description: 文件系统
   - name: Logs
     description: 日志相关
+  - name: Article
+    description: 公告文章
 
 paths:
   /session:
@@ -398,7 +400,9 @@ paths:
                     description: 总页数
                     example: 12
                   data:
-                    $ref: '#/components/schemas/TaskInfo'
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TaskInfo'
         '400':
           description: 获取失败
           content:
@@ -443,14 +447,7 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_avatar - 无效头像Base64字符串<br>
-                      invalid_bio - 无效个人简介<br>
-                      invalid_email - 无效联系邮箱<br>
-                      invalid_gender - 无效性别<br>
-                      invalid_location - 无效地址<br>
-                      invalid_school - 无效学校<br>
-                      invalid_nickname - 无效昵称<br>
-                      invalid_phone - 无效联系电话<br>
+                      invalid_[value] - 无效参数<br>
                     example: 'invalid_avatar'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -459,7 +456,7 @@ paths:
       tags: [Users]
       summary: 修改用户类型
       description: |
-        仅管理员以上可用，用于调整比自己等级低的用户的等级，调整范围仅限于小于自身等级的等级
+        仅[admin, root]用户可用，用于调整用户等级，调整范围仅限于[ban, normal, admin], 除此以外的等级的用户不能被调整(wechat, root)
       requestBody:
         content:
           'application/json':
@@ -491,9 +488,9 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_type - 无效等级<br>
-                      invalid_name - 无效用户名<br>
-                      faked_users   - 用户不存在<br>
+                      invalid_[value] - 无效参数<br/>
+                      faked_users     - 用户不存在<br/>
+                      not_allow_type  - 不允许调整的类型<br/>
                     example: 'invalid_type'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -522,8 +519,6 @@ paths:
                     example: 'already_attend'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-
-
 
   /certification:
     get:
@@ -648,7 +643,7 @@ paths:
   /certification/email:
     post:
       tags: [Certification]
-      summary: 再次发送邮箱认证邮件
+      summary: 再次发送认证邮件
       description: |
         重新发送邮件到当前待认证的邮箱，点击邮箱内连接进行认证
       responses:
@@ -930,7 +925,9 @@ paths:
                     description: 总页数
                     example: 12
                   data:
-                    $ref: '#/components/schemas/TaskInfo'
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TaskInfo'
         '400':
           description: 获取失败
           content:
@@ -956,77 +953,7 @@ paths:
         content:
           'application/json':
             schema:
-              type: object
-              properties:
-                title:
-                  type: string
-                  description: 任务标题
-                  example: '帮我洗澡'
-                content:
-                  type: string
-                  description: 任务详情
-                  example: '过来至二634洗澡澡'
-                attachment:
-                  type: array
-                  items:
-                    type: string
-                    description: 附件ID
-                    example: '5c9ecbbba4a3f52e3195fa68'
-                type:
-                  type: string
-                  description: |
-                    任务类型<br/>
-                    run           - 跑腿任务<br/>
-                    questionnaire - 问卷任务<br/>
-                    info          - 信息任务<br/>
-                  example: 'run'
-                reward:
-                  type: string
-                  description: |
-                    酬劳类型<br/>
-                    money     - 闲钱币<br/>
-                    rmb       - 人民币<br/>
-                    physical  - 实物<br/>
-                  example: 'rmb'
-                reward_value:
-                  type: number
-                  description: |
-                    酬劳数值，当酬劳类型为money、rmb才存在
-                  example: 100
-                reward_object:
-                  type: string
-                  description: |
-                    酬劳物体，酬劳类型为physical才存在
-                  example: '一个吻'
-                start_date:
-                  type: integer
-                  description: |
-                    任务开始时间
-                  example: 1214141242
-                end_date:
-                  type: integer
-                  description: |
-                    任务结束时间
-                  example: 1214141246
-                max_player:
-                  type: integer
-                  description: |
-                    参与用户上限
-                  example: 30
-                max_finish:
-                  type: integer
-                  description: |
-                    完成用户上限，与上面的选项互斥
-                  example: 30
-                auto_accpet:
-                  type: boolean
-                  description: |
-                    是否自动同意领取任务
-                  example: true
-                publish:
-                  type: boolean
-                  description: 是否发布，若不发布则保存为草稿
-                  example: false
+              $ref: '#/components/schemas/EditTaskInfo'
       responses:
         '201':
           description: 发布任务成功
@@ -1040,22 +967,8 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_title   - 无效标题<br/>
-                      invalid_content - 无效内容<br/>
-                      invalid_attachment_type         - 无效附件类型<br/>
-                      invalid_attachment_name         - 无效附件名<br/>
-                      invalid_attachment_description  - 无效附件描述<br/>
-                      invalid_attachment_public       - 无效附件公开属性<br/>
-                      invalid_type          - 无效任务类型<br/>
-                      invalid_reward        - 无效任务酬劳类型<br/>
-                      invalid_auto_accpet   - 无效自动同意<br/>
-                      invalid_reward_value  - 无效酬劳值<br/>
-                      invalid_reward_object - 无效酬劳物品<br/>
-                      invalid_start_date    - 无效开始时间<br/>
-                      invalid_end_data      - 无效结束时间<br/>
-                      invalid_max_player    - 无效最大参与人员<br/>
-                      invalid_max_finish    - 无效最大完成人员<br/>
-                      not_allow_max         - 不允许同时限制参与与完成人员
+                      invalid_[value]   - 无效参数<br/>
+                      not_allow_max     - 不允许同时限制参与与完成人员
                     example: 'invalid_title'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -1102,7 +1015,7 @@ paths:
       summary: 修改任务信息
       description: |
         修改任务的部分信息
-        需要任务处于状态[draft, wait, run, finish]
+        需要任务处于状态[draft, wait, run]
       parameters:
         - name: task_id
           in: path
@@ -1116,60 +1029,7 @@ paths:
         content:
           'application/json':
             schema:
-              type: object
-              properties:
-                title:
-                  type: string
-                  description: 任务标题
-                  example: '帮我洗澡'
-                content:
-                  type: string
-                  description: 任务详情
-                  example: '过来至二634洗澡澡'
-                status:
-                  type: string
-                  example: 'close'
-                  description: |
-                    任务状态<br/>
-                    wait     - 等待接受(需要前置状态[draft, finish])<br/>
-                    close    - 已关闭(需要前置状态[wait, run])<br/>
-                    finish   - 已完成(需要前置状态[wait, run])<br/>
-                reward_value:
-                  type: number
-                  description: |
-                    酬劳数值，只能追加不能减少
-                  example: 100
-                attachment:
-                  type: array
-                  items:
-                    type: string
-                    description: 附件ID
-                    example: '5c9ecbbba4a3f52e3195fa68'
-                start_date:
-                  type: integer
-                  description: |
-                    任务开始时间，必须小于结束时间
-                  example: 1214141242
-                end_date:
-                  type: integer
-                  description: |
-                    任务结束时间，必须大于开始时间
-                  example: 1214141246
-                auto_accpet:
-                  type: boolean
-                  description: |
-                    是否自动同意领取任务
-                  example: true
-                max_player:
-                  type: integer
-                  description: |
-                    参与用户上限，不可小于当前用户数量
-                  example: 30
-                max_finish:
-                  type: integer
-                  description: |
-                    完成用户上限，不可小于当前用户数量
-                  example: 30
+              $ref: '#/components/schemas/EditTaskInfo'
       responses:
         '200':
           description: 修改任务成功
@@ -1183,15 +1043,8 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_title         - 无效标题<br/>
-                      invalid_content       - 无效内容<br/>
-                      invalid_reward_value  - 无效酬劳值<br/>
-                      invalid_start_date    - 无效开始时间<br/>
-                      invalid_end_data      - 无效结束时间<br/>
-                      invalid_max_finish    - 无效最大完成人员<br/>
-                      invalid_max_player    - 无效最大参与人员<br/>
-                      invalid_auto_accpet   - 无效自动同意<br/>
-                      invalid_status        - 无效状态<br/>
+                      invalid_[value]       - 无效参数<br/>
+                      not_allow_edit        - 该状态下不允许修改<br/>
                       not_allow_date        - 不允许的时间<br/>
                       not_allow_max_player  - 不允许的参与用户上限<br/>
                       not_allow_max_finish  - 不允许的完成用户上限<br/>
@@ -1667,7 +1520,7 @@ paths:
       tags: [File]
       summary: 上传文件
       description: |
-        上传的文件都处于未使用状态，只有当被引用时才会被标记为使用，未使用文件将定期清除
+        上传的文件都处于未使用状态，只有当被引用时才会被标记为使用，未使用文件将定期清除，允许微信临时用户使用
       requestBody:
         content:
           'application/json':
@@ -1677,7 +1530,7 @@ paths:
                 attachment:
                   type: array
                   items:
-                    $ref: '#/components/schemas/EditAttachment'
+                    $ref: '#/components/schemas/EditFileInfo'
       responses:
         '201':
           description: 添加附件成功
@@ -1749,7 +1602,7 @@ paths:
         content:
           'application/json':
             schema:
-              $ref: '#/components/schemas/EditAttachment'
+              $ref: '#/components/schemas/EditFileInfo'
       responses:
         '200':
           description: 修改文件信息成功
@@ -1769,7 +1622,6 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
         '403':
           $ref: '#/components/responses/403PermissionDenyError'
-
 
   /comments/{id}:
     get:
@@ -2036,7 +1888,7 @@ paths:
     get:
       tags: [Questionnaires]
       summary: 获取问卷基本信息
-      description: 获取问卷基本信息
+      description: 获取问卷基本信息，属于公开信息
       parameters:
         - name: task_id
           in: path
@@ -2151,7 +2003,7 @@ paths:
     get:
       tags: [Questionnaires]
       summary: 获取问卷问题
-      description: 获取指定问卷问题，需要检验权限
+      description: 获取指定问卷问题，需要检验权限，允许微信临时用户使用
       parameters:
         - name: task_id
           in: path
@@ -2325,7 +2177,7 @@ paths:
       tags: [Questionnaires]
       summary: 添加回答
       description: |
-        回答问卷，需要任务处于[wait]状态
+        回答问卷，需要任务处于[wait]状态，允许微信临时用户使用
       parameters:
         - name: task_id
           in: path
@@ -2417,8 +2269,8 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_page      - 无效页数<br>
-                      invalid_size      - 无效内容数量<br>
+                      invalid_page  - 无效页数<br>
+                      invalid_size  - 无效内容数量<br>
                       faked_users   - 用户不存在<br>
                     example: 'faked_users'
         '401':
@@ -2574,7 +2426,7 @@ paths:
         - name: id
           in: path
           required: true
-          description: 对方用户ID
+          description: 对方用户ID，若为[feedback]则向系统管理员[root]发送反馈消息
           schema:
             type: string
             example: '5c9ecbbba4a3f52e3195fa68'
@@ -2715,6 +2567,158 @@ paths:
         '403':
           $ref: '#/components/responses/403PermissionDenyError'
 
+  /article:
+    get:
+      tags: [Article]
+      summary: 获取公告列表
+      description: |
+        获取公告列表
+      parameters:
+        - name: page
+          in: query
+          required: true
+          description: |
+            获取列表页面，从1开始计数
+          schema:
+            type: number
+            example: '1'
+        - name: size
+          in: query
+          required: true
+          description: |
+            每页获取的内容数量
+          schema:
+            type: number
+            example: '10'
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  pages:
+                    type: integer
+                    description: 总页数
+                    example: 12
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ArticleBaseInfo'
+        '400':
+          description: 获取失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_sort    - 无效顺序<br>
+                      invalid_page    - 无效页数<br>
+                    example: 'invalid_sort'
+    post:
+      tags: [Article]
+      summary: 新建公告文章
+      description: |
+        新建公告文章
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/EditArticleInfo'
+      responses:
+        '201':
+          description: 新建公告成功
+        '400':
+          description: 新建公告失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_[value]       - 无效参数<br/>
+                    example: 'invalid_title'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+        '403':
+          $ref: '#/components/responses/403PermissionDenyError'
+  /article/{id}:
+    get:
+      tags: [Article]
+      summary: 公告详情
+      description: 获取公告详情
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 公告ID
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
+      responses:
+        '200':
+          description: 获取公告详情成功
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ArticleInfo'
+        '400':
+          description: 获取公告信息失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_id     - 无效公告ID<br/>
+                      faked_article  - 公告不存在<br/>
+                    example: 'faked_article'
+    patch:
+      tags: [Article]
+      summary: 修改公告信息
+      description: |
+        修改公告信息，须管理员权限
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 公告ID
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/EditArticleInfo'
+      responses:
+        '200':
+          description: 修改公告成功
+        '400':
+          description: 修改公告失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_[value]   - 无效参数<br/>
+                    example: 'invalid_title'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+        '403':
+          $ref: '#/components/responses/403PermissionDenyError'
+
 components:
   responses:
     401NotLoginError:
@@ -2743,6 +2747,21 @@ components:
                   permission_deny - 权限不足<br>
                 example: 'permission_deny'
   schemas:
+    SessionRequest:
+      type: object
+      required:
+        - code
+        - state
+      properties:
+        code:
+          description: |
+            授权码，对于用户和客户端具有唯一性和时效性
+          type: string
+        state:
+          description: |
+            状态码，用于防止CSRF攻击
+          type: string
+
     CertificaitonData:
       type: object
       description: 认证数据
@@ -2770,6 +2789,7 @@ components:
           description: 认证材料文件信息
           items:
             $ref: '#/components/schemas/FileInfo'
+
     LogItem:
       type: object
       description: 日志数据结构
@@ -2806,6 +2826,7 @@ components:
           type: string
           description: 日志消息
           example: '你摊上大事了'
+
     MessageData:
       type: object
       description: 消息数据
@@ -2841,10 +2862,10 @@ components:
           type: string
           description: |
             会话类型<br/>
-            chat    - 聊天
-            system  - 系统通知
-            task    - 任务通知
-            comment - 评论通知
+            chat     - 聊天
+            system   - 系统通知
+            task     - 任务通知
+            comment  - 评论通知
           example: 'chat'
         user:
           $ref: '#/components/schemas/UserBaseInfo'
@@ -2856,22 +2877,7 @@ components:
           type: integer
           description: 最新消息时间
           example: 12344512
-    UserBaseInfo:
-      type: object
-      description: 用户基本信息
-      properties:
-        id:
-          type: string
-          description: 用户ID
-          example: '5c9ecbbba4a3f52e3195fa68'
-        nickname:
-          type: string
-          description: 用户昵称
-          example: 'tp'
-        avatar:
-          type: string
-          description: 用户头像
-          example: 'https://xxx.png'
+
     QuestionData:
       type: object
       description: 问题数据结构
@@ -3054,6 +3060,7 @@ components:
           example: 4
         file_value:
           $ref: '#/components/schemas/FileInfo'
+
     CommentData:
       type: object
       description: 评论数据结构
@@ -3090,6 +3097,7 @@ components:
           type: integer
           description: 评论时间戳
           example: 12414324234
+
     FileInfo:
       type: object
       properties:
@@ -3124,128 +3132,29 @@ components:
           type: boolean
           description: 是否公开(不公开的话只有参与成员可以查看)
           example: false
-    TaskInfo:
-      type: array
-      items:
-        type: object
-        description: 任务信息
-        properties:
-          id:
-            type: string
-            description: 任务id
-            example: '5c9ecbbba4a3f52e3195fa68'
-          publisher:
-            $ref: '#/components/schemas/UserBaseInfo'
-          title:
-            type: string
-            description: 任务标题
-            example: '帮我洗澡'
-          content:
-            type: string
-            description: 任务详情
-            example: '过来至二634洗澡澡'
-          status:
-            type: string
-            description: |
-              任务状态<br/>
-              draft    - 草稿<br/>
-              wait     - 等待接受<br/>
-              run      - 执行中（人数已满）<br/>
-              close    - 已关闭<br/>
-              finish   - 已完成<br/>
-              overdue  - 已过期<br/>
-            example: 'wait'
-          type:
-            type: string
-            description: |
-              任务类型<br/>
-              run           - 跑腿任务<br/>
-              questionnaire - 问卷任务<br/>
-              info          - 信息任务<br/>
-            example: 'run'
-          attachment:
-            type: array
-            description: 任务附件
-            items:
-              $ref: '#/components/schemas/FileInfo'
-          reward:
-            type: string
-            description: |
-              酬劳类型<br/>
-              money     - 闲钱币<br/>
-              rmb       - 人民币<br/>
-              physical  - 实物<br/>
-            example: 'rmb'
-          reward_value:
-            type: number
-            description: |
-              酬劳数值，当酬劳类型为money、rmb才存在
-            example: 100
-          reward_object:
-            type: string
-            description: |
-              酬劳物体，酬劳类型为physical才存在
-            example: '一个吻'
-          publish_date:
-            type: integer
-            description: |
-              任务发布时间
-            example: 112312341243
-          start_date:
-            type: integer
-            description: |
-              任务开始时间
-            example: 121414124
-          end_date:
-            type: integer
-            description: |
-              任务结束时间
-            example: 121414124
-          player_count:
-            type: integer
-            description: |
-              参与的用户数
-            example: 12
-          max_player:
-            type: integer
-            description: |
-              参与用户上限
-            example: 30
-          max_finish:
-            type: integer
-            description: |
-              完成用户上限
-            example: 30
-          auto_accpet:
-            type: boolean
-            description: |
-              是否自动同意领取任务
-            example: true
-          comment_count:
-            type: integer
-            description: |
-              任务评论数
-            example: 30
-          view_count:
-            type: integer
-            description: |
-              任务浏览数
-            example: 30
-          collect_count:
-            type: integer
-            description: |
-              任务收藏数
-            example: 30
-          like_count:
-            type: integer
-            description: |
-              任务点赞数
-            example: 30
-          like:
-            type: boolean
-            description: |
-              当前用户是否已经点赞
-            example: false
+    EditFileInfo:
+      type: object
+      properties:
+        type:
+          type: string
+          description: |
+            附件类型<br/>
+            image - 图片<br/>
+            file  - 文件<br/>
+          example: 'image'
+        name:
+          type: string
+          description: 附件名称
+          example: '秀秀照片'
+        description:
+          type: string
+          description: 附件描述
+          example: '洗澡'
+        public:
+          type: boolean
+          description: 是否公开(不公开的话只有参与成员可以查看)
+          example: false
+
     Players:
       type: array
       items:
@@ -3293,20 +3202,23 @@ components:
             type: string
             description: 用户的反馈
             example: '我觉得还行'
-    SessionRequest:
+
+    UserBaseInfo:
       type: object
-      required:
-        - code
-        - state
+      description: 用户基本信息
       properties:
-        code:
-          description: |
-            授权码，对于用户和客户端具有唯一性和时效性
+        id:
           type: string
-        state:
-          description: |
-            状态码，用于防止CSRF攻击
+          description: 用户ID
+          example: '5c9ecbbba4a3f52e3195fa68'
+        nickname:
           type: string
+          description: 用户昵称
+          example: 'tp'
+        avatar:
+          type: string
+          description: 用户头像
+          example: 'https://xxx.png'
     UserData:
       type: object
       description: 用户数据
@@ -3332,6 +3244,7 @@ components:
           description: |
             用户类型<br/>
             ban     - 禁封用户<br/>
+            wechat  - 微信临时用户<br/>
             normal  - 正式用户<br/>
             admin   - 管理员<br/>
             root    - 超级管理员<br/>
@@ -3364,71 +3277,6 @@ components:
           type: number
           description: 接受并进行中任务数量
           example: 1
-    EditAttachment:
-      type: object
-      properties:
-        type:
-          type: string
-          description: |
-            附件类型<br/>
-            image - 图片<br/>
-            file  - 文件<br/>
-          example: 'image'
-        name:
-          type: string
-          description: 附件名称
-          example: '秀秀照片'
-        description:
-          type: string
-          description: 附件描述
-          example: '洗澡'
-        public:
-          type: boolean
-          description: 是否公开(不公开的话只有参与成员可以查看)
-          example: false
-    EditUserInfo:
-      type: object
-      description: 修改用户个人信息请求
-      properties:
-        avatar:
-          type: string
-          description: 头像Base64数据
-          example: 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzd....'
-        bio:
-          type: string
-          description: |
-            个人简介，最多128位<br>
-          example: 'Hello, world!'
-        school:
-          type: string
-          description: 学校
-          example: '中山大学'
-        email:
-          type: string
-          description: 联系邮箱
-          format: email
-        gender:
-          type: string
-          description: |
-            性别<br>
-            other - 未知<br>
-            man   - 男<br>
-            woman - 女<br>
-        location:
-          type: string
-          description: |
-            详细地址，最多64位<br>
-          example: '中山大学东校区至善园2号'
-        nickname:
-          type: string
-          description: |
-            昵称，最多32位<br>
-          example: '未知矩阵'
-        phone:
-          type: string
-          description: 联系电话
-          format: phone
-          example: '12345678901'
     UserInfo:
       type: object
       description: 用户个人信息
@@ -3473,3 +3321,344 @@ components:
           description: 联系电话
           format: phone
           example: '12345678901'
+        brithday:
+          type: integer
+          description: 用户生日时间
+          example: 1242312312
+    EditUserInfo:
+      type: object
+      description: 修改用户个人信息请求
+      properties:
+        avatar:
+          type: string
+          description: 头像Base64数据
+          example: 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzd....'
+        bio:
+          type: string
+          description: |
+            个人简介，最多128位<br>
+          example: 'Hello, world!'
+        school:
+          type: string
+          description: 学校
+          example: '中山大学'
+        email:
+          type: string
+          description: 联系邮箱
+          format: email
+        gender:
+          type: string
+          description: |
+            性别<br>
+            other - 未知<br>
+            man   - 男<br>
+            woman - 女<br>
+        location:
+          type: string
+          description: |
+            详细地址，最多64位<br>
+          example: '中山大学东校区至善园2号'
+        nickname:
+          type: string
+          description: |
+            昵称，最多32位<br>
+          example: '未知矩阵'
+        phone:
+          type: string
+          description: 联系电话
+          format: phone
+          example: '12345678901'
+
+    TaskInfo:
+      type: object
+      description: 任务信息
+      properties:
+        id:
+          type: string
+          description: 任务id
+          example: '5c9ecbbba4a3f52e3195fa68'
+        publisher:
+          $ref: '#/components/schemas/UserBaseInfo'
+        title:
+          type: string
+          description: 任务标题
+          example: '帮我洗澡'
+        content:
+          type: string
+          description: 任务详情
+          example: '过来至二634洗澡澡'
+        location:
+          type: array
+          description: 任务地点
+          items:
+            type: string
+            example: '中山大学'
+        tags:
+          type: array
+          description: 任务标签
+          items:
+            type: string
+            example: '打游戏'
+        top_time:
+          type: integer
+          description: 置顶时间(默认为0)，如果当前时间小于置顶时间，则将任务视为置顶
+          example: 1244123123
+        status:
+          type: string
+          description: |
+            任务状态<br/>
+            draft    - 草稿<br/>
+            wait     - 等待接受<br/>
+            run      - 执行中（人数已满）<br/>
+            close    - 已关闭<br/>
+            finish   - 已完成<br/>
+            overdue  - 已过期<br/>
+          example: 'wait'
+        type:
+          type: string
+          description: |
+            任务类型<br/>
+            run           - 跑腿任务<br/>
+            questionnaire - 问卷任务<br/>
+            info          - 信息任务<br/>
+          example: 'run'
+        attachment:
+          type: array
+          description: 任务附件
+          items:
+            $ref: '#/components/schemas/FileInfo'
+        reward:
+          type: string
+          description: |
+            酬劳类型<br/>
+            money     - 闲钱币<br/>
+            rmb       - 人民币<br/>
+            physical  - 实物<br/>
+          example: 'rmb'
+        reward_value:
+          type: number
+          description: |
+            酬劳数值，当酬劳类型为money、rmb才存在
+          example: 100
+        reward_object:
+          type: string
+          description: |
+            酬劳物体，酬劳类型为physical才存在
+          example: '一个吻'
+        publish_date:
+          type: integer
+          description: |
+            任务发布时间
+          example: 112312341243
+        start_date:
+          type: integer
+          description: |
+            任务开始时间
+          example: 121414124
+        end_date:
+          type: integer
+          description: |
+            任务结束时间
+          example: 121414124
+        player_count:
+          type: integer
+          description: |
+            参与的用户数
+          example: 12
+        max_player:
+          type: integer
+          description: |
+            参与用户上限
+          example: 30
+        max_finish:
+          type: integer
+          description: |
+            完成用户上限
+          example: 30
+        auto_accpet:
+          type: boolean
+          description: |
+            是否自动同意领取任务
+          example: true
+        comment_count:
+          type: integer
+          description: |
+            任务评论数
+          example: 30
+        view_count:
+          type: integer
+          description: |
+            任务浏览数
+          example: 30
+        collect_count:
+          type: integer
+          description: |
+            任务收藏数
+          example: 30
+        like_count:
+          type: integer
+          description: |
+            任务点赞数
+          example: 30
+        like:
+          type: boolean
+          description: |
+            当前用户是否已经点赞
+          example: false
+    EditTaskInfo:
+      type: object
+      properties:
+        title:
+          type: string
+          description: 任务标题
+          example: '帮我洗澡'
+        content:
+          type: string
+          description: 任务详情
+          example: '过来至二634洗澡澡'
+        attachment:
+          type: array
+          items:
+            type: string
+            description: 附件ID
+            example: '5c9ecbbba4a3f52e3195fa68'
+        type:
+          type: string
+          description: |
+            任务类型<br/>
+            run           - 跑腿任务<br/>
+            questionnaire - 问卷任务<br/>
+            info          - 信息任务<br/>
+          example: 'run'
+        reward:
+          type: string
+          description: |
+            酬劳类型<br/>
+            money     - 闲钱币<br/>
+            rmb       - 人民币<br/>
+            physical  - 实物<br/>
+          example: 'rmb'
+        reward_value:
+          type: number
+          description: |
+            酬劳数值，当酬劳类型为money、rmb才存在
+          example: 100
+        reward_object:
+          type: string
+          description: |
+            酬劳物体，酬劳类型为physical才存在
+          example: '一个吻'
+        location:
+          type: array
+          description: 任务地点
+          items:
+            type: string
+            example: 中山大学
+        tags:
+          type: array
+          description: 任务标签(关键词)
+          items:
+            type: string
+            example: 打游戏
+        top_time:
+          type: integer
+          description: 置顶时间(默认为0)，如果当前时间小于置顶时间，则将任务视为置顶
+          example: 1244123123
+        start_date:
+          type: integer
+          description: |
+            任务开始时间
+          example: 1214141242
+        end_date:
+          type: integer
+          description: |
+            任务结束时间
+          example: 1214141246
+        max_player:
+          type: integer
+          description: |
+            参与用户上限
+          example: 30
+        max_finish:
+          type: integer
+          description: |
+            完成用户上限，与上面的选项互斥
+          example: 30
+        auto_accpet:
+          type: boolean
+          description: |
+            是否自动同意领取任务
+          example: true
+        publish:
+          type: boolean
+          description: 是否发布，若不发布则保存为草稿
+          example: false
+
+    ArticleBaseInfo:
+      type: object
+      description: 文章基本信息
+      properties:
+        id:
+          type: string
+          description: 公告ID
+          example: '5c9ecbbba4a3f52e3195fa68'
+        title:
+          type: string
+          description: 文章标题
+          example: '系统更新啦'
+        publisher:
+          type: string
+          description: 发布者名称
+          example: '系统'
+        Image:
+          type: string
+          description: 展示图片文件ID
+          example: '5c9ecbbba4a3f52e3195fa68'
+    ArticleInfo:
+      type: object
+      description: 文章信息
+      properties:
+        id:
+          type: string
+          description: 公告ID
+          example: '5c9ecbbba4a3f52e3195fa68'
+        title:
+          type: string
+          description: 文章标题
+          example: '系统更新啦'
+        content:
+          type: string
+          description: 文章内容
+          example: '啦啦啦啦啦啦'
+        publisher:
+          type: string
+          description: 发布者名称
+          example: '系统'
+        Image:
+          type: string
+          description: 展示图片文件ID
+          example: '5c9ecbbba4a3f52e3195fa68'
+        view_count:
+          type: integer
+          description: 文章阅读数
+          example: 132123
+    EditArticleInfo:
+      type: object
+      description: 文章信息
+      properties:
+        title:
+          type: string
+          description: 文章标题
+          example: '系统更新啦'
+        content:
+          type: string
+          description: 文章内容
+          example: '啦啦啦啦啦啦'
+        publisher:
+          type: string
+          description: 发布者名称
+          example: '系统'
+        Image:
+          type: string
+          description: 展示图片文件ID
+          example: '5c9ecbbba4a3f52e3195fa68'

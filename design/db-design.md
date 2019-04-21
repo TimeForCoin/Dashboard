@@ -212,6 +212,7 @@ const (
 // UserType 用户类型
 const (
     UserTypeBan    UserType = "ban"    // 禁封用户
+    UserTypeWeChat UserType = "wechat" // 微信临时用户
     UserTypeNormal UserType = "normal" // 正式用户
     UserTypeAdmin  UserType = "admin"  // 管理员
     UserTypeRoot   UserType = "root"   // 超级管理员
@@ -368,7 +369,7 @@ type TaskSchema struct {
     Content    string               // 任务内容
     Attachment []primitive.ObjectID // 任务附件
     Status     TaskStatus           // 任务状态
-    Location   string               // 任务地点 (问卷类任务不限)
+    Location   []string             // 任务地点 (问卷类任务不限)
     Tags       []string             // 标签 (作为关键词，改进搜索体验)
     TopTime    int64                // 置顶时间(默认为0)，如果当前时间小于置顶时间，即将任务置顶
 
@@ -617,7 +618,6 @@ const (
     MessageTypeSystem   MessageType = "system"   // 系统通知
     MessageTypeTask     MessageType = "task"     // 任务通知
     MessageTypeComment  MessageType = "comment"  // 评论通知
-    MessageTypeFeedback MessageType = "feedback" // 用户反馈
 )
 
 // MessageSchema Message 数据结构
