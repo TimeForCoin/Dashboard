@@ -18,6 +18,8 @@ tags:
     description: 用户操作
   - name: Certification
     description: 认证相关
+  - name: Relation
+    description: 用户关系
   - name: Tasks
     description: 任务
   - name: Comments
@@ -28,8 +30,8 @@ tags:
     description: 消息
   - name: File
     description: 文件系统
-  - name: Logs
-    description: 日志相关
+  - name: Utils
+    description: 其他
   - name: Article
     description: 公告文章
 
@@ -221,16 +223,16 @@ paths:
                   error:
                     type: string
                     description: |
-                      faked_users   - 用户不存在<br>
+                      faked_users   - 用户不存在<br/>
                     example: 'faked_users'
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /users/task/{user_id}:
     get:
       tags: [Users]
-      summary: 获取用户参与的任务状态列表
+      summary: 获取用户参与的任务列表
       description: |
-        获取用户参与的任务状态列表
+        获取用户参与的任务列表
       parameters:
         - name: user_id
           in: path
@@ -302,10 +304,10 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_page      - 无效页数<br>
-                      invalid_size      - 无效内容数量<br>
-                      invalid_user_id   - 无效用户ID<br>
-                      faked_user        - 用户不存在<br>
+                      invalid_page      - 无效页数<br/>
+                      invalid_size      - 无效内容数量<br/>
+                      invalid_user_id   - 无效用户ID<br/>
+                      faked_user        - 用户不存在<br/>
                     example: 'invalid_page'
   /users/collect/{user_id}:
     get:
@@ -329,7 +331,7 @@ paths:
             获取列表页面，从1开始计数
           schema:
             type: number
-            example: '1'
+            example: 1
         - name: size
           in: query
           required: true
@@ -337,7 +339,7 @@ paths:
             每页获取的内容数量
           schema:
             type: number
-            example: '10'
+            example: 10
         - name: sort
           in: query
           required: false
@@ -413,12 +415,12 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_sort - 无效顺序<br>
-                      invalid_page - 无效页数<br>
-                      invalid_size - 无效内容数量<br>
-                      invalid_type - 无效类型<br>
-                      invalid_status - 无效状态<br>
-                      invalid_reward - 无效酬劳类型<br>
+                      invalid_sort - 无效顺序<br/>
+                      invalid_page - 无效页数<br/>
+                      invalid_size - 无效内容数量<br/>
+                      invalid_type - 无效类型<br/>
+                      invalid_status - 无效状态<br/>
+                      invalid_reward - 无效酬劳类型<br/>
                     example: 'invalid_sort'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -427,8 +429,8 @@ paths:
       tags: [Users]
       summary: 修改用户个人信息
       description: |
-        可用该方法修改密码以及个人信息<br>
-        如果两项共同使用，修改密码失败时将不会修改个人信息<br>
+        可用该方法修改密码以及个人信息<br/>
+        如果两项共同使用，修改密码失败时将不会修改个人信息<br/>
       requestBody:
         content:
           'application/json':
@@ -447,7 +449,7 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_[value] - 无效参数<br>
+                      invalid_[value] - 无效参数<br/>
                     example: 'invalid_avatar'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -519,6 +521,265 @@ paths:
                     example: 'already_attend'
         '401':
           $ref: '#/components/responses/401NotLoginError'
+  /users/history:
+    get:
+      tags: [Users]
+      summary: 获取用户搜索记录
+      description: |
+        获取当前用户的搜索记录
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: 搜索记录
+                    items:
+                      type: string
+                      example: '吃东西'
+        '400':
+          description: 获取失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_[value] - 无效参数<br/>
+                    example: 'invalid_page'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+    delete:
+      tags: [Users]
+      summary: 清空用户搜索记录
+      description: |
+        清空当前用户搜索记录
+      responses:
+        '200':
+          description: 清空成功
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+  /users:
+    get:
+      tags: [Users]
+      summary: 搜索用户
+      description: |
+        使用关键字搜索用户
+        - name: key
+          in: query
+          required: true
+          description: 搜索关键字
+          schema:
+            type: string
+            example: '秀秀'
+        - name: page
+          in: query
+          required: true
+          description: |
+            获取列表页面，从1开始计数
+          schema:
+            type: number
+            example: 1
+        - name: size
+          in: query
+          required: true
+          description: |
+            每页获取的内容数量
+          schema:
+            type: number
+            example: 10
+      responses:
+        '200':
+          description: 搜索成功
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  pages:
+                    type: integer
+                    description: 总页数
+                    example: 12
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserInfo'
+        '400':
+          description: 搜索失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_[value] - 无效参数<br/>
+                    example: 'invalid_page'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+
+  /users/follower/{user_id}:
+    get:
+      tags: [Relation]
+      summary: 获取用户粉丝列表
+      description: |
+        获取指定用户得粉丝列表
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: |
+            用户ID，当用户ID为`me`的时候为当前登陆用户ID
+          schema:
+            type: string
+            example: 'me'
+        - name: page
+          in: query
+          required: true
+          description: |
+            获取列表页面，从1开始计数
+          schema:
+            type: number
+            example: 1
+        - name: size
+          in: query
+          required: true
+          description: |
+            每页获取的内容数量
+          schema:
+            type: number
+            example: 10
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  pages:
+                    type: integer
+                    description: 总页数
+                    example: 12
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserBaseInfo'
+        '400':
+          description: 获取失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_[value] - 无效参数<br/>
+                    example: 'invalid_page'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+  /users/following/{user_id}:
+    get:
+      tags: [Relation]
+      summary: 获取用户关注人列表
+      description: |
+        获取指定用户关注人列表
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: |
+            用户ID，当用户ID为`me`的时候为当前登陆用户ID
+          schema:
+            type: string
+            example: 'me'
+        - name: page
+          in: query
+          required: true
+          description: |
+            获取列表页面，从1开始计数
+          schema:
+            type: number
+            example: 1
+        - name: size
+          in: query
+          required: true
+          description: |
+            每页获取的内容数量
+          schema:
+            type: number
+            example: 10
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  pages:
+                    type: integer
+                    description: 总页数
+                    example: 12
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserBaseInfo'
+        '400':
+          description: 获取失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_[value] - 无效参数<br/>
+                    example: 'invalid_page'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+    post:
+      tags: [Relation]
+      summary: 关注指定用户
+      description: |
+        为当前用户关注指定用户
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: |
+            关注的用户ID
+          schema:
+            type: string
+            example: 'me'
+      responses:
+        '200':
+          description: 关注成功
+        '400':
+          description: 关注失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_[value] - 无效参数<br/>
+                      faked_user      - 用户不存在<br/>
+                      exist_user      - 用户已关注<br/>
+                    example: 'invalid_page'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
 
   /certification:
     get:
@@ -534,7 +795,7 @@ paths:
             获取列表页面，从1开始计数
           schema:
             type: number
-            example: '1'
+            example: 1
         - name: size
           in: query
           required: true
@@ -542,7 +803,7 @@ paths:
             每页获取的内容数量
           schema:
             type: number
-            example: '10'
+            example: 10
         - name: type
           in: query
           required: false
@@ -577,7 +838,7 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_[value] - 无效参数<br>
+                      invalid_[value] - 无效参数<br/>
                     example: 'invalid_type'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -837,7 +1098,7 @@ paths:
       tags: [Tasks]
       summary: 获取所有任务列表
       description: |
-        分页获取所有任务列表
+        分页获取所有任务列表， 若
       parameters:
         - name: page
           in: query
@@ -846,22 +1107,23 @@ paths:
             获取列表页面，从1开始计数
           schema:
             type: number
-            example: '1'
+            example: 1
         - name: size
           in: query
           required: true
           description: |
-            每页获取的内容数量
+            每页获取的内容数量[仅当sort!=user时生效]
           schema:
             type: number
-            example: '10'
+            example: 10
         - name: sort
           in: query
           required: false
           description: |
-            列表顺序， 默认按时间顺序<br/>
-            hot - 热门<br/>
-            new - 最新<br/>
+            列表顺序， 默认按时间顺序[new]<br/>
+            user  - 用户个性化信息流[此状态下不能筛选]<br/>
+            hot   - 热门<br/>
+            new   - 最新<br/>
           schema:
             type: string
             example: 'hot'
@@ -882,6 +1144,7 @@ paths:
           required: false
           description: |
             筛选任务状态，多个以逗号分隔<br/>
+            默认搜索状态为[wait, run]<br/>
             all      - 所有<br/>
             draft    - 草稿(仅本人可以查询)<br/>
             run      - 执行中（人数已满）<br/>
@@ -904,11 +1167,21 @@ paths:
           schema:
             type: string
             example: 'money'
+        - name: user
+          in: query
+          required: false
+          description: |
+            过滤用户<br/>
+            certificaion - 仅显示已认证用户<br/>
+            credit       - 仅显示高信用(高于平均水平)用户<br/>
+          schema:
+            type: string
+            example: 'credit'
         - name: keyword
           in: query
           required: false
           description: |
-            关键词搜索，对任务名称和内容进行搜索
+            关键词搜索，对任务名称和内容进行搜索<br/>
           schema:
             type: string
             example: '秀秀'
@@ -938,12 +1211,12 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_sort    - 无效顺序<br>
-                      invalid_page    - 无效页数<br>
-                      invalid_size    - 无效内容数量<br>
-                      invalid_type    - 无效类型<br>
-                      invalid_status  - 无效状态<br>
-                      invalid_reward  - 无效酬劳类型<br>
+                      invalid_sort    - 无效顺序<br/>
+                      invalid_page    - 无效页数<br/>
+                      invalid_size    - 无效内容数量<br/>
+                      invalid_type    - 无效类型<br/>
+                      invalid_status  - 无效状态<br/>
+                      invalid_reward  - 无效酬劳类型<br/>
                     example: 'invalid_sort'
     post:
       tags: [Tasks]
@@ -1007,8 +1280,8 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_id    - 无效任务ID<br>
-                      faked_task    - 任务不存在<br>
+                      invalid_id    - 无效任务ID<br/>
+                      faked_task    - 任务不存在<br/>
                     example: 'faked_task'
     patch:
       tags: [Tasks]
@@ -1091,9 +1364,9 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_id        - 无效任务ID<br>
-                      faked_task        - 任务不存在<br>
-                      not_allow_status  - 当前任务状态不能分享[draft]<br>
+                      invalid_id        - 无效任务ID<br/>
+                      faked_task        - 任务不存在<br/>
+                      not_allow_status  - 当前任务状态不能分享[draft]<br/>
                     example: 'faked_task'
   /tasks/{task_id}/player:
     get:
@@ -1173,10 +1446,10 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_page      - 无效页数<br>
-                      invalid_size      - 无效内容数量<br>
-                      invalid_task_id   - 无效任务ID<br>
-                      faked_task        - 任务不存在<br>
+                      invalid_page      - 无效页数<br/>
+                      invalid_size      - 无效内容数量<br/>
+                      invalid_task_id   - 无效任务ID<br/>
+                      faked_task        - 任务不存在<br/>
                     example: 'invalid_size'
     post:
       tags: [Tasks]
@@ -1689,10 +1962,10 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_page      - 无效页数<br>
-                      invalid_size      - 无效内容数量<br>
-                      invalid_task_id   - 无效任务ID<br>
-                      faked_task        - 任务不存在<br>
+                      invalid_page      - 无效页数<br/>
+                      invalid_size      - 无效内容数量<br/>
+                      invalid_task_id   - 无效任务ID<br/>
+                      faked_task        - 任务不存在<br/>
                     example: 'invalid_size'
     post:
       tags: [Comments]
@@ -2164,8 +2437,8 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_page      - 无效页数<br>
-                      invalid_size      - 无效内容数量<br>
+                      invalid_page      - 无效页数<br/>
+                      invalid_size      - 无效内容数量<br/>
                       invalid_id     - 无效任务ID<br/>
                       faked_task     - 任务不存在<br/>
                     example: 'faked_task'
@@ -2234,7 +2507,7 @@ paths:
             获取列表页面，从1开始计数
           schema:
             type: number
-            example: '1'
+            example: 1
         - name: size
           in: query
           required: true
@@ -2242,7 +2515,7 @@ paths:
             每页获取的内容数量
           schema:
             type: number
-            example: '10'
+            example: 10
       responses:
         '200':
           description: 获取成功
@@ -2269,9 +2542,9 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_page  - 无效页数<br>
-                      invalid_size  - 无效内容数量<br>
-                      faked_users   - 用户不存在<br>
+                      invalid_page  - 无效页数<br/>
+                      invalid_size  - 无效内容数量<br/>
+                      faked_users   - 用户不存在<br/>
                     example: 'faked_users'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -2374,8 +2647,8 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_page   - 无效页数<br>
-                      invalid_size   - 无效内容数量<br>
+                      invalid_page   - 无效页数<br/>
+                      invalid_size   - 无效内容数量<br/>
                       invalid_id     - 无效会话ID<br/>
                       faked_message  - 会话不存在<br/>
                     example: 'invalid_id'
@@ -2470,9 +2743,9 @@ paths:
         '403':
           $ref: '#/components/responses/403PermissionDenyError'
 
-  /logs:
+  /utils/logs:
     get:
-      tags: [Logs]
+      tags: [Utils]
       summary: 查询日志
       description: |
         只有管理员或者当前用户才能查看指定用户日志
@@ -2484,7 +2757,7 @@ paths:
             获取列表页面，从1开始计数
           schema:
             type: number
-            example: '1'
+            example: 1
         - name: size
           in: query
           required: true
@@ -2492,7 +2765,7 @@ paths:
             每页获取的内容数量
           schema:
             type: number
-            example: '10'
+            example: 10
         - name: user
           in: query
           required: false
@@ -2559,13 +2832,107 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_[参数名]    - 无效参数<br>
-                      not_allow_date     - 结束时间不能小于开始时间<br>
+                      invalid_[参数名]    - 无效参数<br/>
+                      not_allow_date     - 结束时间不能小于开始时间<br/>
                     example: 'faked_users'
         '401':
           $ref: '#/components/responses/401NotLoginError'
         '403':
           $ref: '#/components/responses/403PermissionDenyError'
+  /utils/tags:
+    get:
+      tags: [Utils]
+      summary: 获取任务推荐标签
+      description: |
+        结合全部以及个人历史数据，加上分析任务标题和内容，生成推荐标签
+      parameters:
+        - name: title
+          in: query
+          required: true
+          description: |
+            任务标题
+          schema:
+            type: string
+            example: 呵呵
+        - name: content
+          in: query
+          required: true
+          description: |
+            任务内容
+          schema:
+            type: string
+            example: 哈哈
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: 推荐标签
+                    items:
+                      type: string
+                      example: '吃东西'
+        '400':
+          description: 获取失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_[value] - 无效参数<br/>
+                    example: 'invalid_page'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+  /utils/search:
+    get:
+      tags: [Utils]
+      summary: 获取搜索提示
+      description: |
+        获取搜索补全提示
+      parameters:
+        - name: key
+          in: query
+          required: true
+          description: |
+            搜索内容
+          schema:
+            type: string
+            example: 吃
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: 提示内容
+                    items:
+                      type: string
+                      example: '吃东西'
+        '400':
+          description: 获取失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      invalid_[value] - 无效参数<br/>
+                    example: 'invalid_page'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
 
   /article:
     get:
@@ -2581,7 +2948,7 @@ paths:
             获取列表页面，从1开始计数
           schema:
             type: number
-            example: '1'
+            example: 1
         - name: size
           in: query
           required: true
@@ -2589,7 +2956,7 @@ paths:
             每页获取的内容数量
           schema:
             type: number
-            example: '10'
+            example: 10
       responses:
         '200':
           description: 获取成功
@@ -2616,8 +2983,8 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_sort    - 无效顺序<br>
-                      invalid_page    - 无效页数<br>
+                      invalid_sort    - 无效顺序<br/>
+                      invalid_page    - 无效页数<br/>
                     example: 'invalid_sort'
     post:
       tags: [Article]
@@ -2744,7 +3111,7 @@ components:
               error:
                 type: string
                 description: |
-                  permission_deny - 权限不足<br>
+                  permission_deny - 权限不足<br/>
                 example: 'permission_deny'
   schemas:
     SessionRequest:
@@ -3239,6 +3606,14 @@ components:
           type: number
           description: 信誉
           example: 675
+        follower_count:
+          type: number
+          description: 粉丝数量
+          example: 675
+        following_count:
+          type: number
+          description: 关注人数量
+          example: 675
         type:
           type: string
           description: |
@@ -3289,7 +3664,7 @@ components:
         bio:
           type: string
           description: |
-            个人简介，最多128位<br>
+            个人简介，最多128位<br/>
           example: 'Hello, world!'
         school:
           type: string
@@ -3302,19 +3677,19 @@ components:
         gender:
           type: string
           description: |
-            性别<br>
-            other - 未知<br>
-            man   - 男<br>
-            woman - 女<br>
+            性别<br/>
+            other - 未知<br/>
+            man   - 男<br/>
+            woman - 女<br/>
         location:
           type: string
           description: |
-            详细地址，最多64位<br>
+            详细地址，最多64位<br/>
           example: '中山大学东校区至善园2号'
         nickname:
           type: string
           description: |
-            昵称，最多32位<br>
+            昵称，最多32位<br/>
           example: '未知矩阵'
         phone:
           type: string
@@ -3336,7 +3711,7 @@ components:
         bio:
           type: string
           description: |
-            个人简介，最多128位<br>
+            个人简介，最多128位<br/>
           example: 'Hello, world!'
         school:
           type: string
@@ -3349,19 +3724,19 @@ components:
         gender:
           type: string
           description: |
-            性别<br>
-            other - 未知<br>
-            man   - 男<br>
-            woman - 女<br>
+            性别<br/>
+            other - 未知<br/>
+            man   - 男<br/>
+            woman - 女<br/>
         location:
           type: string
           description: |
-            详细地址，最多64位<br>
+            详细地址，最多64位<br/>
           example: '中山大学东校区至善园2号'
         nickname:
           type: string
           description: |
-            昵称，最多32位<br>
+            昵称，最多32位<br/>
           example: '未知矩阵'
         phone:
           type: string
