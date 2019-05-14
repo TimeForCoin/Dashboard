@@ -65,19 +65,30 @@ paths:
         '200':
           description: 退出登陆成功
   /session/violet:
-    post:
+    get:
       tags: [Session]
       summary: 使用 Code 登陆
       operationId: postLoginCode
       description: |
         使用 Violet 返回的数据进行 OAuth2 授权登陆
         如果当前已经使用微信登陆，则自动绑定当前账号
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SessionRequest'
+      parameters:
+        - name: code
+          in: query
+          required: true
+          description: |
+            授权码，对于用户和客户端具有唯一性和时效性
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
+        - name: state
+          in: query
+          required: true
+          description: |
+            状态码，用于防止CSRF攻击
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
       responses:
         '201':
           description: 登陆成功
