@@ -3,7 +3,8 @@ servers:
   - description: TimeForCoin
     url: https://coin.xmatrix.studio/api/v1/
 info:
-  description: TimeForCoin API document
+  description: |
+    TimeForCoin API document<br/>
   version: '1.0.0'
   title: TimeForCoin API
   contact:
@@ -39,13 +40,13 @@ paths:
   /session:
     get:
       tags: [Session]
-      summary: 获取Violet登陆授权URL
+      summary: 获取 Violet 登陆授权 URL
       operationId: getLoginURL
       description: |
-        用于Web端获取跳转到Violet登陆的URL，该URL由后端实时生成，绑定当前会话，并具有时效性和唯一性
+        用于Web端获取跳转到 Violet 登陆的 URL，该 URL 由后端实时生成，绑定当前会话，并具有时效性和唯一性
       responses:
         '200':
-          description: 获取成功，返回登陆URL，前端应打开新窗口加载此URL
+          description: 获取成功，返回登陆 URL，前端应打开新窗口加载此 URL
           content:
             application/json:
               schema:
@@ -66,10 +67,10 @@ paths:
   /session/violet:
     post:
       tags: [Session]
-      summary: 使用Code登陆
+      summary: 使用 Code 登陆
       operationId: postLoginCode
       description: |
-        使用Violet返回的数据进行Oauth2授权登陆，该接口应由Violet直接调用
+        使用 Violet 返回的数据进行 OAuth2 授权登陆
         如果当前已经使用微信登陆，则自动绑定当前账号
       requestBody:
         required: true
@@ -80,8 +81,8 @@ paths:
       responses:
         '201':
           description: 登陆成功
-        '401':
-          description: 参数不合法
+        '400':
+          $ref: '#/components/responses/400InvalidValue'
         '403':
           description: 登陆失败
           content:
@@ -94,10 +95,8 @@ paths:
                   message:
                     type: string
                     description: |
-                      illegal_state - 状态码无效<br/>
-                      illegal_code  - 授权码无效<br/>
                       exist_wechat  - 当前账号已绑定微信<br/>
-                    example: illegal_state
+                    example: exist_wechat
   /session/wechat:
     get:
       tags: [Session]
@@ -145,8 +144,8 @@ paths:
       responses:
         '201':
           description: 登陆成功
-        '401':
-          description: 参数不合法
+        '400':
+          $ref: '#/components/responses/400InvalidValue'
         '403':
           description: 登陆失败
           content:
@@ -159,11 +158,10 @@ paths:
                   message:
                     type: string
                     description: |
-                      illegal_[value] - 参数无效<br/>
                       timeout_token   - Token已过期<br/>
                       error_token     - Token不正确<br/>
                       exist_wechat    - 当前账号已绑定微信<br/>
-                    example: illegal_state
+                    example: invalid_state
     delete:
       tags: [Session]
       summary: 解除微信绑定
@@ -204,7 +202,7 @@ paths:
                   name:
                     type: string
                     description: 用户名
-                    example: 'xmatrixstudio'
+                    example: 'XMatrixStudio'
                   createTime:
                     type: string
                     description: 用户注册的时间
@@ -214,6 +212,10 @@ paths:
                   data:
                     $ref: '#/components/schemas/UserData'
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+        '403':
           description: 获取用户失败
           content:
             'application/json':
@@ -225,8 +227,6 @@ paths:
                     description: |
                       faked_users   - 用户不存在<br/>
                     example: 'faked_users'
-        '401':
-          $ref: '#/components/responses/401NotLoginError'
   /users/task/{user_id}:
     get:
       tags: [Users]
@@ -288,13 +288,15 @@ paths:
               schema:
                 type: object
                 properties:
-                  pages:
+                  pagination:
                     type: integer
                     description: 总页数
                     example: 12
                   data:
                     $ref: '#/components/schemas/Players'
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 获取失败
           content:
             'application/json':
@@ -304,9 +306,6 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_page      - 无效页数<br/>
-                      invalid_size      - 无效内容数量<br/>
-                      invalid_user_id   - 无效用户ID<br/>
                       faked_user        - 用户不存在<br/>
                     example: 'invalid_page'
   /users/collect/{user_id}:
@@ -397,31 +396,14 @@ paths:
               schema:
                 type: object
                 properties:
-                  pages:
-                    type: integer
-                    description: 总页数
-                    example: 12
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/TaskInfo'
         '400':
-          description: 获取失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_sort - 无效顺序<br/>
-                      invalid_page - 无效页数<br/>
-                      invalid_size - 无效内容数量<br/>
-                      invalid_type - 无效类型<br/>
-                      invalid_status - 无效状态<br/>
-                      invalid_reward - 无效酬劳类型<br/>
-                    example: 'invalid_sort'
+          $ref: '#/components/responses/400InvalidValue'
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /users/info:
@@ -440,17 +422,7 @@ paths:
         '200':
           description: 修改成功
         '400':
-          description: 修改失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_[value] - 无效参数<br/>
-                    example: 'invalid_avatar'
+          $ref: '#/components/responses/400InvalidValue'
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /users/type:
@@ -481,6 +453,10 @@ paths:
         '200':
           description: 修改成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+        '403':
           description: 修改失败
           content:
             'application/json':
@@ -490,14 +466,10 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_[value] - 无效参数<br/>
                       faked_users     - 用户不存在<br/>
                       not_allow_type  - 不允许调整的类型<br/>
-                    example: 'invalid_type'
-        '401':
-          $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
+                      permission_deny - 权限不足<br/>
+                    example: 'faked_users'
   /users/attend:
     post:
       tags: [Users]
@@ -507,7 +479,9 @@ paths:
       responses:
         '201':
           description: 签到成功
-        '400':
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+        '403':
           description: 签到失败
           content:
             'application/json':
@@ -519,8 +493,6 @@ paths:
                     description: |
                       already_attend  - 今日已经签到
                     example: 'already_attend'
-        '401':
-          $ref: '#/components/responses/401NotLoginError'
   /users/history:
     get:
       tags: [Users]
@@ -541,18 +513,6 @@ paths:
                     items:
                       type: string
                       example: '吃东西'
-        '400':
-          description: 获取失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_[value] - 无效参数<br/>
-                    example: 'invalid_page'
         '401':
           $ref: '#/components/responses/401NotLoginError'
     delete:
@@ -602,26 +562,14 @@ paths:
               schema:
                 type: object
                 properties:
-                  pages:
-                    type: integer
-                    description: 总页数
-                    example: 12
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/UserInfo'
         '400':
-          description: 搜索失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_[value] - 无效参数<br/>
-                    example: 'invalid_page'
+          $ref: '#/components/responses/400InvalidValue'
         '401':
           $ref: '#/components/responses/401NotLoginError'
 
@@ -664,26 +612,14 @@ paths:
               schema:
                 type: object
                 properties:
-                  pages:
-                    type: integer
-                    description: 总页数
-                    example: 12
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/UserBaseInfo'
         '400':
-          description: 获取失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_[value] - 无效参数<br/>
-                    example: 'invalid_page'
+          $ref: '#/components/responses/400InvalidValue'
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /users/following/{user_id}:
@@ -725,26 +661,14 @@ paths:
               schema:
                 type: object
                 properties:
-                  pages:
-                    type: integer
-                    description: 总页数
-                    example: 12
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/UserBaseInfo'
         '400':
-          description: 获取失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_[value] - 无效参数<br/>
-                    example: 'invalid_page'
+          $ref: '#/components/responses/400InvalidValue'
         '401':
           $ref: '#/components/responses/401NotLoginError'
     post:
@@ -765,6 +689,8 @@ paths:
         '200':
           description: 关注成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 关注失败
           content:
             'application/json':
@@ -774,7 +700,6 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_[value] - 无效参数<br/>
                       faked_user      - 用户不存在<br/>
                       exist_user      - 用户已关注<br/>
                     example: 'invalid_page'
@@ -822,24 +747,12 @@ paths:
               schema:
                 type: object
                 properties:
-                  pages:
-                    type: integer
-                    description: 总页数
-                    example: 12
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
                   data:
-                    $ref: '#/components/schemas/CertificaitonData'
+                    $ref: '#/components/schemas/CertificationData'
         '400':
-          description: 获取失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_[value] - 无效参数<br/>
-                    example: 'invalid_type'
+          $ref: '#/components/responses/400InvalidValue'
         '401':
           $ref: '#/components/responses/401NotLoginError'
         '403':
@@ -885,6 +798,8 @@ paths:
         '201':
           description: 申请认证成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 发布任务失败
           content:
             'application/json':
@@ -894,10 +809,9 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_[value]   - 无效参数<br/>
                       exist_certification - 当前已存在认证<br/>
-                      limit_email       - 发送邮件太频繁<br/>
-                      exist_email       - 该邮箱已被认证<br/>
+                      limit_email         - 发送邮件太频繁<br/>
+                      exist_email         - 该邮箱已被认证<br/>
                     example: 'invalid_data'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -910,7 +824,7 @@ paths:
       responses:
         '201':
           description: 发送成功
-        '400':
+        '403':
           description: 发送失败
           content:
             'application/json':
@@ -921,8 +835,8 @@ paths:
                     type: string
                     description: |
                       faked_email     - 当前不存在待验证的邮箱<br/>
-                      exist_email  - 该邮箱已被认证<br/>
-                      limit_email  - 发送邮件过于频繁<br/>
+                      exist_email     - 该邮箱已被认证<br/>
+                      limit_email     - 发送邮件过于频繁<br/>
                     example: 'exist_email'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -967,17 +881,7 @@ paths:
         '201':
           description: 修改成功
         '400':
-          description: 修改失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_[value]       - 无效参数<br/>
-                    example: 'invalid_data'
+          $ref: '#/components/responses/400InvalidValue'
         '401':
           $ref: '#/components/responses/401NotLoginError'
         '403':
@@ -996,10 +900,8 @@ paths:
               schema:
                 type: object
                 properties:
-                  pages:
-                    type: integer
-                    description: 总页数
-                    example: 12
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
                   data:
                     type: array
                     description: 自动认证邮箱后缀
@@ -1041,6 +943,8 @@ paths:
         '201':
           description: 添加成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 添加失败
           content:
             'application/json':
@@ -1050,13 +954,11 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_[value]  - 无效参数<br/>
+                      permission_deny - 权限不足<br/>
                       exist_email  - 已存在后缀<br/>
                     example: 'exist_email'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
   /certification/auto/{key}:
     delete:
       tags: [Certification]
@@ -1076,6 +978,8 @@ paths:
         '201':
           description: 删除成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 删除失败
           content:
             'application/json':
@@ -1087,11 +991,10 @@ paths:
                     description: |
                       invalid_key  - 无效后缀<br/>
                       faked_email  - 不存在该后缀<br/>
+                      permission_deny - 权限不足<br/>
                     example: 'exist_email'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
 
   /tasks:
     get:
@@ -1193,31 +1096,14 @@ paths:
               schema:
                 type: object
                 properties:
-                  pages:
-                    type: integer
-                    description: 总页数
-                    example: 12
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/TaskInfo'
         '400':
-          description: 获取失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_sort    - 无效顺序<br/>
-                      invalid_page    - 无效页数<br/>
-                      invalid_size    - 无效内容数量<br/>
-                      invalid_type    - 无效类型<br/>
-                      invalid_status  - 无效状态<br/>
-                      invalid_reward  - 无效酬劳类型<br/>
-                    example: 'invalid_sort'
+          $ref: '#/components/responses/400InvalidValue'
     post:
       tags: [Tasks]
       summary: 创建任务
@@ -1231,6 +1117,8 @@ paths:
         '201':
           description: 发布任务成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 发布任务失败
           content:
             'application/json':
@@ -1240,7 +1128,6 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_[value]   - 无效参数<br/>
                       not_allow_max     - 不允许同时限制参与与完成人员
                     example: 'invalid_title'
         '401':
@@ -1271,6 +1158,8 @@ paths:
                   data:
                     $ref: '#/components/schemas/TaskInfo'
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 获取失败
           content:
             'application/json':
@@ -1280,7 +1169,6 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_id    - 无效任务ID<br/>
                       faked_task    - 任务不存在<br/>
                     example: 'faked_task'
     patch:
@@ -1307,6 +1195,8 @@ paths:
         '200':
           description: 修改任务成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 修改任务失败
           content:
             'application/json':
@@ -1316,18 +1206,16 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_[value]       - 无效参数<br/>
+                      permission_deny       - 权限不足<br/>
                       not_allow_edit        - 该状态下不允许修改<br/>
                       not_allow_date        - 不允许的时间<br/>
                       not_allow_max_player  - 不允许的参与用户上限<br/>
                       not_allow_max_finish  - 不允许的完成用户上限<br/>
                       not_allow_status      - 不允许的状态变换<br/>
                       not_allow_reward_value- 不允许降低酬劳数值<br/>
-                    example: 'invalid_title'
+                    example: 'not_allow_max_finish'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
   /tasks/{task_id}/wechat:
     get:
       tags: [Tasks]
@@ -1355,6 +1243,8 @@ paths:
                     description: 图片的Base64字符串
                     type: string
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 获取失败
           content:
             'application/json':
@@ -1364,7 +1254,6 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_id        - 无效任务ID<br/>
                       faked_task        - 任务不存在<br/>
                       not_allow_status  - 当前任务状态不能分享[draft]<br/>
                     example: 'faked_task'
@@ -1428,15 +1317,15 @@ paths:
               schema:
                 type: object
                 properties:
-                  pages:
-                    type: integer
-                    description: 总页数
-                    example: 12
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/Players'
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 获取失败
           content:
             'application/json':
@@ -1446,11 +1335,8 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_page      - 无效页数<br/>
-                      invalid_size      - 无效内容数量<br/>
-                      invalid_task_id   - 无效任务ID<br/>
                       faked_task        - 任务不存在<br/>
-                    example: 'invalid_size'
+                    example: 'faked_task'
     post:
       tags: [Tasks]
       summary: 成为任务参与人员（领取任务）
@@ -1476,10 +1362,12 @@ paths:
                   result:
                     type: string
                     description: |
-                      accpet   - 已领取任务<br/>
+                      accept   - 已领取任务<br/>
                       wait     - 等待审核<br/>
-                    example: 'accpet'
+                    example: 'accept'
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 参加失败
           content:
             'application/json':
@@ -1489,10 +1377,9 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_id   - 无效任务ID<br/>
                       faked_task    - 任务不存在<br/>
-                      exist_player - 你已经参加了，不要重复参加了呀</>
-                    example: 'invalid_id'
+                      exist_player  - 你已经参加了，不要重复参加了呀</br>
+                    example: 'faked_task'
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /tasks/{task_id}/player/{user_id}:
@@ -1564,6 +1451,8 @@ paths:
         '200':
           description: 修改成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 修改失败
           content:
             'application/json':
@@ -1573,20 +1462,12 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_status    - 无效页数<br/>
-                      invalid_note      - 无效内容数量<br/>
-                      invalid_accept    - 无效的接受<br/>
-                      invalid_degree    - 无效的完成度<br/>
-                      invalid_remark    - 无效的评价<br/>
-                      invalid_score     - 无效的评分<br/>
-                      invalid_feedback  - 无效的回馈<br/>
+                      permission_deny   - 权限不足<br/>
                       faked_task        - 任务不存在<br/>
                       faked_user        - 用户不存在<br/>
                     example: 'invalid_size'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
     delete:
       tags: [Tasks]
       summary: 退出任务
@@ -1613,6 +1494,8 @@ paths:
         '200':
           description: 退出成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 退出失败
           content:
             'application/json':
@@ -1622,16 +1505,13 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_id        - 无效任务ID<br/>
+                      permission_deny   - 权限不足<br/>
                       faked_task        - 任务不存在<br/>
-                      invalid_id        - 无效任务ID<br/>
                       faked_user        - 用户不存在活动中<br/>
                       not_allow_status  - 当前任务状态不允许该状态<br/>
-                    example: 'invalid_id'
+                    example: 'faked_task'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
   /tasks/{task_id}/view:
     post:
       tags: [Tasks]
@@ -1650,6 +1530,8 @@ paths:
         '200':
           description: 阅读量+1
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 添加阅读失败
           content:
             'application/json':
@@ -1659,9 +1541,8 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_task_id       - 无效任务ID<br/>
                       faked_task_id         - 任务不存在<br/>
-                    example: 'invalid_task_id'
+                    example: 'faked_task_id'
   /tasks/{task_id}/collect:
     post:
       tags: [Tasks]
@@ -1680,6 +1561,8 @@ paths:
         '201':
           description: 收藏成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 收藏失败
           content:
             'application/json':
@@ -1689,10 +1572,9 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_id   - 无效任务ID<br/>
                       faked_task    - 任务不存在<br/>
-                      exist_task   - 任务已经收藏，不能重复收藏</>
-                    example: 'invalid_type'
+                      exist_task    - 任务已经收藏，不能重复收藏</>
+                    example: 'faked_task'
         '401':
           $ref: '#/components/responses/401NotLoginError'
     delete:
@@ -1712,6 +1594,8 @@ paths:
         '200':
           description: 取消收藏成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 取消收藏失败
           content:
             'application/json':
@@ -1721,9 +1605,8 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_id   - 无效任务ID<br/>
                       faked_task    - 任务不存在<br/>
-                    example: 'invalid_type'
+                    example: 'faked_task'
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /tasks/{task_id}/like:
@@ -1744,6 +1627,8 @@ paths:
         '201':
           description: 点赞成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 点赞失败
           content:
             'application/json':
@@ -1774,6 +1659,8 @@ paths:
         '200':
           description: 取消点赞成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 取消点赞失败
           content:
             'application/json':
@@ -1784,7 +1671,7 @@ paths:
                     type: string
                     description: |
                       faked_like   - 你根本没有点赞，取消什么</>
-                    example: 'exist_like'
+                    example: 'faked_like'
         '401':
           $ref: '#/components/responses/401NotLoginError'
 
@@ -1818,6 +1705,8 @@ paths:
                       上传的附件ID
                     example: '5c9ecbbba4a3f52e3195fa68'
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 添加附件失败
           content:
             'application/json':
@@ -1827,16 +1716,14 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_task_id       - 无效任务ID<br/>
-                      invalid_attachment_id - 无效附件ID<br/>
+                      permission_deny       - 权限不足<br/>
+                      faked_attachment      - 附件不存在<br/>
                       faked_task_id         - 任务不存在<br/>
                       faked_attachment_id   - 附件不存在<br/>
                       not_allow_status      - 当前任务状态不允许修改<br/>
                     example: 'invalid_task_id'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
   /file/{id}:
     get:
       tags: [File]
@@ -1854,6 +1741,8 @@ paths:
       responses:
         '200':
           description: 下载文件
+        '400':
+          $ref: '#/components/responses/400InvalidValue'
         '401':
           $ref: '#/components/responses/401NotLoginError'
         '403':
@@ -1880,17 +1769,7 @@ paths:
         '200':
           description: 修改文件信息成功
         '400':
-          description: 修改文件信息失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_[value]       - 无效参数<br/>
-                    example: 'invalid_name'
+          $ref: '#/components/responses/400InvalidValue'
         '401':
           $ref: '#/components/responses/401NotLoginError'
         '403':
@@ -1944,15 +1823,15 @@ paths:
               schema:
                 type: object
                 properties:
-                  pages:
-                    type: integer
-                    description: 总页数
-                    example: 12
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/CommentData'
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 获取失败
           content:
             'application/json':
@@ -1962,9 +1841,6 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_page      - 无效页数<br/>
-                      invalid_size      - 无效内容数量<br/>
-                      invalid_task_id   - 无效任务ID<br/>
                       faked_task        - 任务不存在<br/>
                     example: 'invalid_size'
     post:
@@ -2001,6 +1877,8 @@ paths:
         '201':
           description: 评论成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 评论失败
           content:
             'application/json':
@@ -2010,11 +1888,8 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_content_id       - 无效内容ID<br/>
-                      invalid_type             - 无效类型<br/>
-                      invalid_content          - 无效评论类型<br/>
-                      faked_content_id         - 被评论内容不存在<br/>
-                    example: 'invalid_content_id'
+                      faked_content         - 被评论内容不存在<br/>
+                    example: 'faked_content'
         '401':
           $ref: '#/components/responses/401NotLoginError'
     delete:
@@ -2034,6 +1909,8 @@ paths:
         '200':
           description: 删除评论成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 删除评论失败
           content:
             'application/json':
@@ -2043,13 +1920,11 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_id     - 无效评论ID<br/>
-                      faked_comment  - 评论不存在<br/>
+                      permission_deny - 权限不足<br/>
+                      faked_comment   - 评论不存在<br/>
                     example: 'exist_like'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
   /comments/{comment_id}/like:
     post:
       tags: [Comments]
@@ -2068,6 +1943,8 @@ paths:
         '200':
           description: 点赞成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 点赞失败
           content:
             'application/json':
@@ -2098,6 +1975,8 @@ paths:
         '200':
           description: 取消点赞成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 取消点赞失败
           content:
             'application/json':
@@ -2140,19 +2019,7 @@ paths:
         '201':
           description: 新建问卷成功
         '400':
-          description: 新建问卷失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_title         - 无效标题<br/>
-                      invalid_description   - 无效描述<br/>
-                      invalid_anonymous     - 无效匿名选项<br/>
-                    example: 'invalid_title'
+          $ref: '#/components/responses/400InvalidValue'
         '401':
           $ref: '#/components/responses/401NotLoginError'
         '403':
@@ -2205,6 +2072,8 @@ paths:
                     description: 当前回答数量
                     example: 213
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 获取问题信息失败
           content:
             'application/json':
@@ -2214,7 +2083,6 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_id     - 无效任务ID<br/>
                       faked_task     - 任务不存在<br/>
                     example: 'faked_task'
         '401':
@@ -2254,6 +2122,8 @@ paths:
         '200':
           description: 修改问卷成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 修改问卷失败
           content:
             'application/json':
@@ -2263,15 +2133,11 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_title         - 无效标题<br/>
-                      invalid_description   - 无效描述<br/>
-                      invalid_anonymous     - 无效匿名选项<br/>
+                      permission_deny       - 权限不足<br/>
                       not_allow_status      - 此状态不允许修改问卷<br/>
                     example: 'invalid_title'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
   /questionnaires/{task_id}/question:
     get:
       tags: [Questionnaires]
@@ -2297,8 +2163,9 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/QuestionData'
-
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 获取问题失败
           content:
             'application/json':
@@ -2308,13 +2175,11 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_id     - 无效任务ID<br/>
-                      faked_task     - 任务不存在<br/>
+                      permission_deny - 权限不足<br/>
+                      faked_task      - 任务不存在<br/>
                     example: 'faked_task'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
     post:
       tags: [Questionnaires]
       summary: 修改问卷问题
@@ -2343,6 +2208,8 @@ paths:
         '200':
           description: 修改问题成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 修改问题失败
           content:
             'application/json':
@@ -2352,16 +2219,14 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_[name]          - 无效的问题参数<br/>
                       not_allow_status        - 此状态不允许修改问卷<br/>
                       not_allow_index         - 题号不符合顺序或存在重复<br/>
                       not_allow_max_choose    - 不允许的最大选项数(2-20)<br/>
                       not_allow               - 题目不符合规则
+                      permission_deny         - 权限不足<br/>
                     example: 'not_allow_index'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
   /questionnaires/{task_id}/answer:
     get:
       tags: [Questionnaires]
@@ -2428,6 +2293,8 @@ paths:
                           description: 提交IP
                           example: '11.32.12.32'
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 获取数据失败
           content:
             'application/json':
@@ -2437,15 +2304,11 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_page      - 无效页数<br/>
-                      invalid_size      - 无效内容数量<br/>
-                      invalid_id     - 无效任务ID<br/>
-                      faked_task     - 任务不存在<br/>
+                      permission_deny - 权限不足<br/>
+                      faked_task      - 任务不存在<br/>
                     example: 'faked_task'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
     post:
       tags: [Questionnaires]
       summary: 添加回答
@@ -2474,6 +2337,8 @@ paths:
         '201':
           description: 回答问题成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 回答问题失败
           content:
             'application/json':
@@ -2483,15 +2348,13 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_[name]          - 无效的问题参数<br/>
+                      permission_deny         - 权限不足<br/>
                       invalid_answer          - 无效的问题回答(不完整等)<br/>
                       not_allow_status        - 此状态不允许回答问卷<br/>
                       not_allow_index         - 题号不符合顺序或存在重复<br/>
                     example: 'not_allow_index'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
 
   /messages:
     get:
@@ -2533,6 +2396,8 @@ paths:
                     items:
                       $ref: '#/components/schemas/MessageSession'
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 获取用户失败
           content:
             'application/json':
@@ -2542,8 +2407,6 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_page  - 无效页数<br/>
-                      invalid_size  - 无效内容数量<br/>
                       faked_users   - 用户不存在<br/>
                     example: 'faked_users'
         '401':
@@ -2574,17 +2437,7 @@ paths:
         '201':
           description: 发送消息成功
         '400':
-          description: 发送消息失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_[value]     - 无效参数<br/>
-                    example: 'invalid_title'
+          $ref: '#/components/responses/400InvalidValue'
         '401':
           $ref: '#/components/responses/401NotLoginError'
         '403':
@@ -2638,6 +2491,8 @@ paths:
                     items:
                       $ref: '#/components/schemas/MessageData'
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 获取用户失败
           content:
             'application/json':
@@ -2647,15 +2502,11 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_page   - 无效页数<br/>
-                      invalid_size   - 无效内容数量<br/>
-                      invalid_id     - 无效会话ID<br/>
-                      faked_message  - 会话不存在<br/>
+                      permission_deny - 权限不足<br/>
+                      faked_message   - 会话不存在<br/>
                     example: 'invalid_id'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
     patch:
       tags: [Messages]
       summary: 将会话标记为已读
@@ -2674,6 +2525,8 @@ paths:
         '200':
           description: 标记成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 标记失败
           content:
             'application/json':
@@ -2683,13 +2536,11 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_id     - 无效会话ID<br/>
-                      faked_message  - 会话不存在<br/>
+                      permission_deny - 权限不足<br/>
+                      faked_message   - 会话不存在<br/>
                     example: 'invalid_id'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
     post:
       tags: [Messages]
       summary: 发送消息
@@ -2724,6 +2575,8 @@ paths:
         '201':
           description: 发送消息成功
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 发送消息失败
           content:
             'application/json':
@@ -2733,15 +2586,11 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_id          - 无效会话ID<br/>
-                      invalid_about       - 无效相关ID<br/>
-                      invalid_content     - 无效内容<br/>
+                      permission_deny - 权限不足<br/>
                       faked_user          - 用户不存在<br/>
                     example: 'invalid_content_id'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
 
   /utils/logs:
     get:
@@ -2823,6 +2672,8 @@ paths:
                     items:
                       $ref: '#/components/schemas/LogItem'
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 获取用户失败
           content:
             'application/json':
@@ -2832,13 +2683,11 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_[参数名]    - 无效参数<br/>
+                      permission_deny    - 权限不足<br/>
                       not_allow_date     - 结束时间不能小于开始时间<br/>
                     example: 'faked_users'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
   /utils/tags:
     get:
       tags: [Utils]
@@ -2877,17 +2726,7 @@ paths:
                       type: string
                       example: '吃东西'
         '400':
-          description: 获取失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_[value] - 无效参数<br/>
-                    example: 'invalid_page'
+          $ref: '#/components/responses/400InvalidValue'
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /utils/search:
@@ -2920,17 +2759,7 @@ paths:
                       type: string
                       example: '吃东西'
         '400':
-          description: 获取失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_[value] - 无效参数<br/>
-                    example: 'invalid_page'
+          $ref: '#/components/responses/400InvalidValue'
         '401':
           $ref: '#/components/responses/401NotLoginError'
 
@@ -2965,27 +2794,14 @@ paths:
               schema:
                 type: object
                 properties:
-                  pages:
-                    type: integer
-                    description: 总页数
-                    example: 12
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/ArticleBaseInfo'
         '400':
-          description: 获取失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_sort    - 无效顺序<br/>
-                      invalid_page    - 无效页数<br/>
-                    example: 'invalid_sort'
+          $ref: '#/components/responses/400InvalidValue'
     post:
       tags: [Article]
       summary: 新建公告文章
@@ -2999,18 +2815,6 @@ paths:
       responses:
         '201':
           description: 新建公告成功
-        '400':
-          description: 新建公告失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_[value]       - 无效参数<br/>
-                    example: 'invalid_title'
         '401':
           $ref: '#/components/responses/401NotLoginError'
         '403':
@@ -3036,6 +2840,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ArticleInfo'
         '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
           description: 获取公告信息失败
           content:
             'application/json':
@@ -3045,7 +2851,6 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_id     - 无效公告ID<br/>
                       faked_article  - 公告不存在<br/>
                     example: 'faked_article'
     patch:
@@ -3070,17 +2875,7 @@ paths:
         '200':
           description: 修改公告成功
         '400':
-          description: 修改公告失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      invalid_[value]   - 无效参数<br/>
-                    example: 'invalid_title'
+          $ref: '#/components/responses/400InvalidValue'
         '401':
           $ref: '#/components/responses/401NotLoginError'
         '403':
@@ -3088,6 +2883,17 @@ paths:
 
 components:
   responses:
+    400InvalidValue:
+      description: 无效参数
+      content:
+        'application/json':
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: |
+                  invalid_[value] - 无效参数<br/>
     401NotLoginError:
       description: 未登录/登陆已过期
       content:
@@ -3095,12 +2901,12 @@ components:
           schema:
             type: object
             properties:
-              error:
+              message:
                 type: string
                 description: |
-                  invalid_token - 身份验证无效 <br/>
-                  timeout_token - 身份验证已过期 <br/>
-                example: 'invalid_token'
+                  invalid_session - 身份验证无效 <br/>
+                  timeout_session - 身份验证已过期 <br/>
+                example: 'invalid_session'
     403PermissionDenyError:
       description: 权限不足
       content:
@@ -3108,12 +2914,27 @@ components:
           schema:
             type: object
             properties:
-              error:
+              message:
                 type: string
                 description: |
                   permission_deny - 权限不足<br/>
                 example: 'permission_deny'
   schemas:
+    Pagination:
+      type: object
+      properties:
+        page:
+          description: 当前资源页码
+          type: integer
+          example: 1
+        size:
+          description: 每页资源数量
+          type: integer
+          example: 3
+        total:
+          description: 资源总数
+          type: integer
+          example: 10
     SessionRequest:
       type: object
       required:
@@ -3129,7 +2950,7 @@ components:
             状态码，用于防止CSRF攻击
           type: string
 
-    CertificaitonData:
+    CertificationData:
       type: object
       description: 认证数据
       properties:
@@ -3850,7 +3671,7 @@ components:
           description: |
             完成用户上限
           example: 30
-        auto_accpet:
+        auto_accept:
           type: boolean
           description: |
             是否自动同意领取任务
@@ -3959,7 +3780,7 @@ components:
           description: |
             完成用户上限，与上面的选项互斥
           example: 30
-        auto_accpet:
+        auto_accept:
           type: boolean
           description: |
             是否自动同意领取任务
