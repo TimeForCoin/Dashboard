@@ -64,7 +64,7 @@ paths:
                     type: string
                     example: https://oauth.xmatrix.studio/verify/authorize?response_type=code&client_id=xxxxx&state=xxxxx&scope=basic&redicect_url=https%3a%2f%2fxx.xmatrix.studio%2fapi%2fv2%2fauth&quick_mode=true
     delete:
-      tags: [Session, Ready]
+      tags: [Session, Finish]
       summary: 退出登陆
       description: 删除用户登陆状态(包括微信登陆)
       responses:
