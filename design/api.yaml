@@ -64,6 +64,28 @@ paths:
       responses:
         '200':
           description: 退出登陆成功
+  /session/status:
+    get:
+      tags: [Session]
+      summary: 获取登陆状态
+      description: |
+        用于实时获取用户登陆状态
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: |
+                      none    - 未登录<br/>
+                      false   - 登陆失败<br/>
+                      true    - 已登录<br/>
+                      running - 登陆中<br/>
+                    example: none
   /session/violet:
     get:
       tags: [Session]
