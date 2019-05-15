@@ -3458,10 +3458,6 @@ components:
           type: number
           description: 闲币
           example: 1743
-        exp:
-          type: number
-          description: 经验
-          example: 413222
         value:
           type: number
           description: 积分
@@ -3561,7 +3557,7 @@ components:
           description: 联系电话
           format: phone
           example: '12345678901'
-        brithday:
+        birthday:
           type: integer
           description: 用户生日时间
           example: 1242312312
