@@ -87,10 +87,11 @@ paths:
                   status:
                     type: string
                     description: |
-                      none    - 未登录<br/>
-                      false   - 登陆失败<br/>
-                      true    - 已登录<br/>
-                      running - 登陆中<br/>
+                      none      - 未登录<br/>
+                      false     - 登陆失败<br/>
+                      running   - 登陆中<br/>
+                      violet    - 已通过Violet登录<br/>
+                      wechat    - 已通过微信登录<br/>
                     example: none
   /session/violet:
     get:
@@ -213,7 +214,7 @@ paths:
 
   /users/info/{user_id}:
     get:
-      tags: [Users, Working]
+      tags: [Users, Finish]
       summary: 获取用户信息
       description: |
         获取用户信息
