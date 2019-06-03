@@ -184,6 +184,16 @@ paths:
       responses:
         '201':
           description: 登陆成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  new:
+                    type: boolean
+                    description: |
+                      是否为新用户，新用户首次登陆建议设置用户信息
+                    example: true
         '400':
           $ref: '#/components/responses/400InvalidValue'
         '403':
@@ -198,10 +208,8 @@ paths:
                   message:
                     type: string
                     description: |
-                      timeout_token   - Token已过期<br/>
-                      error_token     - Token不正确<br/>
-                      exist_wechat    - 当前账号已绑定微信<br/>
-                    example: invalid_state
+                      error_code     - code不正确<br/>
+                    example: error_code
     delete:
       tags: [Session, Ready]
       summary: 解除微信绑定
@@ -255,6 +263,8 @@ paths:
                     $ref: '#/components/schemas/UserInfo'
                   data:
                     $ref: '#/components/schemas/UserData'
+                  certification:
+                    $ref: '#/components/schemas/UserCertification'
         '400':
           $ref: '#/components/responses/400InvalidValue'
         '401':
@@ -451,7 +461,7 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /users/info:
-    patch:
+    put:
       tags: [Users, Finish]
       summary: 修改用户个人信息
       description: |
@@ -469,7 +479,7 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /users/type:
-    patch:
+    put:
       tags: [Users, Finish]
       summary: 修改用户类型
       description: |
@@ -884,7 +894,7 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /certification/user/{user_id}:
-    patch:
+    put:
       tags: [Certification, Ready]
       summary: 更新认证
       description: |
@@ -1118,8 +1128,9 @@ paths:
           required: false
           description: |
             过滤用户<br/>
-            certificaion - 仅显示已认证用户<br/>
-            credit       - 仅显示高信用(高于平均水平)用户<br/>
+            all           - 不过滤<br/>
+            certification - 仅显示已认证用户<br/>
+            credit        - 仅显示高信用(高于平均水平)用户<br/>
           schema:
             type: string
             example: 'credit'
@@ -1214,7 +1225,7 @@ paths:
                     description: |
                       faked_task    - 任务不存在<br/>
                     example: 'faked_task'
-    patch:
+    put:
       tags: [Tasks, Ready]
       summary: 修改任务信息
       description: |
@@ -1426,7 +1437,7 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /tasks/{task_id}/player/{user_id}:
-    patch:
+    put:
       tags: [Tasks, Ready]
       summary: 修改任务参与者状态
       description: |
@@ -1790,7 +1801,7 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
         '403':
           $ref: '#/components/responses/403PermissionDenyError'
-    patch:
+    put:
       tags: [File, Ready]
       summary: 修改文件信息
       description: |
@@ -2130,7 +2141,7 @@ paths:
                     example: 'faked_task'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-    patch:
+    put:
       tags: [Questionnaires, Ready]
       summary: 修改问卷基本信息
       description: |
@@ -2550,7 +2561,7 @@ paths:
                     example: 'invalid_id'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-    patch:
+    put:
       tags: [Messages, Ready]
       summary: 将会话标记为已读
       description: |
@@ -2896,7 +2907,7 @@ paths:
                     description: |
                       faked_article  - 公告不存在<br/>
                     example: 'faked_article'
-    patch:
+    put:
       tags: [Article, Ready]
       summary: 修改公告信息
       description: |
@@ -3224,7 +3235,7 @@ components:
               type: integer
               description: 评分级别 1-x (最高为10)， 默认为5
               example: 5
-        maxtrix_problem:
+        matrix_problem:
           type: object
           description: 矩阵题数据
           required:
@@ -3450,6 +3461,25 @@ components:
           type: string
           description: 用户头像
           example: 'https://xxx.png'
+    UserCertification:
+      type: object
+      description: 用户认证
+      properties:
+        type:
+          type: string
+          description:
+            用户认证<br/>
+            none - 未认证
+            student - 学生认证
+          example: 'student'
+        data:
+          type: string
+          description: 认证内容
+          example: '大山中学本科生'
+        date:
+          type: number
+          description: 认证时间
+          example: 12441232
     UserData:
       type: object
       description: 用户数据
@@ -3479,7 +3509,6 @@ components:
           description: |
             用户类型<br/>
             ban     - 禁封用户<br/>
-            wechat  - 微信临时用户<br/>
             normal  - 正式用户<br/>
             admin   - 管理员<br/>
             root    - 超级管理员<br/>
