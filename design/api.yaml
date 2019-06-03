@@ -142,7 +142,7 @@ paths:
       tags: [Session, Ready]
       summary: 生成微信小程序码
       description: |
-        生成特定的微信小程序码，通过扫码可以快捷绑定当前Violet账号，扫描后在小程序中可以获得一个10分钟有效的token，用于绑定账号
+        生成特定的微信小程序码，通过扫码可以实现在PC端登陆
       responses:
         '200':
           description: 获取成功
@@ -157,7 +157,7 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
     post:
-      tags: [Session, Ready]
+      tags: [Session, Finish]
       summary: 使用微信登陆
       operationId: postWeChatLogin
       description: |
@@ -210,15 +210,6 @@ paths:
                     description: |
                       error_code     - code不正确<br/>
                     example: error_code
-    delete:
-      tags: [Session, Ready]
-      summary: 解除微信绑定
-      description: 解除当前账号微信绑定
-      responses:
-        '200':
-          description: 解除绑定成功
-        '401':
-          $ref: '#/components/responses/401NotLoginError'
 
   /users/info/{user_id}:
     get:
@@ -343,9 +334,7 @@ paths:
                 type: object
                 properties:
                   pagination:
-                    type: integer
-                    description: 总页数
-                    example: 12
+                    $ref: '#/components/schemas/Pagination'
                   data:
                     $ref: '#/components/schemas/Players'
         '400':
