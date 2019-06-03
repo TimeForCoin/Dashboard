@@ -452,11 +452,10 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /users/info:
     patch:
-      tags: [Users, Ready]
+      tags: [Users, Finish]
       summary: 修改用户个人信息
       description: |
-        可用该方法修改密码以及个人信息<br/>
-        如果两项共同使用，修改密码失败时将不会修改个人信息<br/>
+        修改个人信息<br/>
       requestBody:
         content:
           'application/json':
@@ -471,7 +470,7 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /users/type:
     patch:
-      tags: [Users, Ready]
+      tags: [Users, Finish]
       summary: 修改用户类型
       description: |
         仅[admin, root]用户可用，用于调整用户等级，调整范围仅限于[ban, normal, admin], 除此以外的等级的用户不能被调整(wechat, root)
@@ -516,7 +515,7 @@ paths:
                     example: 'faked_users'
   /users/attend:
     post:
-      tags: [Users, Ready]
+      tags: [Users, Finish]
       summary: 每日签到
       description: |
         签到获取积分
