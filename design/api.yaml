@@ -804,7 +804,6 @@ paths:
           $ref: '#/components/responses/403PermissionDenyError'
     post:
       tags: [Certification]
-      deprecated: true
       summary: 用户认证
       description: |
         用户认证服务，实名认证学生身份，需要上传学生证或校园卡等资料辅助审核
@@ -864,7 +863,6 @@ paths:
   /certification/email:
     post:
       tags: [Certification]
-      deprecated: true
       summary: 再次发送认证邮件
       description: |
         重新发送邮件到当前待认证的邮箱，点击邮箱内连接进行认证
@@ -881,16 +879,16 @@ paths:
                   error:
                     type: string
                     description: |
-                      faked_email     - 当前不存在待验证的邮箱<br/>
-                      exist_email     - 该邮箱已被认证<br/>
-                      limit_email     - 发送邮件过于频繁<br/>
+                      faked_email         - 当前不存在待验证的邮箱<br/>
+                      faked_certification - 当前认证不存在<br/>
+                      exist_email         - 该邮箱已被认证<br/>
+                      limit_email         - 发送邮件过于频繁<br/>
                     example: 'exist_email'
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /certification/user/{user_id}:
     put:
       tags: [Certification]
-      deprecated: true
       summary: 更新认证
       description: |
         用户可以取消自己的认证，管理员可以通过用户的认证
@@ -909,13 +907,13 @@ paths:
             schema:
               type: object
               properties:
-                status:
+                operate:
                   type: string
                   description: |
-                    认证状态<br/>
-                    true    - 认证通过[仅管理员]<br/>
-                    false - 认证失败[仅管理员]<br/>
-                    cannel - 取消认证[仅用户]
+                    操作<br/>
+                    true   - 认证通过[仅管理员]<br/>
+                    false  - 认证失败[仅管理员]<br/>
+                    cancel - 取消认证[仅用户]
                   example: 'false'
                 data:
                   type: string
