@@ -806,7 +806,7 @@ paths:
       tags: [Certification]
       summary: 用户认证
       description: |
-        用户认证服务，实名认证学生身份，需要上传学生证或校园卡等资料辅助审核
+        用户认证服务，实名认证学生身份，上传学生证或校园卡等资料辅助审核或者邮箱认证（当前只支持邮箱认证）
       requestBody:
         content:
           'application/json':
