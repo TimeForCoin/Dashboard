@@ -35,17 +35,11 @@ tags:
     description: 其他
   - name: Article
     description: 公告文章
-  - name: Finish
-    description: 已完成
-  - name: Working
-    description: 开发中
-  - name: Ready
-    description: 准备中
 
 paths:
   /session:
     get:
-      tags: [Session, Finish]
+      tags: [Session]
       summary: 获取 Violet 登陆授权 URL
       operationId: getLoginURL
       description: |
@@ -64,7 +58,7 @@ paths:
                     type: string
                     example: https://oauth.xmatrix.studio/verify/authorize?response_type=code&client_id=xxxxx&state=xxxxx&scope=basic&redicect_url=https%3a%2f%2fxx.xmatrix.studio%2fapi%2fv2%2fauth&quick_mode=true
     delete:
-      tags: [Session, Finish]
+      tags: [Session]
       summary: 退出登陆
       description: 删除用户登陆状态(包括微信登陆)
       responses:
@@ -72,7 +66,7 @@ paths:
           description: 退出登陆成功
   /session/status:
     get:
-      tags: [Session, Finish]
+      tags: [Session]
       summary: 获取登陆状态
       description: |
         用于实时获取用户登陆状态
@@ -95,7 +89,7 @@ paths:
                     example: none
   /session/violet:
     get:
-      tags: [Session, Finish]
+      tags: [Session]
       summary: 使用 Code 登陆
       operationId: postLoginCode
       description: |
@@ -139,7 +133,7 @@ paths:
                     example: exist_wechat
   /session/wechat:
     get:
-      tags: [Session, Ready]
+      tags: [Session]
       summary: 生成微信小程序码
       description: |
         生成特定的微信小程序码，通过扫码可以实现在PC端登陆
@@ -157,7 +151,7 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
     post:
-      tags: [Session, Finish]
+      tags: [Session]
       summary: 使用微信登陆
       operationId: postWeChatLogin
       description: |
@@ -213,7 +207,7 @@ paths:
 
   /users/info/{user_id}:
     get:
-      tags: [Users, Finish]
+      tags: [Users]
       summary: 获取用户信息
       description: |
         获取用户信息
@@ -274,7 +268,8 @@ paths:
                     example: 'faked_users'
   /users/task/{user_id}:
     get:
-      tags: [Users, Ready]
+      tags: [Users]
+      deprecated: true
       summary: 获取用户参与的任务列表
       description: |
         获取用户参与的任务列表
@@ -353,7 +348,8 @@ paths:
                     example: 'invalid_page'
   /users/collect/{user_id}:
     get:
-      tags: [Users, Ready]
+      tags: [Users]
+      deprecated: true
       summary: 获取用户收藏列表
       description: |
         分页获取用户收藏任务列表
@@ -451,7 +447,7 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /users/info:
     put:
-      tags: [Users, Finish]
+      tags: [Users]
       summary: 修改用户个人信息
       description: |
         修改个人信息<br/>
@@ -469,7 +465,7 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /users/type:
     put:
-      tags: [Users, Finish]
+      tags: [Users]
       summary: 修改用户类型
       description: |
         仅[admin, root]用户可用，用于调整用户等级，调整范围仅限于[ban, normal, admin], 除此以外的等级的用户不能被调整(wechat, root)
@@ -514,7 +510,7 @@ paths:
                     example: 'faked_users'
   /users/attend:
     post:
-      tags: [Users, Finish]
+      tags: [Users]
       summary: 每日签到
       description: |
         签到获取积分
@@ -537,7 +533,8 @@ paths:
                     example: 'already_attend'
   /users/history:
     get:
-      tags: [Users, Ready]
+      tags: [Users]
+      deprecated: true
       summary: 获取用户搜索记录
       description: |
         获取当前用户的搜索记录
@@ -558,7 +555,8 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
     delete:
-      tags: [Users, Ready]
+      tags: [Users]
+      deprecated: true
       summary: 清空用户搜索记录
       description: |
         清空当前用户搜索记录
@@ -569,7 +567,8 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /users:
     get:
-      tags: [Users, Ready]
+      tags: [Users]
+      deprecated: true
       summary: 搜索用户
       description: |
         使用关键字搜索用户
@@ -618,6 +617,7 @@ paths:
   /users/follower/{user_id}:
     get:
       tags: [Relation]
+      deprecated: true
       summary: 获取用户粉丝列表
       description: |
         获取指定用户得粉丝列表
@@ -667,6 +667,7 @@ paths:
   /users/following/{user_id}:
     get:
       tags: [Relation]
+      deprecated: true
       summary: 获取用户关注人列表
       description: |
         获取指定用户关注人列表
@@ -715,6 +716,7 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
     post:
       tags: [Relation]
+      deprecated: true
       summary: 关注指定用户
       description: |
         为当前用户关注指定用户
@@ -750,7 +752,8 @@ paths:
 
   /certification:
     get:
-      tags: [Certification, Ready]
+      tags: [Certification]
+      deprecated: true
       summary: 获取待审核认证列表
       description: |
         获取待审核认证列表，仅限管理员调用
@@ -800,7 +803,8 @@ paths:
         '403':
           $ref: '#/components/responses/403PermissionDenyError'
     post:
-      tags: [Certification, Ready]
+      tags: [Certification]
+      deprecated: true
       summary: 用户认证
       description: |
         用户认证服务，实名认证学生身份，需要上传学生证或校园卡等资料辅助审核
@@ -859,7 +863,8 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /certification/email:
     post:
-      tags: [Certification, Ready]
+      tags: [Certification]
+      deprecated: true
       summary: 再次发送认证邮件
       description: |
         重新发送邮件到当前待认证的邮箱，点击邮箱内连接进行认证
@@ -884,7 +889,8 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /certification/user/{user_id}:
     put:
-      tags: [Certification, Ready]
+      tags: [Certification]
+      deprecated: true
       summary: 更新认证
       description: |
         用户可以取消自己的认证，管理员可以通过用户的认证
@@ -930,7 +936,8 @@ paths:
           $ref: '#/components/responses/403PermissionDenyError'
   /certification/auto:
     get:
-      tags: [Certification, Ready]
+      tags: [Certification]
+      deprecated: true
       summary: 获取自动认证的列表
       description: |
         获取自动认证的邮箱后缀列表，仅限管理员调用
@@ -963,7 +970,8 @@ paths:
         '403':
           $ref: '#/components/responses/403PermissionDenyError'
     post:
-      tags: [Certification, Ready]
+      tags: [Certification]
+      deprecated: true
       summary: 添加自动认证后缀
       description: |
         添加自动认证邮箱后缀，自动通过该邮箱的认证
@@ -1003,7 +1011,8 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /certification/auto/{key}:
     delete:
-      tags: [Certification, Ready]
+      tags: [Certification]
+      deprecated: true
       summary: 删除自动认证
       description: |
         删除自动认证
@@ -1040,7 +1049,8 @@ paths:
 
   /tasks:
     get:
-      tags: [Tasks, Ready]
+      tags: [Tasks]
+      deprecated: true
       summary: 获取所有任务列表
       description: |
         分页获取所有任务列表， 若
@@ -1148,7 +1158,8 @@ paths:
         '400':
           $ref: '#/components/responses/400InvalidValue'
     post:
-      tags: [Tasks, Ready]
+      tags: [Tasks]
+      deprecated: true
       summary: 创建任务
       description: 创建新任务
       requestBody:
@@ -1177,7 +1188,8 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /tasks/{task_id}:
     get:
-      tags: [Tasks, Ready]
+      tags: [Tasks]
+      deprecated: true
       summary: 获取单个任务详情
       description: |
         分页获取所有任务列表
@@ -1215,7 +1227,8 @@ paths:
                       faked_task    - 任务不存在<br/>
                     example: 'faked_task'
     put:
-      tags: [Tasks, Ready]
+      tags: [Tasks]
+      deprecated: true
       summary: 修改任务信息
       description: |
         修改任务的部分信息
@@ -1261,7 +1274,8 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /tasks/{task_id}/wechat:
     get:
-      tags: [Tasks, Ready]
+      tags: [Tasks]
+      deprecated: true
       summary: 生成活动微信小程序码
       description: |
         生成活动微信小程序码，用于分享，可扫码查看活动详情
@@ -1302,7 +1316,8 @@ paths:
                     example: 'faked_task'
   /tasks/{task_id}/player:
     get:
-      tags: [Tasks, Ready]
+      tags: [Tasks]
+      deprecated: true
       summary: 获取任务参与人员列表
       description: |
         获取指定任务参与人员全部列表
@@ -1381,7 +1396,8 @@ paths:
                       faked_task        - 任务不存在<br/>
                     example: 'faked_task'
     post:
-      tags: [Tasks, Ready]
+      tags: [Tasks]
+      deprecated: true
       summary: 成为任务参与人员（领取任务）
       description: |
         成为任务参与人员
@@ -1427,7 +1443,8 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /tasks/{task_id}/player/{user_id}:
     put:
-      tags: [Tasks, Ready]
+      tags: [Tasks]
+      deprecated: true
       summary: 修改任务参与者状态
       description: |
         修改任务参与者状态，任务发布者和执行者分别可以修改不同部分，否则返回403错误
@@ -1512,7 +1529,8 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
     delete:
-      tags: [Tasks, Ready]
+      tags: [Tasks]
+      deprecated: true
       summary: 退出任务
       description: |
         自己退出任务或者被发布者踢出任务
@@ -1557,7 +1575,8 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /tasks/{task_id}/view:
     post:
-      tags: [Tasks, Ready]
+      tags: [Tasks]
+      deprecated: true
       summary: 为任务添加阅读量
       description: |
         为任务添加阅读量
@@ -1588,7 +1607,8 @@ paths:
                     example: 'faked_task_id'
   /tasks/{task_id}/collect:
     post:
-      tags: [Tasks, Ready]
+      tags: [Tasks]
+      deprecated: true
       summary: 收藏任务
       description: |
         收藏指定任务
@@ -1621,7 +1641,8 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
     delete:
-      tags: [Tasks, Ready]
+      tags: [Tasks]
+      deprecated: true
       summary: 取消收藏任务
       description: |
         取消收藏指定任务
@@ -1654,7 +1675,8 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /tasks/{task_id}/like:
     post:
-      tags: [Tasks, Ready]
+      tags: [Tasks]
+      deprecated: true
       summary: 为任务点赞
       description: |
         为任务点赞
@@ -1686,7 +1708,8 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
     delete:
-      tags: [Tasks, Ready]
+      tags: [Tasks]
+      deprecated: true
       summary: 取消点赞任务
       description: |
         取消点赞任务
@@ -1720,7 +1743,8 @@ paths:
 
   /file:
     post:
-      tags: [File, Ready]
+      tags: [File]
+      deprecated: true
       summary: 上传文件
       description: |
         上传的文件都处于未使用状态，只有当被引用时才会被标记为使用，未使用文件将定期清除，允许微信临时用户使用
@@ -1769,7 +1793,8 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /file/{id}:
     get:
-      tags: [File, Ready]
+      tags: [File]
+      deprecated: true
       summary: 下载文件
       description: |
         下载文件，对于非公开文件需要领取任务才能下载
@@ -1791,7 +1816,8 @@ paths:
         '403':
           $ref: '#/components/responses/403PermissionDenyError'
     put:
-      tags: [File, Ready]
+      tags: [File]
+      deprecated: true
       summary: 修改文件信息
       description: |
         修改文件的部分信息
@@ -1820,7 +1846,8 @@ paths:
 
   /comments/{id}:
     get:
-      tags: [Comments, Ready]
+      tags: [Comments]
+      deprecated: true
       summary: 获取评论列表
       description: |
         分页获取评论/回复列表
@@ -1887,7 +1914,8 @@ paths:
                       faked_task        - 任务不存在<br/>
                     example: 'invalid_size'
     post:
-      tags: [Comments, Ready]
+      tags: [Comments]
+      deprecated: true
       summary: 添加评论
       description: |
         添加评论
@@ -1936,7 +1964,8 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
     delete:
-      tags: [Comments, Ready]
+      tags: [Comments]
+      deprecated: true
       summary: 删除评论
       description: |
         删除评论，只有评论人/管理员才可以删除
@@ -1970,7 +1999,8 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /comments/{comment_id}/like:
     post:
-      tags: [Comments, Ready]
+      tags: [Comments]
+      deprecated: true
       summary: 为评论点赞
       description: |
         为评论点赞
@@ -2002,7 +2032,8 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
     delete:
-      tags: [Comments, Ready]
+      tags: [Comments]
+      deprecated: true
       summary: 取消点赞评论
       description: |
         取消点赞任务
@@ -2036,7 +2067,8 @@ paths:
 
   /questionnaires:
     post:
-      tags: [Questionnaires, Ready]
+      tags: [Questionnaires]
+      deprecated: true
       summary: 新建问卷
       description: |
         新建问卷
@@ -2069,7 +2101,8 @@ paths:
           $ref: '#/components/responses/403PermissionDenyError'
   /questionnaires/{task_id}:
     get:
-      tags: [Questionnaires, Ready]
+      tags: [Questionnaires]
+      deprecated: true
       summary: 获取问卷基本信息
       description: 获取问卷基本信息，属于公开信息
       parameters:
@@ -2131,7 +2164,8 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
     put:
-      tags: [Questionnaires, Ready]
+      tags: [Questionnaires]
+      deprecated: true
       summary: 修改问卷基本信息
       description: |
         修改问卷基本信息，须检验权限，仅允许任务在[draft]状态下修改
@@ -2183,7 +2217,8 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /questionnaires/{task_id}/question:
     get:
-      tags: [Questionnaires, Ready]
+      tags: [Questionnaires]
+      deprecated: true
       summary: 获取问卷问题
       description: 获取指定问卷问题，需要检验权限，允许微信临时用户使用
       parameters:
@@ -2224,7 +2259,8 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
     post:
-      tags: [Questionnaires, Ready]
+      tags: [Questionnaires]
+      deprecated: true
       summary: 修改问卷问题
       description: |
         为问卷添加问题，需要任务处于[draft]状态
@@ -2272,7 +2308,8 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /questionnaires/{task_id}/answer:
     get:
-      tags: [Questionnaires, Ready]
+      tags: [Questionnaires]
+      deprecated: true
       summary: 获取问卷答案数据
       description: 获取问卷答案，需要检验权限，若匿名则不返回用户数据
       parameters:
@@ -2353,7 +2390,8 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
     post:
-      tags: [Questionnaires, Ready]
+      tags: [Questionnaires]
+      deprecated: true
       summary: 添加回答
       description: |
         回答问卷，需要任务处于[wait]状态，允许微信临时用户使用
@@ -2401,7 +2439,8 @@ paths:
 
   /messages:
     get:
-      tags: [Messages, Ready]
+      tags: [Messages]
+      deprecated: true
       summary: 获取当前用户消息列表
       description: |
         分页获取当前用户消息列表
@@ -2455,7 +2494,8 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
     post:
-      tags: [Messages, Ready]
+      tags: [Messages]
+      deprecated: true
       summary: 发送系统消息
       description: |
         发送系统消息，仅管理员可使用
@@ -2488,7 +2528,8 @@ paths:
 
   /messages/{id}:
     get:
-      tags: [Messages, Ready]
+      tags: [Messages]
+      deprecated: true
       summary: 获取会话消息
       description: |
         分页获取指定会话消息内容
@@ -2551,7 +2592,8 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
     put:
-      tags: [Messages, Ready]
+      tags: [Messages]
+      deprecated: true
       summary: 将会话标记为已读
       description: |
         将会话标记为已读
@@ -2585,7 +2627,8 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
     post:
-      tags: [Messages, Ready]
+      tags: [Messages]
+      deprecated: true
       summary: 发送消息
       description: |
         发送消息
@@ -2637,7 +2680,8 @@ paths:
 
   /utils/logs:
     get:
-      tags: [Utils, Ready]
+      tags: [Utils]
+      deprecated: true
       summary: 查询日志
       description: |
         只有管理员或者当前用户才能查看指定用户日志
@@ -2733,7 +2777,8 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /utils/tags:
     get:
-      tags: [Utils, Ready]
+      tags: [Utils]
+      deprecated: true
       summary: 获取任务推荐标签
       description: |
         结合全部以及个人历史数据，加上分析任务标题和内容，生成推荐标签
@@ -2774,7 +2819,8 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /utils/search:
     get:
-      tags: [Utils, Ready]
+      tags: [Utils]
+      deprecated: true
       summary: 获取搜索提示
       description: |
         获取搜索补全提示
@@ -2808,7 +2854,8 @@ paths:
 
   /article:
     get:
-      tags: [Article, Ready]
+      tags: [Article]
+      deprecated: true
       summary: 获取公告列表
       description: |
         获取公告列表
@@ -2846,7 +2893,8 @@ paths:
         '400':
           $ref: '#/components/responses/400InvalidValue'
     post:
-      tags: [Article, Ready]
+      tags: [Article]
+      deprecated: true
       summary: 新建公告文章
       description: |
         新建公告文章
@@ -2864,7 +2912,8 @@ paths:
           $ref: '#/components/responses/403PermissionDenyError'
   /article/{id}:
     get:
-      tags: [Article, Ready]
+      tags: [Article]
+      deprecated: true
       summary: 公告详情
       description: 获取公告详情
       parameters:
@@ -2897,7 +2946,8 @@ paths:
                       faked_article  - 公告不存在<br/>
                     example: 'faked_article'
     put:
-      tags: [Article, Ready]
+      tags: [Article]
+      deprecated: true
       summary: 修改公告信息
       description: |
         修改公告信息，须管理员权限
