@@ -1048,7 +1048,6 @@ paths:
   /tasks:
     get:
       tags: [Tasks]
-      deprecated: true
       summary: 获取所有任务列表
       description: |
         分页获取所有任务列表， 若
@@ -3413,7 +3412,21 @@ components:
           example: false
     EditFileInfo:
       type: object
+      required:
+        - owner
+        - type
       properties:
+        data:
+          type: string
+          description: 文件数据
+          example: File Buffer
+        owner:
+          type: string
+          description: |
+            附件所有权<br/>
+            task -  附件所有权属于任务<br/>
+            user  - 附件所有权属于用户<br/>
+          example: 'task'
         type:
           type: string
           description: |
@@ -3431,7 +3444,9 @@ components:
           example: '洗澡'
         public:
           type: boolean
-          description: 是否公开(不公开的话只有参与成员可以查看)
+          description: |
+            是否公开(不公开的话只有参与成员/用户自己可以查看)<br/>
+            默认为公开
           example: false
 
     Players:
