@@ -3400,10 +3400,36 @@ components:
           example: '你好骚啊'
         user_id:
           $ref: '#/components/schemas/UserBaseInfo'
-        reply_count:
-          type: integer
-          description: 回复数
-          example: 1
+        reply:
+          type: array
+          items:
+            type: object
+            description: 评论的回复
+            properties:
+              id:
+                type: string
+                description: 回复ID
+                example: '5c9ecbbba4a3f52e3195fa68'
+              content_own:
+                $ref: '#/components/schemas/UserBaseInfo'
+              content:
+                type: string
+                description: 回复内容
+                example: '你好骚啊'
+              user_id:
+                $ref: '#/components/schemas/UserBaseInfo'
+              liked:
+                type: boolean
+                description: 是否已经点赞
+                example: false
+              like_count:
+                type: integer
+                description: 点赞数
+                example: 43
+              time:
+                type: integer
+                description: 回复时间戳
+                example: 12414324234
         liked:
           type: boolean
           description: 是否已经点赞
@@ -3555,6 +3581,14 @@ components:
           type: string
           description: 用户头像
           example: 'https://xxx.png'
+        gender:
+          type: string
+          description: 性别
+          example: man
+        type:
+          type: string
+          description: 用户类型
+          example: 'normal'
     UserCertification:
       type: object
       description: 用户认证
