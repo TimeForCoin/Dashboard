@@ -463,22 +463,27 @@ paths:
           $ref: '#/components/responses/400InvalidValue'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-  /users/type:
+  /users/type/{user_id}:
     put:
       tags: [Users]
       summary: 修改用户类型
       description: |
         仅[admin, root]用户可用，用于调整用户等级，调整范围仅限于[ban, normal, admin], 除此以外的等级的用户不能被调整(wechat, root)
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: |
+            用户ID，当用户ID为`me`的时候为当前登陆用户ID
+          schema:
+            type: string
+            example: 'me'
       requestBody:
         content:
           'application/json':
             schema:
               type: object
               properties:
-                id:
-                  type: string
-                  description: 被调整的用户ID
-                  example: '5c9ecbbba4a3f52e3195fa68'
                 type:
                   type: string
                   description: |
@@ -1151,12 +1156,11 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/TaskInfo'
+                      $ref: '#/components/schemas/BaseTaskInfo'
         '400':
           $ref: '#/components/responses/400InvalidValue'
     post:
       tags: [Tasks]
-      deprecated: true
       summary: 创建任务
       description: 创建新任务
       requestBody:
@@ -1179,14 +1183,13 @@ paths:
                   error:
                     type: string
                     description: |
-                      not_allow_max     - 不允许同时限制参与与完成人员
-                    example: 'invalid_title'
+                      not_allow_date   - 不允许结束日期小于开始日期
+                    example: 'not_allow_date'
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /tasks/{task_id}:
     get:
       tags: [Tasks]
-      deprecated: true
       summary: 获取单个任务详情
       description: |
         分页获取所有任务列表
@@ -1225,7 +1228,6 @@ paths:
                     example: 'faked_task'
     put:
       tags: [Tasks]
-      deprecated: true
       summary: 修改任务信息
       description: |
         修改任务的部分信息
@@ -1263,10 +1265,9 @@ paths:
                       not_allow_edit        - 该状态下不允许修改<br/>
                       not_allow_date        - 不允许的时间<br/>
                       not_allow_max_player  - 不允许的参与用户上限<br/>
-                      not_allow_max_finish  - 不允许的完成用户上限<br/>
                       not_allow_status      - 不允许的状态变换<br/>
                       not_allow_reward_value- 不允许降低酬劳数值<br/>
-                    example: 'not_allow_max_finish'
+                    example: 'not_allow_max_player'
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /tasks/{task_id}/wechat:
@@ -1602,6 +1603,51 @@ paths:
                     description: |
                       faked_task_id         - 任务不存在<br/>
                     example: 'faked_task_id'
+  /tasks/{task_id}/top:
+    post:
+      tags: [Tasks]
+      deprecated: true
+      summary: 设置任务置顶
+      description: |
+        为任务设置置顶时间，管理员可以设置，普通用户可以消耗闲币设置
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: 任务ID
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                time:
+                  type: integer
+                  description: 置顶秒数
+                  example: 10085
+      responses:
+        '200':
+          description: 设置置顶成功
+        '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
+          description: 设置置顶失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      faked_task_id        - 任务不存在<br/>
+                      not_enough_money     - 没有足够的钱<br/>
+                    example: 'faked_task_id'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
   /tasks/{task_id}/collect:
     post:
       tags: [Tasks]
@@ -1744,17 +1790,12 @@ paths:
       deprecated: true
       summary: 上传文件
       description: |
-        上传的文件都处于未使用状态，只有当被引用时才会被标记为使用，未使用文件将定期清除，允许微信临时用户使用
+        上传用于任务或者个人认证的附件或者图片
       requestBody:
         content:
           'application/json':
             schema:
-              type: object
-              properties:
-                attachment:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/EditFileInfo'
+              $ref: '#/components/schemas/EditFileInfo'
       responses:
         '201':
           description: 添加附件成功
@@ -1792,7 +1833,7 @@ paths:
     get:
       tags: [File]
       deprecated: true
-      summary: 下载文件
+      summary: 下载文件/图片
       description: |
         下载文件，对于非公开文件需要领取任务才能下载
       parameters:
@@ -3415,6 +3456,7 @@ components:
       required:
         - owner
         - type
+        - data
       properties:
         data:
           type: string
@@ -3685,7 +3727,130 @@ components:
           description: 联系电话
           format: phone
           example: '12345678901'
-
+    BaseTaskInfo:
+      type: object
+      description: 任务简短信息
+      properties:
+        id:
+          type: string
+          description: 任务id
+          example: '5c9ecbbba4a3f52e3195fa68'
+        publisher:
+          $ref: '#/components/schemas/UserBaseInfo'
+        title:
+          type: string
+          description: 任务标题
+          example: '帮我洗澡'
+        content:
+          type: string
+          description: 任务详情
+          example: '过来至二634洗澡澡'
+        location:
+          type: array
+          description: 任务地点
+          items:
+            type: string
+            example: '中山大学'
+        tags:
+          type: array
+          description: 任务标签
+          items:
+            type: string
+            example: '打游戏'
+        top_time:
+          type: integer
+          description: 置顶时间(默认为0)，如果当前时间小于置顶时间，则将任务视为置顶
+          example: 1244123123
+        status:
+          type: string
+          description: |
+            任务状态<br/>
+            draft    - 草稿<br/>
+            wait     - 等待接受<br/>
+            run      - 执行中（人数已满）<br/>
+            close    - 已关闭<br/>
+            finish   - 已完成<br/>
+            overdue  - 已过期<br/>
+          example: 'wait'
+        type:
+          type: string
+          description: |
+            任务类型<br/>
+            run           - 跑腿任务<br/>
+            questionnaire - 问卷任务<br/>
+            info          - 信息任务<br/>
+          example: 'run'
+        images:
+          type: array
+          description: 任务图片
+          items:
+            type: string
+            description: |
+              任务图片地址
+            example: http://examile.com/image.png
+        reward:
+          type: string
+          description: |
+            酬劳类型<br/>
+            money     - 闲钱币<br/>
+            rmb       - 人民币<br/>
+            physical  - 实物<br/>
+          example: 'rmb'
+        reward_value:
+          type: number
+          description: |
+            酬劳数值，当酬劳类型为money、rmb才存在
+          example: 100
+        reward_object:
+          type: string
+          description: |
+            酬劳物体，酬劳类型为physical才存在
+          example: '一个吻'
+        publish_date:
+          type: integer
+          description: |
+            任务发布时间
+          example: 112312341243
+        start_date:
+          type: integer
+          description: |
+            任务开始时间
+          example: 121414124
+        end_date:
+          type: integer
+          description: |
+            任务结束时间
+          example: 121414124
+        player_count:
+          type: integer
+          description: |
+            参与的用户数
+          example: 12
+        max_player:
+          type: integer
+          description: |
+            参与用户上限
+          example: 30
+        comment_count:
+          type: integer
+          description: |
+            任务评论数
+          example: 30
+        view_count:
+          type: integer
+          description: |
+            任务浏览数
+          example: 30
+        collect_count:
+          type: integer
+          description: |
+            任务收藏数
+          example: 30
+        like_count:
+          type: integer
+          description: |
+            任务点赞数
+          example: 30
     TaskInfo:
       type: object
       description: 任务信息
@@ -3739,6 +3904,14 @@ components:
             questionnaire - 问卷任务<br/>
             info          - 信息任务<br/>
           example: 'run'
+        images:
+          type: array
+          description: 任务图片
+          items:
+            type: string
+            description: |
+              任务图片地址
+            example: http://examile.com/image.png
         attachment:
           type: array
           description: 任务附件
@@ -3787,11 +3960,6 @@ components:
           description: |
             参与用户上限
           example: 30
-        max_finish:
-          type: integer
-          description: |
-            完成用户上限
-          example: 30
         auto_accept:
           type: boolean
           description: |
@@ -3833,6 +4001,12 @@ components:
           type: string
           description: 任务详情
           example: '过来至二634洗澡澡'
+        images:
+          type: array
+          items:
+            type: string
+            description: 图片ID
+            example: '5c9ecbbba4a3f52e3195fa68'
         attachment:
           type: array
           items:
@@ -3877,10 +4051,6 @@ components:
           items:
             type: string
             example: 打游戏
-        top_time:
-          type: integer
-          description: 置顶时间(默认为0)，如果当前时间小于置顶时间，则将任务视为置顶
-          example: 1244123123
         start_date:
           type: integer
           description: |
@@ -3895,11 +4065,6 @@ components:
           type: integer
           description: |
             参与用户上限
-          example: 30
-        max_finish:
-          type: integer
-          description: |
-            完成用户上限，与上面的选项互斥
           example: 30
         auto_accept:
           type: boolean
