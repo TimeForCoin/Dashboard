@@ -423,7 +423,7 @@ paths:
             all       - 所有<br/>
             money     - 闲钱币<br/>
             rmb       - 人民币<br/>
-            physical  - 实物<br/>
+            object  - 实物<br/>
           schema:
             type: string
             example: 'money'
@@ -1120,7 +1120,7 @@ paths:
             all       - 所有<br/>
             money     - 闲钱币<br/>
             rmb       - 人民币<br/>
-            physical  - 实物<br/>
+            object  - 实物<br/>
           schema:
             type: string
             example: 'money'
@@ -3794,7 +3794,7 @@ components:
             酬劳类型<br/>
             money     - 闲钱币<br/>
             rmb       - 人民币<br/>
-            physical  - 实物<br/>
+            object  - 实物<br/>
           example: 'rmb'
         reward_value:
           type: number
@@ -3804,7 +3804,7 @@ components:
         reward_object:
           type: string
           description: |
-            酬劳物体，酬劳类型为physical才存在
+            酬劳物体，酬劳类型为object才存在
           example: '一个吻'
         publish_date:
           type: integer
@@ -3923,7 +3923,7 @@ components:
             酬劳类型<br/>
             money     - 闲钱币<br/>
             rmb       - 人民币<br/>
-            physical  - 实物<br/>
+            object  - 实物<br/>
           example: 'rmb'
         reward_value:
           type: number
@@ -3933,7 +3933,7 @@ components:
         reward_object:
           type: string
           description: |
-            酬劳物体，酬劳类型为physical才存在
+            酬劳物体，酬劳类型为object才存在
           example: '一个吻'
         publish_date:
           type: integer
@@ -4027,7 +4027,7 @@ components:
             酬劳类型<br/>
             money     - 闲钱币<br/>
             rmb       - 人民币<br/>
-            physical  - 实物<br/>
+            object  - 实物<br/>
           example: 'rmb'
         reward_value:
           type: number
@@ -4037,7 +4037,7 @@ components:
         reward_object:
           type: string
           description: |
-            酬劳物体，酬劳类型为physical才存在
+            酬劳物体，酬劳类型为object才存在
           example: '一个吻'
         location:
           type: array
