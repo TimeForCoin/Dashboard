@@ -1103,7 +1103,6 @@ paths:
             筛选任务状态，多个以逗号分隔<br/>
             默认搜索状态为[wait, run]<br/>
             all      - 所有<br/>
-            draft    - 草稿(仅本人可以查询)<br/>
             run      - 执行中（人数已满）<br/>
             wait     - 等待接受<br/>
             close    - 已关闭<br/>
@@ -1229,6 +1228,7 @@ paths:
     put:
       tags: [Tasks]
       summary: 修改任务信息
+      deprecated: true
       description: |
         修改任务的部分信息
         需要任务处于状态[draft, wait, run]
