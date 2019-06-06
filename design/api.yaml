@@ -3404,7 +3404,7 @@ components:
           type: integer
           description: 回复数
           example: 1
-        like:
+        liked:
           type: boolean
           description: 是否已经点赞
           example: false
@@ -3851,6 +3851,14 @@ components:
           description: |
             任务点赞数
           example: 30
+        collected:
+          type: boolean
+          description: 是否已经收藏
+          example: false
+        liked:
+          type: boolean
+          description: 是否已经点赞
+          example: false
     TaskInfo:
       type: object
       description: 任务信息
@@ -3985,10 +3993,13 @@ components:
           description: |
             任务点赞数
           example: 30
-        like:
+        collected:
           type: boolean
-          description: |
-            当前用户是否已经点赞
+          description: 是否已经收藏
+          example: false
+        liked:
+          type: boolean
+          description: 是否已经点赞
           example: false
     EditTaskInfo:
       type: object
