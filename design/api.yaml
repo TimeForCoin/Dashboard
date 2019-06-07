@@ -3189,14 +3189,15 @@ components:
         user:
           $ref: '#/components/schemas/UserBaseInfo'
         unread:
-          type: string
+          type: integer
           description: 未读消息数量
-          example: '5c9ecbbba4a3f52e3195fa68'
+          example: 123
         last_time:
           type: integer
           description: 最新消息时间
           example: 12344512
-
+        last_message:
+          $ref: '#/components/schemas/MessageData'
     QuestionData:
       type: object
       description: 问题数据结构
