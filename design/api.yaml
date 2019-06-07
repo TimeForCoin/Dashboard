@@ -3233,8 +3233,16 @@ components:
           type: array
           description: 图片附件id
           items:
-            type: string
-            example: '5c9ecbbba4a3f52e3195fa68'
+            type: object
+            properties:
+              id:
+                type: string
+                description: 图片ID
+                example: '5c9ecbbba4a3f52e3195fa68'
+              url:
+                type: string
+                description: 图片URL
+                example: 'https://xxx.com/xxx.jpg'
         choose_problem:
           type: object
           description: 选择题数据
@@ -3817,12 +3825,18 @@ components:
           example: 'run'
         images:
           type: array
-          description: 任务图片
+          description: 任务图片id
           items:
-            type: string
-            description: |
-              任务图片地址
-            example: http://examile.com/image.png
+            type: object
+            properties:
+              id:
+                type: string
+                description: 图片ID
+                example: '5c9ecbbba4a3f52e3195fa68'
+              url:
+                type: string
+                description: 图片URL
+                example: 'https://xxx.com/xxx.jpg'
         reward:
           type: string
           description: |
@@ -3949,12 +3963,18 @@ components:
           example: 'run'
         images:
           type: array
-          description: 任务图片
+          description: 任务图片id
           items:
-            type: string
-            description: |
-              任务图片地址
-            example: http://examile.com/image.png
+            type: object
+            properties:
+              id:
+                type: string
+                description: 图片ID
+                example: '5c9ecbbba4a3f52e3195fa68'
+              url:
+                type: string
+                description: 图片URL
+                example: 'https://xxx.com/xxx.jpg'
         attachment:
           type: array
           description: 任务附件
