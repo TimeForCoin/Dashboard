@@ -1101,6 +1101,7 @@ paths:
             筛选任务状态，多个以逗号分隔<br/>
             默认搜索状态为[wait]<br/>
             all      - 所有<br/>
+            draft    - 草稿[仅本人可以查询，并且不能与其他状态一起查询]<br/>
             wait     - 等待接受/执行中<br/>
             close    - 已关闭<br/>
             finish   - 已完成<br/>
@@ -1162,6 +1163,7 @@ paths:
                     type: string
                     description: |
                       faked_user   - 无效的用户
+                      not_allow_other_draft - 不允许查询他人的草稿
                     example: 'faked_user'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -1274,6 +1276,40 @@ paths:
                       not_allow_status      - 不允许的状态变换<br/>
                       not_allow_reward_value- 不允许降低酬劳数值<br/>
                     example: 'not_allow_max_player'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+    delete:
+      tags: [Tasks]
+      summary: 删除任务
+      description: |
+        只允许删除自己的草稿中的任务
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: |
+            任务ID
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
+      responses:
+        '201':
+          description: 删除成功
+        '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
+          description: 删除失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      not_allow  - 不允许删除<br/>
+                      permission_deny - 权限不足<br/>
+                    example: 'permission_deny'
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /tasks/{task_id}/wechat:
