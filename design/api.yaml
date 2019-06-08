@@ -304,6 +304,8 @@ paths:
           description: |
             筛选参与人员状态<br/>
             all       - 所有<br/>
+            wait      - 等待同意加入 <br/>
+            refuse    - 拒绝加入 <br/>
             close     - 发布者关闭任务<br/>
             running   - 用户进行任务中<br/>
             finish    - 已完成任务<br/>
@@ -312,14 +314,6 @@ paths:
           schema:
             type: string
             example: running
-        - name: accept
-          in: query
-          required: false
-          description: |
-            筛选接受状态
-          schema:
-            type: boolean
-            example: false
       responses:
         '200':
           description: 获取成功
@@ -3585,20 +3579,18 @@ components:
             type: string
             description: |
               用户状态<br/>
-              close     - 发布者关闭任务
-              running   - 用户进行任务中
-              finish    - 已完成任务
-              give_up   - 用户已放弃
-              failure   - 任务失败
+              wait      - 等待同意加入 <br/>
+              refuse    - 拒绝加入 <br/>
+              close     - 发布者关闭任务 <br/>
+              running   - 用户进行任务中 <br/>
+              finish    - 已完成任务 <br/>
+              give_up   - 用户已放弃 <br/>
+              failure   - 任务失败 <br/>
             example: 'running'
           note:
             type: string
             description: 申请备注
             example: '我要加入'
-          accept:
-            type: boolean
-            description: 是否同意加入
-            example: true
           degree:
             type: integer
             description: 任务完成度
