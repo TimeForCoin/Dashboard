@@ -1051,9 +1051,9 @@ paths:
   /tasks:
     get:
       tags: [Tasks]
-      summary: 获取所有任务列表
+      summary: 获取任务列表
       description: |
-        分页获取所有任务列表， 若
+        分页获取任务列表
       parameters:
         - name: page
           in: query
@@ -1119,17 +1119,6 @@ paths:
           schema:
             type: string
             example: 'money'
-        - name: user
-          in: query
-          required: false
-          description: |
-            过滤用户<br/>
-            all           - 不过滤<br/>
-            certification - 仅显示已认证用户<br/>
-            credit        - 仅显示高信用(高于平均水平)用户<br/>
-          schema:
-            type: string
-            example: 'credit'
         - name: keyword
           in: query
           required: false
@@ -1138,6 +1127,14 @@ paths:
           schema:
             type: string
             example: '秀秀'
+        - name: user
+          in: query
+          required: false
+          description: |
+            获取指定用户发布的任务, 若为 `me` 则显示当前用户发布的任务，需要检验登陆权限
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
       responses:
         '200':
           description: 获取成功
@@ -1154,6 +1151,20 @@ paths:
                       $ref: '#/components/schemas/BaseTaskInfo'
         '400':
           $ref: '#/components/responses/400InvalidValue'
+        '403':
+          description: 发布任务失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      faked_user   - 无效的用户
+                    example: 'faked_user'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
     post:
       tags: [Tasks]
       summary: 创建任务
@@ -1162,7 +1173,7 @@ paths:
         content:
           'application/json':
             schema:
-              $ref: '#/components/schemas/EditTaskInfo'
+              $ref: '#/components/schemas/NewTaskInfo'
       responses:
         '201':
           description: 发布任务成功
@@ -4048,7 +4059,7 @@ components:
           type: boolean
           description: 是否已经点赞
           example: false
-    EditTaskInfo:
+    NewTaskInfo:
       type: object
       properties:
         title:
@@ -4071,13 +4082,6 @@ components:
             type: string
             description: 附件ID
             example: '5c9ecbbba4a3f52e3195fa68'
-        status:
-          type: string
-          description: |
-            任务状态<br/>
-            wait        - 等待接受[前置条件：draft]<br/>
-            close       - 任务已关闭[前置条件：wait]<br/>
-            finish      - 任务已完成[前置条件：wait]<br/>
         type:
           type: string
           description: |
@@ -4140,6 +4144,79 @@ components:
           type: boolean
           description: 是否发布，若不发布则保存为草稿
           example: false
+    EditTaskInfo:
+      type: object
+      properties:
+        title:
+          type: string
+          description: 任务标题
+          example: '帮我洗澡'
+        content:
+          type: string
+          description: 任务详情
+          example: '过来至二634洗澡澡'
+        images:
+          type: array
+          items:
+            type: string
+            description: 图片ID
+            example: '5c9ecbbba4a3f52e3195fa68'
+        attachment:
+          type: array
+          items:
+            type: string
+            description: 附件ID
+            example: '5c9ecbbba4a3f52e3195fa68'
+        status:
+          type: string
+          description: |
+            任务状态<br/>
+            wait        - 等待接受[前置条件：draft]<br/>
+            close       - 任务已关闭[前置条件：wait]<br/>
+            finish      - 任务已完成[前置条件：wait]<br/>
+          example: 'wait'
+        reward_value:
+          type: number
+          description: |
+            酬劳数值，当酬劳类型为money、rmb才存在，并且不能降低
+          example: 100
+        reward_object:
+          type: string
+          description: |
+            酬劳物体，酬劳类型为object才存在
+          example: '一个吻'
+        location:
+          type: array
+          description: 任务地点
+          items:
+            type: string
+            example: 中山大学
+        tags:
+          type: array
+          description: 任务标签(关键词)
+          items:
+            type: string
+            example: 打游戏
+        start_date:
+          type: integer
+          description: |
+            任务开始时间
+          example: 1214141242
+        end_date:
+          type: integer
+          description: |
+            任务结束时间
+          example: 1214141246
+        max_player:
+          type: integer
+          description: |
+            参与用户上限
+          example: 30
+        auto_accept:
+          type: boolean
+          description: |
+            是否自动同意领取任务
+          example: true
 
     ArticleBaseInfo:
       type: object
