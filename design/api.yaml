@@ -325,7 +325,9 @@ paths:
                   pagination:
                     $ref: '#/components/schemas/Pagination'
                   data:
-                    $ref: '#/components/schemas/Players'
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PlayersWithDetail'
         '400':
           $ref: '#/components/responses/400InvalidValue'
         '403':
@@ -432,7 +434,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/TaskInfo'
+                      $ref: '#/components/schemas/BaseTaskInfoWithout'
         '400':
           $ref: '#/components/responses/400InvalidValue'
         '401':
@@ -3561,52 +3563,56 @@ components:
             是否公开(不公开的话只有参与成员/用户自己可以查看)<br/>
             默认为公开
           example: false
-
+    PlayersWithDetail:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/Players'
+        task:
+          $ref: '#/components/schemas/BaseTaskInfoWithout'
     Players:
-      type: array
-      items:
-        type: object
-        properties:
-          task:
-            type: string
-            description: 任务ID
-            example: '5c9ecbbba4a3f52e3195fa68'
-          owner:
-            type: string
-            description: 领取用户的ID
-            example: '5c9ecbbba4a3f52e3195fa68'
-          status:
-            type: string
-            description: |
-              用户状态<br/>
-              wait      - 等待同意加入 <br/>
-              refuse    - 拒绝加入 <br/>
-              close     - 发布者关闭任务 <br/>
-              running   - 用户进行任务中 <br/>
-              finish    - 已完成任务 <br/>
-              give_up   - 用户已放弃 <br/>
-              failure   - 任务失败 <br/>
-            example: 'running'
-          note:
-            type: string
-            description: 申请备注
-            example: '我要加入'
-          degree:
-            type: integer
-            description: 任务完成度
-            example: 100
-          remark:
-            type: string
-            description: 发布者的评语
-            example: '很好'
-          score:
-            type: integer
-            description: 用户的评价
-            example: 100
-          feedback:
-            type: string
-            description: 用户的反馈
-            example: '我觉得还行'
+      type: object
+      properties:
+        task:
+          type: string
+          description: 任务ID
+          example: '5c9ecbbba4a3f52e3195fa68'
+        owner:
+          type: string
+          description: 领取用户的ID
+          example: '5c9ecbbba4a3f52e3195fa68'
+        status:
+          type: string
+          description: |
+            用户状态<br/>
+            wait      - 等待同意加入 <br/>
+            refuse    - 拒绝加入 <br/>
+            close     - 发布者关闭任务 <br/>
+            running   - 用户进行任务中 <br/>
+            finish    - 已完成任务 <br/>
+            give_up   - 用户已放弃 <br/>
+            failure   - 任务失败 <br/>
+          example: 'running'
+        note:
+          type: string
+          description: 申请备注
+          example: '我要加入'
+        degree:
+          type: integer
+          description: 任务完成度
+          example: 100
+        remark:
+          type: string
+          description: 发布者的评语
+          example: '很好'
+        score:
+          type: integer
+          description: 用户的评价
+          example: 100
+        feedback:
+          type: string
+          description: 用户的反馈
+          example: '我觉得还行'
 
     UserBaseInfo:
       type: object
@@ -3804,6 +3810,135 @@ components:
           description: 联系电话
           format: phone
           example: '12345678901'
+    BaseTaskInfoWithout:
+      type: object
+      description: 任务简短信息
+      properties:
+        id:
+          type: string
+          description: 任务id
+          example: '5c9ecbbba4a3f52e3195fa68'
+        publisher:
+          $ref: '#/components/schemas/UserBaseInfo'
+        title:
+          type: string
+          description: 任务标题
+          example: '帮我洗澡'
+        content:
+          type: string
+          description: 任务详情
+          example: '过来至二634洗澡澡'
+        location:
+          type: array
+          description: 任务地点
+          items:
+            type: string
+            example: '中山大学'
+        tags:
+          type: array
+          description: 任务标签
+          items:
+            type: string
+            example: '打游戏'
+        top_time:
+          type: integer
+          description: 置顶时间(默认为0)，如果当前时间小于置顶时间，则将任务视为置顶
+          example: 1244123123
+        status:
+          type: string
+          description: |
+            任务状态<br/>
+            draft    - 草稿<br/>
+            wait     - 等待接受/执行中<br/>
+            close    - 已关闭<br/>
+            finish   - 已完成<br/>
+          example: 'wait'
+        type:
+          type: string
+          description: |
+            任务类型<br/>
+            run           - 跑腿任务<br/>
+            questionnaire - 问卷任务<br/>
+            info          - 信息任务<br/>
+          example: 'run'
+        images:
+          type: array
+          description: 任务图片id
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: 图片ID
+                example: '5c9ecbbba4a3f52e3195fa68'
+              url:
+                type: string
+                description: 图片URL
+                example: 'https://xxx.com/xxx.jpg'
+        reward:
+          type: string
+          description: |
+            酬劳类型<br/>
+            money     - 闲钱币<br/>
+            rmb       - 人民币<br/>
+            object  - 实物<br/>
+          example: 'rmb'
+        reward_value:
+          type: number
+          description: |
+            酬劳数值，当酬劳类型为money、rmb才存在
+          example: 100
+        reward_object:
+          type: string
+          description: |
+            酬劳物体，酬劳类型为object才存在
+          example: '一个吻'
+        publish_date:
+          type: integer
+          description: |
+            任务发布时间
+          example: 112312341243
+        start_date:
+          type: integer
+          description: |
+            任务开始时间
+          example: 121414124
+        end_date:
+          type: integer
+          description: |
+            任务结束时间
+          example: 121414124
+        player_count:
+          type: integer
+          description: |
+            参与的用户数
+          example: 12
+        max_player:
+          type: integer
+          description: |
+            参与用户上限
+          example: 30
+        comment_count:
+          type: integer
+          description: |
+            任务评论数
+          example: 30
+        view_count:
+          type: integer
+          description: |
+            任务浏览数
+          example: 30
+        collect_count:
+          type: integer
+          description: |
+            任务收藏数
+          example: 30
+        like_count:
+          type: integer
+          description: |
+            任务点赞数
+          example: 30
+
     BaseTaskInfo:
       type: object
       description: 任务简短信息
