@@ -1612,7 +1612,6 @@ paths:
   /tasks/{task_id}/view:
     post:
       tags: [Tasks]
-      deprecated: true
       summary: 为任务添加阅读量
       description: |
         为任务添加阅读量
@@ -1717,7 +1716,7 @@ paths:
                     type: string
                     description: |
                       faked_task    - 任务不存在<br/>
-                      exist_task    - 任务已经收藏，不能重复收藏</>
+                      exist_task    - 任务已经收藏，不能重复收藏<br/>
                     example: 'faked_task'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -1757,7 +1756,6 @@ paths:
   /tasks/{task_id}/like:
     post:
       tags: [Tasks]
-      deprecated: true
       summary: 为任务点赞
       description: |
         为任务点赞
@@ -1784,13 +1782,13 @@ paths:
                   error:
                     type: string
                     description: |
-                      exist_like   - 任务已经点赞，不能重复点赞</>
+                      exist_like   - 任务已经点赞，不能重复点赞<br/>
+                      faked_task   - 任务不存在<br/>
                     example: 'exist_like'
         '401':
           $ref: '#/components/responses/401NotLoginError'
     delete:
       tags: [Tasks]
-      deprecated: true
       summary: 取消点赞任务
       description: |
         取消点赞任务
@@ -1817,7 +1815,8 @@ paths:
                   error:
                     type: string
                     description: |
-                      faked_like   - 你根本没有点赞，取消什么</>
+                      faked_like   - 你根本没有点赞，取消什么<br/>
+                      faked_task   - 任务不存在<br/>
                     example: 'faked_like'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -2070,7 +2069,7 @@ paths:
                     description: |
                       permission_deny - 权限不足<br/>
                       faked_comment   - 评论不存在<br/>
-                    example: 'exist_like'
+                    example: 'permission_deny'
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /comments/{comment_id}/like:
@@ -2103,7 +2102,8 @@ paths:
                   error:
                     type: string
                     description: |
-                      exist_like   - 评论已经点赞，不能重复点赞</>
+                      exist_like   - 评论已经点赞，不能重复点赞<br/>
+                      faked_comment - 评论不存在
                     example: 'exist_like'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -2136,8 +2136,9 @@ paths:
                   error:
                     type: string
                     description: |
-                      faked_like   - 你根本没有点赞，取消什么</>
-                    example: 'exist_like'
+                      faked_like   - 你根本没有点赞，取消什么<br/>
+                      faked_comment - 评论不存在
+                    example: 'faked_like'
         '401':
           $ref: '#/components/responses/401NotLoginError'
 
@@ -3577,10 +3578,8 @@ components:
           type: string
           description: 任务ID
           example: '5c9ecbbba4a3f52e3195fa68'
-        owner:
-          type: string
-          description: 领取用户的ID
-          example: '5c9ecbbba4a3f52e3195fa68'
+        player:
+          $ref: '#/components/schemas/UserBaseInfo'
         status:
           type: string
           description: |
