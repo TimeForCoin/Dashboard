@@ -1235,7 +1235,6 @@ paths:
     put:
       tags: [Tasks]
       summary: 修改任务信息
-      deprecated: true
       description: |
         修改任务的部分信息
         需要任务处于状态[draft, wait]
