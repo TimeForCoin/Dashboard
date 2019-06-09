@@ -2142,13 +2142,21 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
 
-  /questionnaires:
+  /questionnaires/{task_id}:
     post:
       tags: [Questionnaires]
       deprecated: true
       summary: 新建问卷
       description: |
         新建问卷
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: 问卷所属任务ID
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
       requestBody:
         content:
           'application/json':
@@ -2176,7 +2184,6 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
         '403':
           $ref: '#/components/responses/403PermissionDenyError'
-  /questionnaires/{task_id}:
     get:
       tags: [Questionnaires]
       deprecated: true
