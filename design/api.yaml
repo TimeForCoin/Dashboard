@@ -1187,7 +1187,12 @@ paths:
                   error:
                     type: string
                     description: |
-                      not_allow_date   - 不允许结束日期小于开始日期
+                      not_allow_date   - 不允许结束日期小于开始日期<br/>
+                      title_too_long    - 任务标题不能超过32个字符<br/>
+                      content_too_long  - 任务内容不能超过256个字符<br/>
+                      reward_object_too_long  - 任务酬劳不能超过32个字符<br/>
+                      location_too_long - 任务地点不能超过64个字符<br/>
+                      tag_too_long  - 任务标签不能超过16个字符<br/>
                     example: 'not_allow_date'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -1271,6 +1276,11 @@ paths:
                       not_allow_max_player  - 不允许的参与用户上限<br/>
                       not_allow_status      - 不允许的状态变换<br/>
                       not_allow_reward_value- 不允许降低酬劳数值<br/>
+                      title_too_long    - 任务标题不能超过32个字符<br/>
+                      content_too_long  - 任务内容不能超过256个字符<br/>
+                      reward_object_too_long  - 任务酬劳不能超过32个字符<br/>
+                      location_too_long - 任务地点不能超过64个字符<br/>
+                      tag_too_long  - 任务标签不能超过16个字符<br/>
                     example: 'not_allow_max_player'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -1919,18 +1929,17 @@ paths:
         '403':
           $ref: '#/components/responses/403PermissionDenyError'
 
-  /comments/{id}:
+  /comments/{content_id}:
     get:
       tags: [Comments]
-      deprecated: true
-      summary: 获取评论列表
+      summary: 获取评论/回复列表
       description: |
-        分页获取评论/回复列表
+        分页获取评论列表，每条评论默认加载前5条回复，如果回复数多于5，则需要再次获取
       parameters:
-        - name: id
+        - name: content_id
           in: path
           required: true
-          description: 被评论内容ID
+          description: 被评论内容ID/评论ID
           schema:
             type: string
             example: '5c9ecbbba4a3f52e3195fa68'
@@ -1990,12 +1999,11 @@ paths:
                     example: 'invalid_size'
     post:
       tags: [Comments]
-      deprecated: true
-      summary: 添加评论
+      summary: 添加评论/回复
       description: |
         添加评论
       parameters:
-        - name: id
+        - name: content_id
           in: path
           required: true
           description: 被评论的内容ID，可以为任务/评论
@@ -2015,6 +2023,7 @@ paths:
                     评论类型<br/>
                     task    - 评论任务<br/>
                     comment - 回复评论<br/>
+                  example: task
                 content:
                   type: string
                   description: 评论内容
@@ -2035,17 +2044,19 @@ paths:
                     type: string
                     description: |
                       faked_content         - 被评论内容不存在<br/>
+                      content_too_long  - 被评论内容超过了128个字符<br/>
                     example: 'faked_content'
         '401':
           $ref: '#/components/responses/401NotLoginError'
+
+  /comments/{comment_id}:
     delete:
       tags: [Comments]
-      deprecated: true
-      summary: 删除评论
+      summary: 删除评论/回复
       description: |
-        删除评论，只有评论人/管理员才可以删除
+        删除评论/回复，只有评论人/管理员才可以删除
       parameters:
-        - name: id
+        - name: comment_id
           in: path
           required: true
           description: 评论ID
@@ -2075,8 +2086,7 @@ paths:
   /comments/{comment_id}/like:
     post:
       tags: [Comments]
-      deprecated: true
-      summary: 为评论点赞
+      summary: 为评论/回复点赞
       description: |
         为评论点赞
       parameters:
@@ -2103,14 +2113,14 @@ paths:
                     type: string
                     description: |
                       exist_like   - 评论已经点赞，不能重复点赞<br/>
-                      faked_comment - 评论不存在
+                      faked_comment - 评论不存在<br/>
+                      deleted_comment - 评论已删除<br/>
                     example: 'exist_like'
         '401':
           $ref: '#/components/responses/401NotLoginError'
     delete:
       tags: [Comments]
-      deprecated: true
-      summary: 取消点赞评论
+      summary: 取消点赞评论/回复
       description: |
         取消点赞任务
       parameters:
@@ -2137,7 +2147,8 @@ paths:
                     type: string
                     description: |
                       faked_like   - 你根本没有点赞，取消什么<br/>
-                      faked_comment - 评论不存在
+                      faked_comment - 评论不存在<br/>
+                      deleted_comment - 评论已删除<br/>
                     example: 'faked_like'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -3435,6 +3446,39 @@ components:
         file_value:
           $ref: '#/components/schemas/FileInfo'
 
+    BaseCommentData:
+      type: object
+      description: 评论的回复
+      properties:
+        id:
+          type: string
+          description: 回复ID
+          example: '5c9ecbbba4a3f52e3195fa68'
+        own:
+          $ref: '#/components/schemas/UserBaseInfo'
+        content:
+          type: string
+          description: 回复内容
+          example: '你好骚啊'
+        user:
+          $ref: '#/components/schemas/UserBaseInfo'
+        liked:
+          type: boolean
+          description: 是否已经点赞
+          example: false
+        like_count:
+          type: integer
+          description: 点赞数
+          example: 43
+        time:
+          type: integer
+          description: 回复时间戳
+          example: 12414324234
+        is_delete:
+          type: boolean
+          description: 是否已经被删除
+          example: 'true'
+
     CommentData:
       type: object
       description: 评论数据结构
@@ -3447,44 +3491,22 @@ components:
           type: string
           description: 被评论内容ID，可以是任务也可以是评论
           example: '5c9ecbbba4a3f52e3195fa68'
-        content_own:
+        own:
           $ref: '#/components/schemas/UserBaseInfo'
         content:
           type: string
           description: 评论内容
           example: '你好骚啊'
-        user_id:
+        user:
           $ref: '#/components/schemas/UserBaseInfo'
+        is_delete:
+          type: boolean
+          description: 是否已经被删除
+          example: 'true'
         reply:
           type: array
           items:
-            type: object
-            description: 评论的回复
-            properties:
-              id:
-                type: string
-                description: 回复ID
-                example: '5c9ecbbba4a3f52e3195fa68'
-              content_own:
-                $ref: '#/components/schemas/UserBaseInfo'
-              content:
-                type: string
-                description: 回复内容
-                example: '你好骚啊'
-              user_id:
-                $ref: '#/components/schemas/UserBaseInfo'
-              liked:
-                type: boolean
-                description: 是否已经点赞
-                example: false
-              like_count:
-                type: integer
-                description: 点赞数
-                example: 43
-              time:
-                type: integer
-                description: 回复时间戳
-                example: 12414324234
+            $ref: '#/components/schemas/BaseCommentData'
         liked:
           type: boolean
           description: 是否已经点赞
