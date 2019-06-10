@@ -1187,6 +1187,9 @@ paths:
                   error:
                     type: string
                     description: |
+                      faked_file   - 图片/文件不存在<br/>
+                      permission_deny   - 不允许添加他人的附件<br/>
+                      error_file_type - 文件类型(图片/附件)错误<br/>
                       not_allow_date   - 不允许结束日期小于开始日期<br/>
                       title_too_long    - 任务标题不能超过32个字符<br/>
                       content_too_long  - 任务内容不能超过256个字符<br/>
@@ -1834,8 +1837,7 @@ paths:
   /file:
     post:
       tags: [File]
-      deprecated: true
-      summary: 上传文件
+      summary: 上传图片/文件
       description: |
         上传用于任务或者个人认证的附件或者图片
       requestBody:
@@ -1877,33 +1879,10 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /file/{id}:
-    get:
-      tags: [File]
-      deprecated: true
-      summary: 下载文件/图片
-      description: |
-        下载文件，对于非公开文件需要领取任务才能下载
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: 文件ID
-          schema:
-            type: string
-            example: '5c9ecbbba4a3f52e3195fa68'
-      responses:
-        '200':
-          description: 下载文件
-        '400':
-          $ref: '#/components/responses/400InvalidValue'
-        '401':
-          $ref: '#/components/responses/401NotLoginError'
-        '403':
-          $ref: '#/components/responses/403PermissionDenyError'
     put:
       tags: [File]
       deprecated: true
-      summary: 修改文件信息
+      summary: 修改附件文件信息
       description: |
         修改文件的部分信息
       parameters:
@@ -2156,7 +2135,6 @@ paths:
   /questionnaires/{task_id}:
     post:
       tags: [Questionnaires]
-      deprecated: true
       summary: 新建问卷
       description: |
         新建问卷
@@ -2197,7 +2175,6 @@ paths:
           $ref: '#/components/responses/403PermissionDenyError'
     get:
       tags: [Questionnaires]
-      deprecated: true
       summary: 获取问卷基本信息
       description: 获取问卷基本信息，属于公开信息
       parameters:
@@ -2260,7 +2237,6 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
     put:
       tags: [Questionnaires]
-      deprecated: true
       summary: 修改问卷基本信息
       description: |
         修改问卷基本信息，须检验权限，仅允许任务在[draft]状态下修改
@@ -3803,6 +3779,10 @@ components:
           type: string
           description: 头像Base64数据
           example: 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzd....'
+        avatar_url:
+          type: string
+          description: 头像URL
+          example: 'https://xx.com/aa.png'
         bio:
           type: string
           description: |
@@ -3823,6 +3803,7 @@ components:
             other - 未知<br/>
             man   - 男<br/>
             woman - 女<br/>
+          example: man
         location:
           type: string
           description: |
