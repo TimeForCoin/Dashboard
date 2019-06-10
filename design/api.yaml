@@ -1842,9 +1842,9 @@ paths:
         上传用于任务或者个人认证的附件或者图片
       requestBody:
         content:
-          'application/json':
+          'multipart/form-data':
             schema:
-              $ref: '#/components/schemas/EditFileInfo'
+              $ref: '#/components/schemas/NewFileInfo'
       responses:
         '201':
           description: 添加附件成功
@@ -1881,7 +1881,6 @@ paths:
   /file/{id}:
     put:
       tags: [File]
-      deprecated: true
       summary: 修改附件文件信息
       description: |
         修改文件的部分信息
@@ -1906,7 +1905,18 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
         '403':
-          $ref: '#/components/responses/403PermissionDenyError'
+          description: 修改失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: |
+                      permission_deny - 权限不足<br/>
+                      faked_file - 文件不存在<br/>
+                    example: 'permission_deny'
 
   /comments/{content_id}:
     get:
@@ -3532,6 +3542,23 @@ components:
           example: false
     EditFileInfo:
       type: object
+      properties:
+        name:
+          type: string
+          description: 附件名称
+          example: '秀秀照片'
+        description:
+          type: string
+          description: 附件描述
+          example: '洗澡'
+        public:
+          type: boolean
+          description: |
+            是否公开(不公开的话只有参与成员/用户自己可以查看)<br/>
+            默认为公开
+          example: false
+    NewFileInfo:
+      type: object
       required:
         - owner
         - type
@@ -3557,7 +3584,7 @@ components:
           example: 'image'
         name:
           type: string
-          description: 附件名称
+          description: 附件名称, 默认为文件名
           example: '秀秀照片'
         description:
           type: string
