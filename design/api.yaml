@@ -1142,7 +1142,7 @@ paths:
                 properties:
                   pagination:
                     $ref: '#/components/schemas/Pagination'
-                  data:
+                  tasks:
                     type: array
                     items:
                       $ref: '#/components/schemas/BaseTaskInfo'
