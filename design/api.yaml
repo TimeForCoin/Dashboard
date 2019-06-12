@@ -1950,6 +1950,26 @@ paths:
   /file/useless:
     delete:
       tags: [File]
+      summary: 清理当前用户未使用文件
+      description: |
+        清理所有上传后未使用的文件，需要管理员权限
+      responses:
+        '200':
+          description: 删除文件成功
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  remove_count:
+                    type: integer
+                    description: 清理的文件数量
+                    example: 12
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+  /file/useless/all:
+    delete:
+      tags: [File]
       summary: 清理所有未使用文件
       description: |
         清理所有上传后未使用的文件，需要管理员权限
