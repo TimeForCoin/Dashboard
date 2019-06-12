@@ -1174,6 +1174,16 @@ paths:
       responses:
         '201':
           description: 发布任务成功
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: |
+                      任务ID
+                    example: '5c9ecbbba4a3f52e3195fa68'
         '400':
           $ref: '#/components/responses/400InvalidValue'
         '403':
