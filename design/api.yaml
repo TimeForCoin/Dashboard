@@ -1952,7 +1952,7 @@ paths:
       tags: [File]
       summary: 清理当前用户未使用文件
       description: |
-        清理所有上传后未使用的文件，需要管理员权限
+        清理当前用户上传后未使用文件
       responses:
         '200':
           description: 删除文件成功
