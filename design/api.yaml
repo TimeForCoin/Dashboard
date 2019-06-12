@@ -345,7 +345,6 @@ paths:
   /users/collect/{user_id}:
     get:
       tags: [Users]
-      deprecated: true
       summary: 获取用户收藏列表
       description: |
         分页获取用户收藏任务列表
@@ -1701,7 +1700,6 @@ paths:
   /tasks/{task_id}/collect:
     post:
       tags: [Tasks]
-      deprecated: true
       summary: 收藏任务
       description: |
         收藏指定任务
@@ -1735,7 +1733,6 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
     delete:
       tags: [Tasks]
-      deprecated: true
       summary: 取消收藏任务
       description: |
         取消收藏指定任务
@@ -1917,6 +1914,71 @@ paths:
                       permission_deny - 权限不足<br/>
                       faked_file - 文件不存在<br/>
                     example: 'permission_deny'
+    delete:
+      tags: [File]
+      summary: 删除未使用文件
+      description: |
+        删除上传后未使用的文件
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 文件ID
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
+      responses:
+        '200':
+          description: 删除文件成功
+        '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
+          description: 删除文件失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      permission_deny - 权限不足<br/>
+                      faked_file   - 文件不存在<br/>
+                    example: 'permission_deny'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+  /file/useless:
+    delete:
+      tags: [File]
+      summary: 清理所有未使用文件
+      description: |
+        清理所有上传后未使用的文件，需要管理员权限
+      responses:
+        '200':
+          description: 删除文件成功
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  remove_count:
+                    type: integer
+                    description: 清理的文件数量
+                    example: 12
+        '403':
+          description: 删除文件失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      permission_deny - 权限不足<br/>
+                    example: 'permission_deny'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
 
   /comments/{content_id}:
     get:
@@ -3568,13 +3630,6 @@ components:
           type: string
           description: 文件数据
           example: File Buffer
-        owner:
-          type: string
-          description: |
-            附件所有权<br/>
-            task -  附件所有权属于任务<br/>
-            user  - 附件所有权属于用户<br/>
-          example: 'task'
         type:
           type: string
           description: |
@@ -3729,10 +3784,6 @@ components:
           type: number
           description: 收藏任务数量
           example: 12
-        collect_run_count:
-          type: number
-          description: 收藏并进行中任务数量
-          example: 1
         public_count:
           type: number
           description: 发布任务数量
