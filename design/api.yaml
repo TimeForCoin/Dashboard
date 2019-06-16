@@ -570,6 +570,7 @@ paths:
       summary: 搜索用户
       description: |
         使用关键字搜索用户
+      parameters:
         - name: key
           in: query
           required: true
