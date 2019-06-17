@@ -2,4 +2,4 @@
 
 在线地址：<https://app.swaggerhub.com/apis-docs/XMatrixStudio/TimeForCoin/1.0.0#/>
 
-备用地址：<https://xmatrix.studio/docs/swagger/?url=https://raw.githubusercontent.com/TimeForCoin/Dashboard/master/design/api.yaml>
+备用地址：<http://xm.zhenly.cn//docs/swagger/?url=https://raw.githubusercontent.com/TimeForCoin/Dashboard/master/design/api.yaml#/>
