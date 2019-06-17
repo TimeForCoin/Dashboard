@@ -19,8 +19,6 @@ tags:
     description: 用户操作
   - name: Certification
     description: 认证相关
-  - name: Relation
-    description: 用户关系
   - name: Tasks
     description: 任务
   - name: Comments
@@ -617,8 +615,7 @@ paths:
 
   /users/follower/{user_id}:
     get:
-      tags: [Relation]
-      deprecated: true
+      tags: [Users]
       summary: 获取用户粉丝列表
       description: |
         获取指定用户得粉丝列表
@@ -667,8 +664,7 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
   /users/following/{user_id}:
     get:
-      tags: [Relation]
-      deprecated: true
+      tags: [Users]
       summary: 获取用户关注人列表
       description: |
         获取指定用户关注人列表
@@ -717,7 +713,6 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
     post:
       tags: [Relation]
-      deprecated: true
       summary: 关注指定用户
       description: |
         为当前用户关注指定用户
@@ -746,8 +741,40 @@ paths:
                     type: string
                     description: |
                       faked_user      - 用户不存在<br/>
-                      exist_user      - 用户已关注<br/>
-                    example: 'invalid_page'
+                      exist_relation      - 用户已关注<br/>
+                    example: 'exist_relation'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+    delete:
+      tags: [Users]
+      summary: 取消关注用户
+      description: |
+        取消关注指定用户
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: 用户ID
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
+      responses:
+        '200':
+          description: 取消关注成功
+        '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
+          description: 取消关注失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      faked_relation    - 你根本就没有关注，还想取消？<br/>
+                    example: 'faked_relation'
         '401':
           $ref: '#/components/responses/401NotLoginError'
 
@@ -1074,7 +1101,7 @@ paths:
           required: false
           description: |
             列表顺序， 默认按时间顺序[new]<br/>
-            user  - 用户个性化信息流[此状态下不能筛选]<br/>
+            <del>user  - 用户个性化信息流[此状态下不能筛选]</del><br/>
             hot   - 热门<br/>
             new   - 最新<br/>
           schema:
@@ -3834,6 +3861,14 @@ components:
           type: number
           description: 接受并进行中任务数量
           example: 1
+        following:
+          type: boolean
+          description: 是否正在关注
+          example: true
+        follower:
+          type: boolean
+          description: 是否关注自己
+          example: false
     UserInfo:
       type: object
       description: 用户个人信息
