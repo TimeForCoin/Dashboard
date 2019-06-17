@@ -532,7 +532,6 @@ paths:
   /users/history:
     get:
       tags: [Users]
-      deprecated: true
       summary: 获取用户搜索记录
       description: |
         获取当前用户的搜索记录
@@ -554,7 +553,6 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
     delete:
       tags: [Users]
-      deprecated: true
       summary: 清空用户搜索记录
       description: |
         清空当前用户搜索记录
@@ -606,7 +604,12 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/UserInfo'
+                      type: object
+                      properties:
+                        data:
+                          $ref: '#/components/schemas/UserData'
+                        info:
+                          $ref: '#/components/schemas/UserInfo'
         '400':
           $ref: '#/components/responses/400InvalidValue'
         '401':
@@ -1120,6 +1123,7 @@ paths:
           required: false
           description: |
             关键词搜索，对任务名称和内容进行搜索<br/>
+            多个关键词以逗号分隔
           schema:
             type: string
             example: '秀秀'
