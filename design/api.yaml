@@ -2644,7 +2644,6 @@ paths:
   /messages:
     get:
       tags: [Messages]
-      deprecated: true
       summary: 获取当前用户消息列表
       description: |
         分页获取当前用户消息列表
@@ -2673,10 +2672,8 @@ paths:
               schema:
                 type: object
                 properties:
-                  count:
-                    type: integer
-                    description: 会话数量
-                    example: 123
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
                   data:
                     type: array
                     items:
@@ -2697,9 +2694,9 @@ paths:
                     example: 'faked_users'
         '401':
           $ref: '#/components/responses/401NotLoginError'
+  /messages/system:
     post:
       tags: [Messages]
-      deprecated: true
       summary: 发送系统消息
       description: |
         发送系统消息，仅管理员可使用
@@ -2723,6 +2720,15 @@ paths:
       responses:
         '201':
           description: 发送消息成功
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: 发送的数目
+                    example: 100
         '400':
           $ref: '#/components/responses/400InvalidValue'
         '401':
@@ -2733,7 +2739,6 @@ paths:
   /messages/{id}:
     get:
       tags: [Messages]
-      deprecated: true
       summary: 获取会话消息
       description: |
         分页获取指定会话消息内容
@@ -2770,14 +2775,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  count:
-                    type: integer
-                    description: 消息总数量
-                    example: 123
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
                   data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/MessageData'
+                    $ref: '#/components/schemas/MessageSession'
         '400':
           $ref: '#/components/responses/400InvalidValue'
         '403':
@@ -2797,7 +2798,6 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
     put:
       tags: [Messages]
-      deprecated: true
       summary: 将会话标记为已读
       description: |
         将会话标记为已读
@@ -2832,7 +2832,6 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
     post:
       tags: [Messages]
-      deprecated: true
       summary: 发送消息
       description: |
         发送消息
@@ -2840,7 +2839,7 @@ paths:
         - name: id
           in: path
           required: true
-          description: 对方用户ID，若为[feedback]则向系统管理员[root]发送反馈消息
+          description: 对方用户ID
           schema:
             type: string
             example: '5c9ecbbba4a3f52e3195fa68'
@@ -2864,6 +2863,15 @@ paths:
       responses:
         '201':
           description: 发送消息成功
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: 会话ID
+                    example: '5c9ecbbba4a3f52e3195fa68'
         '400':
           $ref: '#/components/responses/400InvalidValue'
         '403':
@@ -2878,7 +2886,7 @@ paths:
                     description: |
                       permission_deny - 权限不足<br/>
                       faked_user          - 用户不存在<br/>
-                    example: 'invalid_content_id'
+                    example: 'permission_deny'
         '401':
           $ref: '#/components/responses/401NotLoginError'
 
