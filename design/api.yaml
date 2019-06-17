@@ -712,7 +712,7 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
     post:
-      tags: [Relation]
+      tags: [Users]
       summary: 关注指定用户
       description: |
         为当前用户关注指定用户
