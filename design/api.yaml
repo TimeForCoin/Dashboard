@@ -17,8 +17,6 @@ tags:
     description: 登陆相关
   - name: Users
     description: 用户操作
-  - name: Certification
-    description: 认证相关
   - name: Tasks
     description: 任务
   - name: Comments
@@ -31,6 +29,8 @@ tags:
     description: 文件系统
   - name: Utils
     description: 其他
+  - name: Certification
+    description: 认证相关
   - name: Article
     description: 公告文章
 
@@ -267,7 +267,6 @@ paths:
   /users/task/{user_id}:
     get:
       tags: [Users]
-      deprecated: true
       summary: 获取用户参与的任务列表
       description: |
         获取用户参与的任务列表
