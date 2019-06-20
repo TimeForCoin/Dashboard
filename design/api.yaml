@@ -1259,10 +1259,7 @@ paths:
           content:
             'application/json':
               schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/TaskInfo'
+                $ref: '#/components/schemas/TaskInfo'
         '400':
           $ref: '#/components/responses/400InvalidValue'
         '403':
