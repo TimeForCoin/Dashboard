@@ -1406,7 +1406,6 @@ paths:
   /tasks/{task_id}/player:
     get:
       tags: [Tasks]
-      deprecated: true
       summary: 获取任务参与人员列表
       description: |
         获取指定任务参与人员全部列表
@@ -1440,22 +1439,16 @@ paths:
           description: |
             筛选参与人员状态<br/>
             all       - 所有<br/>
-            close     - 发布者关闭任务<br/>
-            running   - 用户进行任务中<br/>
-            finish    - 已完成任务<br/>
-            give_up   - 用户已放弃<br/>
-            failure   - 任务失败<br/>
+            wait      - 等待同意加入 <br/>
+            refuse    - 拒绝加入 <br/>
+            close     - 发布者关闭任务 <br/>
+            running   - 用户进行任务中 <br/>
+            finish    - 已完成任务 <br/>
+            give_up   - 用户已放弃 <br/>
+            failure   - 任务失败 <br/>
           schema:
             type: string
             example: running
-        - name: accept
-          in: query
-          required: false
-          description: |
-            筛选接受状态
-          schema:
-            type: boolean
-            example: false
       responses:
         '200':
           description: 获取成功
@@ -1486,7 +1479,6 @@ paths:
                     example: 'faked_task'
     post:
       tags: [Tasks]
-      deprecated: true
       summary: 成为任务参与人员（领取任务）
       description: |
         成为任务参与人员
@@ -1533,7 +1525,6 @@ paths:
   /tasks/{task_id}/player/{user_id}:
     put:
       tags: [Tasks]
-      deprecated: true
       summary: 修改任务参与者状态
       description: |
         修改任务参与者状态，任务发布者和执行者分别可以修改不同部分，否则返回403错误
@@ -1614,12 +1605,12 @@ paths:
                       permission_deny   - 权限不足<br/>
                       faked_task        - 任务不存在<br/>
                       faked_user        - 用户不存在<br/>
-                    example: 'invalid_size'
+                      not_allow_status  - 该状态下不允许修改<br/>
+                    example: 'faked_task'
         '401':
           $ref: '#/components/responses/401NotLoginError'
     delete:
       tags: [Tasks]
-      deprecated: true
       summary: 退出任务
       description: |
         自己退出任务或者被发布者踢出任务
@@ -2305,7 +2296,20 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
         '403':
-          $ref: '#/components/responses/403PermissionDenyError'
+          description: 获取问题信息失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      faked_task     - 任务不存在<br/>
+                      permission_deny   - 权限不足<br/>
+                      not_allow_type      - 不允许为非问卷类型任务创建问卷<br/>
+                      exist_questionnaire - 问卷已存在
+                    example: 'faked_task'
     get:
       tags: [Questionnaires]
       summary: 获取问卷基本信息
@@ -2372,7 +2376,7 @@ paths:
       tags: [Questionnaires]
       summary: 修改问卷基本信息
       description: |
-        修改问卷基本信息，须检验权限，仅允许任务在[draft]状态下修改
+        修改问卷基本信息，须检验权限，仅允许任务在[draft、wait]状态下修改
       parameters:
         - name: task_id
           in: path
@@ -2419,10 +2423,9 @@ paths:
                     example: 'invalid_title'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-  /questionnaires/{task_id}/question:
+  /questionnaires/{task_id}/questions:
     get:
       tags: [Questionnaires]
-      deprecated: true
       summary: 获取问卷问题
       description: 获取指定问卷问题，需要检验权限，允许微信临时用户使用
       parameters:
@@ -2464,7 +2467,6 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
     post:
       tags: [Questionnaires]
-      deprecated: true
       summary: 修改问卷问题
       description: |
         为问卷添加问题，需要任务处于[draft]状态
@@ -2510,10 +2512,9 @@ paths:
                     example: 'not_allow_index'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-  /questionnaires/{task_id}/answer:
+  /questionnaires/{task_id}/answers:
     get:
       tags: [Questionnaires]
-      deprecated: true
       summary: 获取问卷答案数据
       description: 获取问卷答案，需要检验权限，若匿名则不返回用户数据
       parameters:
@@ -2595,7 +2596,6 @@ paths:
           $ref: '#/components/responses/401NotLoginError'
     post:
       tags: [Questionnaires]
-      deprecated: true
       summary: 添加回答
       description: |
         回答问卷，需要任务处于[wait]状态，允许微信临时用户使用
@@ -2613,7 +2613,7 @@ paths:
             schema:
               type: object
               properties:
-                problems:
+                data:
                   type: array
                   description: 题目答案
                   items:
