@@ -4624,7 +4624,17 @@ components:
           type: string
           description: 发布者名称
           example: '系统'
-        Image:
-          type: string
-          description: 展示图片文件ID
-          example: '5c9ecbbba4a3f52e3195fa68'
+        images:
+          type: array
+          items:
+            type: object
+            description: 图片URL
+            properties:
+              id:
+                type: string
+                description: 图片ID
+                example: '5c9ecbbba4a3f52e3195fa68'
+              url:
+                type: string
+                description: 图片URL
+                example: 'http://xx.com/a.png'
