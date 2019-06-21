@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>12</zoom_level>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>120</x>
+      <y>240</y>
+      <w>228</w>
+      <h>228</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;client&gt;&gt;
+Brower
+(html5)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>816</x>
+      <y>240</y>
+      <w>264</w>
+      <h>228</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;server&gt;&gt;
+app Server
+(os=linux)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>156</x>
+      <y>372</y>
+      <w>144</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;my app&gt;&gt;
+time-for-coin</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>864</x>
+      <y>372</y>
+      <w>144</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>api
+{port=30233}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>636</x>
+      <y>372</y>
+      <w>252</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=-
+http</panel_attributes>
+    <additional_attributes>10.0;20.0;190.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>1260</x>
+      <y>372</y>
+      <w>144</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;DB&gt;&gt;
+mongo</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>996</x>
+      <y>372</y>
+      <w>288</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=-
+tcp</panel_attributes>
+    <additional_attributes>10.0;20.0;220.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>1260</x>
+      <y>648</y>
+      <w>144</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Cache&gt;&gt;
+redis</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>996</x>
+      <y>396</y>
+      <w>288</w>
+      <h>312</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>10.0;10.0;220.0;240.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>1200</x>
+      <y>240</y>
+      <w>264</w>
+      <h>228</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;server&gt;&gt;
+DB Server
+(os=linux)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>1200</x>
+      <y>516</y>
+      <w>264</w>
+      <h>228</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;server&gt;&gt;
+Cache Server
+(os=linux)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>468</x>
+      <y>240</y>
+      <w>228</w>
+      <h>228</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;server&gt;&gt;
+Proxy
+(os=linux)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>492</x>
+      <y>372</y>
+      <w>156</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>Nginx
+{port=80}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>288</x>
+      <y>372</y>
+      <w>228</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=-
+https</panel_attributes>
+    <additional_attributes>10.0;20.0;170.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>816</x>
+      <y>516</y>
+      <w>264</w>
+      <h>228</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;server&gt;&gt;
+app Server
+(os=linux)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>864</x>
+      <y>648</y>
+      <w>144</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>api
+{port=30234}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>636</x>
+      <y>396</y>
+      <w>252</w>
+      <h>312</h>
+    </coordinates>
+    <panel_attributes>lt=-
+http</panel_attributes>
+    <additional_attributes>10.0;10.0;190.0;240.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>996</x>
+      <y>672</y>
+      <w>288</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=-
+tcp</panel_attributes>
+    <additional_attributes>10.0;20.0;220.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>996</x>
+      <y>396</y>
+      <w>288</w>
+      <h>300</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>10.0;230.0;220.0;10.0</additional_attributes>
+  </element>
+</diagram>
