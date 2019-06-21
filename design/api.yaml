@@ -27,10 +27,10 @@ tags:
     description: 消息
   - name: File
     description: 文件系统
-  - name: Utils
-    description: 其他
   - name: Certification
     description: 认证相关
+  - name: Utils
+    description: 其他
   - name: Article
     description: 公告文章
 
@@ -780,7 +780,6 @@ paths:
   /certification:
     get:
       tags: [Certification]
-      deprecated: true
       summary: 获取待审核认证列表
       description: |
         获取待审核认证列表，仅限管理员调用
@@ -806,6 +805,7 @@ paths:
           required: false
           description: |
             筛选认证类型 <br/>
+            all   - 所有<br/>
             email    - 邮箱认证<br/>
             material - 材料认证<br/>
           schema:
@@ -822,7 +822,18 @@ paths:
                   pagination:
                     $ref: '#/components/schemas/Pagination'
                   data:
-                    $ref: '#/components/schemas/CertificationData'
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: 用户ID
+                          example: 5c9ecbbba4a3f52e3195fa68
+                        info:
+                          $ref: '#/components/schemas/UserInfo'
+                        certification:
+                          $ref: '#/components/schemas/CertificationData'
         '400':
           $ref: '#/components/responses/400InvalidValue'
         '401':
@@ -962,7 +973,6 @@ paths:
   /certification/auto:
     get:
       tags: [Certification]
-      deprecated: true
       summary: 获取自动认证的列表
       description: |
         获取自动认证的邮箱后缀列表，仅限管理员调用
@@ -982,11 +992,11 @@ paths:
                     items:
                       type: object
                       properties:
-                        email:
+                        key:
                           type: string
                           description: 邮箱后缀
                           example: 'sysu.edu.cn'
-                        data:
+                        value:
                           type: string
                           description: 认证内容
                           example: '中山大学'
@@ -996,21 +1006,20 @@ paths:
           $ref: '#/components/responses/403PermissionDenyError'
     post:
       tags: [Certification]
-      deprecated: true
-      summary: 添加自动认证后缀
+      summary: 添加/修改自动认证后缀
       description: |
-        添加自动认证邮箱后缀，自动通过该邮箱的认证
+        添加/修改自动认证邮箱后缀，自动通过该邮箱的认证
       requestBody:
         content:
           'application/json':
             schema:
               type: object
               properties:
-                email:
+                key:
                   type: string
                   description: 邮箱后缀
                   example: 'sysu.edu.cn'
-                data:
+                value:
                   type: string
                   description: 认证内容
                   example: '中山大学本科生'
@@ -1037,7 +1046,6 @@ paths:
   /certification/auto/{key}:
     delete:
       tags: [Certification]
-      deprecated: true
       summary: 删除自动认证
       description: |
         删除自动认证
@@ -1065,7 +1073,6 @@ paths:
                   error:
                     type: string
                     description: |
-                      invalid_key  - 无效后缀<br/>
                       faked_email  - 不存在该后缀<br/>
                       permission_deny - 权限不足<br/>
                     example: 'exist_email'
@@ -3269,6 +3276,7 @@ components:
             认证状态<br/>
             wait - 材料等待审核<br/>
             wait_email - 邮箱待审核<br/>
+          example: wait
         date:
           type: string
           description: 提交时间
