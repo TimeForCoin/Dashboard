@@ -111,7 +111,7 @@ paths:
             type: string
             example: '5c9ecbbba4a3f52e3195fa68'
       responses:
-        '201':
+        '200':
           description: 登陆成功
         '400':
           $ref: '#/components/responses/400InvalidValue'
@@ -174,7 +174,7 @@ paths:
                     绑定令牌，绑定指定的Violet账户，可以为空。<br/>
                     为空时登陆后需要手动绑定Violet
       responses:
-        '201':
+        '200':
           description: 登陆成功
           content:
             application/json:
@@ -510,7 +510,7 @@ paths:
       description: |
         签到获取积分
       responses:
-        '201':
+        '200':
           description: 签到成功
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -878,7 +878,7 @@ paths:
                     认证教育邮箱
                   example: 'megachen12@mail2.sysu.edu.cn'
       responses:
-        '201':
+        '200':
           description: 申请认证成功
         '400':
           $ref: '#/components/responses/400InvalidValue'
@@ -905,7 +905,7 @@ paths:
       description: |
         重新发送邮件到当前待认证的邮箱，点击邮箱内连接进行认证
       responses:
-        '201':
+        '200':
           description: 发送成功
         '403':
           description: 发送失败
@@ -962,7 +962,7 @@ paths:
                   description: 失败反馈[仅管理员]
                   example: '你好骚啊'
       responses:
-        '201':
+        '200':
           description: 修改成功
         '400':
           $ref: '#/components/responses/400InvalidValue'
@@ -1024,7 +1024,7 @@ paths:
                   description: 认证内容
                   example: '中山大学本科生'
       responses:
-        '201':
+        '200':
           description: 添加成功
         '400':
           $ref: '#/components/responses/400InvalidValue'
@@ -1059,7 +1059,7 @@ paths:
             type: string
             example: 'sysu.edu.cn'
       responses:
-        '201':
+        '200':
           description: 删除成功
         '400':
           $ref: '#/components/responses/400InvalidValue'
@@ -1209,7 +1209,7 @@ paths:
             schema:
               $ref: '#/components/schemas/NewTaskInfo'
       responses:
-        '201':
+        '200':
           description: 发布任务成功
           content:
             'application/json':
@@ -1345,7 +1345,7 @@ paths:
             type: string
             example: '5c9ecbbba4a3f52e3195fa68'
       responses:
-        '201':
+        '200':
           description: 删除成功
         '400':
           $ref: '#/components/responses/400InvalidValue'
@@ -1493,9 +1493,8 @@ paths:
           schema:
             type: string
             example: '5c9ecbbba4a3f52e3195fa68'
-
       responses:
-        '201':
+        '200':
           description: 参加成功
           content:
             'application/json':
@@ -1520,6 +1519,7 @@ paths:
                   error:
                     type: string
                     description: |
+                      not_allow_status  - 任务还没发布<br/>
                       faked_task    - 任务不存在<br/>
                       exist_player  - 你已经参加了，不要重复参加了呀</br>
                     example: 'faked_task'
@@ -1556,9 +1556,10 @@ paths:
                   type: string
                   description: |
                     用户状态<br/>
-                    give_up   - 用户已放弃 [任务执行者可修改]
-                    finish    - 已完成任务 [任务发布者可修改]
-                    failure   - 任务失败 [任务发布者可修改]
+                    give_up   - 用户已放弃 [任务执行者可修改]<br/>
+                    running   - 任务进行中 [任务发布者可修改]<br/>
+                    finish    - 已完成任务 [任务发布者可修改]<br/>
+                    failure   - 任务失败 [任务发布者可修改]<br/>
                   example: 'running'
                 note:
                   type: string
@@ -1605,6 +1606,7 @@ paths:
                   error:
                     type: string
                     description: |
+                      not_allow_status  - 任务还没发布<br/>
                       permission_deny   - 权限不足<br/>
                       faked_task        - 任务不存在<br/>
                       faked_user        - 用户不存在<br/>
@@ -1649,6 +1651,7 @@ paths:
                   error:
                     type: string
                     description: |
+                      not_allow_status  - 任务还没发布<br/>
                       permission_deny   - 权限不足<br/>
                       faked_task        - 任务不存在<br/>
                       faked_user        - 用户不存在活动中<br/>
@@ -1747,7 +1750,7 @@ paths:
             type: string
             example: '5c9ecbbba4a3f52e3195fa68'
       responses:
-        '201':
+        '200':
           description: 收藏成功
         '400':
           $ref: '#/components/responses/400InvalidValue'
@@ -1761,6 +1764,7 @@ paths:
                   error:
                     type: string
                     description: |
+                      not_allow_status  - 此状态不允许收藏<br/>
                       faked_task    - 任务不存在<br/>
                       exist_task    - 任务已经收藏，不能重复收藏<br/>
                     example: 'faked_task'
@@ -1794,6 +1798,7 @@ paths:
                   error:
                     type: string
                     description: |
+                      not_allow_status  - 此状态不允许收藏<br/>
                       faked_task    - 任务不存在<br/>
                     example: 'faked_task'
         '401':
@@ -1813,7 +1818,7 @@ paths:
             type: string
             example: '5c9ecbbba4a3f52e3195fa68'
       responses:
-        '201':
+        '200':
           description: 点赞成功
         '400':
           $ref: '#/components/responses/400InvalidValue'
@@ -1827,6 +1832,7 @@ paths:
                   error:
                     type: string
                     description: |
+                      not_allow_status  - 此状态不允许点赞<br/>
                       exist_like   - 任务已经点赞，不能重复点赞<br/>
                       faked_task   - 任务不存在<br/>
                     example: 'exist_like'
@@ -1860,6 +1866,7 @@ paths:
                   error:
                     type: string
                     description: |
+                      not_allow_status  - 此状态不允许点赞<br/>
                       faked_like   - 你根本没有点赞，取消什么<br/>
                       faked_task   - 任务不存在<br/>
                     example: 'faked_like'
@@ -1878,7 +1885,7 @@ paths:
             schema:
               $ref: '#/components/schemas/NewFileInfo'
       responses:
-        '201':
+        '200':
           description: 添加附件成功
           content:
             'application/json':
@@ -2135,7 +2142,7 @@ paths:
                   description: 评论内容
                   example: '你好骚啊'
       responses:
-        '201':
+        '200':
           description: 评论成功
         '400':
           $ref: '#/components/responses/400InvalidValue'
@@ -2150,6 +2157,7 @@ paths:
                     type: string
                     description: |
                       faked_content         - 被评论内容不存在<br/>
+                      now_allow_status    - 该任务暂时还不能被评论<br/>
                       content_too_long  - 被评论内容超过了128个字符<br/>
                     example: 'faked_content'
         '401':
@@ -2292,7 +2300,7 @@ paths:
                   description: 是否匿名收集
                   example: true
       responses:
-        '201':
+        '200':
           description: 新建问卷成功
         '400':
           $ref: '#/components/responses/400InvalidValue'
@@ -2622,7 +2630,7 @@ paths:
                   items:
                     $ref: '#/components/schemas/AnswerData'
       responses:
-        '201':
+        '200':
           description: 回答问题成功
         '400':
           $ref: '#/components/responses/400InvalidValue'
@@ -2721,7 +2729,7 @@ paths:
                   description: 相关ID, 结合前端使用
                   example: '5c9ecbbba4a3f52e3195fa68'
       responses:
-        '201':
+        '200':
           description: 发送消息成功
           content:
             'application/json':
@@ -2864,7 +2872,7 @@ paths:
                   description: 相关ID, 可用于分享任务
                   example: '5c9ecbbba4a3f52e3195fa68'
       responses:
-        '201':
+        '200':
           description: 发送消息成功
           content:
             'application/json':
@@ -3119,7 +3127,7 @@ paths:
             schema:
               $ref: '#/components/schemas/EditArticleInfo'
       responses:
-        '201':
+        '200':
           description: 新建公告成功
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -4388,6 +4396,10 @@ components:
         liked:
           type: boolean
           description: 是否已经点赞
+          example: false
+        played:
+          type: boolean
+          description: 是否已经参加
           example: false
     NewTaskInfo:
       type: object
