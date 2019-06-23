@@ -5,8 +5,8 @@
     <id>UMLObject</id>
     <coordinates>
       <x>165</x>
-      <y>33</y>
-      <w>1221</w>
+      <y>143</y>
+      <w>1089</w>
       <h>484</h>
     </coordinates>
     <panel_attributes>接受任务状态
@@ -17,7 +17,7 @@ valign=top</panel_attributes>
     <id>UMLSpecialState</id>
     <coordinates>
       <x>187</x>
-      <y>121</y>
+      <y>231</y>
       <w>22</w>
       <h>22</h>
     </coordinates>
@@ -28,7 +28,7 @@ valign=top</panel_attributes>
     <id>UMLState</id>
     <coordinates>
       <x>341</x>
-      <y>110</y>
+      <y>220</y>
       <w>110</w>
       <h>44</h>
     </coordinates>
@@ -39,7 +39,7 @@ valign=top</panel_attributes>
     <id>UMLState</id>
     <coordinates>
       <x>572</x>
-      <y>209</y>
+      <y>319</y>
       <w>110</w>
       <h>44</h>
     </coordinates>
@@ -50,7 +50,7 @@ valign=top</panel_attributes>
     <id>UMLState</id>
     <coordinates>
       <x>572</x>
-      <y>110</y>
+      <y>220</y>
       <w>110</w>
       <h>44</h>
     </coordinates>
@@ -61,7 +61,7 @@ valign=top</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>187</x>
-      <y>110</y>
+      <y>220</y>
       <w>176</w>
       <h>44</h>
     </coordinates>
@@ -72,20 +72,20 @@ valign=top</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>374</x>
-      <y>143</y>
-      <w>220</w>
+      <x>418</x>
+      <y>253</y>
+      <w>176</w>
       <h>110</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 发布者接受</panel_attributes>
-    <additional_attributes>180.0;80.0;10.0;80.0;10.0;10.0</additional_attributes>
+    <additional_attributes>140.0;80.0;10.0;80.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>440</x>
-      <y>110</y>
+      <y>220</y>
       <w>154</w>
       <h>44</h>
     </coordinates>
@@ -97,7 +97,7 @@ valign=top</panel_attributes>
     <id>UMLState</id>
     <coordinates>
       <x>1012</x>
-      <y>209</y>
+      <y>319</y>
       <w>110</w>
       <h>44</h>
     </coordinates>
@@ -108,7 +108,7 @@ valign=top</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>814</x>
-      <y>209</y>
+      <y>319</y>
       <w>220</w>
       <h>44</h>
     </coordinates>
@@ -120,7 +120,7 @@ valign=top</panel_attributes>
     <id>UMLState</id>
     <coordinates>
       <x>1012</x>
-      <y>275</y>
+      <y>385</y>
       <w>110</w>
       <h>44</h>
     </coordinates>
@@ -131,7 +131,7 @@ valign=top</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>792</x>
-      <y>242</y>
+      <y>352</y>
       <w>242</w>
       <h>77</h>
     </coordinates>
@@ -143,30 +143,30 @@ valign=top</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>616</x>
-      <y>242</y>
+      <y>352</y>
       <w>418</w>
       <h>143</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
-接受者放弃任务</panel_attributes>
+发布者关闭任务</panel_attributes>
     <additional_attributes>360.0;110.0;10.0;110.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLState</id>
     <coordinates>
       <x>1012</x>
-      <y>341</y>
+      <y>451</y>
       <w>110</w>
       <h>44</h>
     </coordinates>
-    <panel_attributes>give_up</panel_attributes>
+    <panel_attributes>close</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
       <x>1188</x>
-      <y>121</y>
+      <y>231</y>
       <w>22</w>
       <h>22</h>
     </coordinates>
@@ -177,7 +177,7 @@ valign=top</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>671</x>
-      <y>121</y>
+      <y>231</y>
       <w>539</w>
       <h>33</h>
     </coordinates>
@@ -188,7 +188,7 @@ valign=top</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1111</x>
-      <y>132</y>
+      <y>242</y>
       <w>110</w>
       <h>121</h>
     </coordinates>
@@ -199,30 +199,30 @@ valign=top</panel_attributes>
     <id>UMLState</id>
     <coordinates>
       <x>1012</x>
-      <y>407</y>
+      <y>517</y>
       <w>110</w>
       <h>44</h>
     </coordinates>
-    <panel_attributes>close</panel_attributes>
+    <panel_attributes>give_up</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>594</x>
-      <y>242</y>
+      <y>352</y>
       <w>440</w>
-      <h>209</h>
+      <h>198</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
-发布者关闭任务</panel_attributes>
-    <additional_attributes>380.0;170.0;10.0;170.0;10.0;10.0</additional_attributes>
+接受者放弃任务</panel_attributes>
+    <additional_attributes>380.0;160.0;10.0;160.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>1111</x>
-      <y>132</y>
+      <y>242</y>
       <w>110</w>
       <h>319</h>
     </coordinates>
@@ -233,7 +233,7 @@ valign=top</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1111</x>
-      <y>132</y>
+      <y>242</y>
       <w>110</w>
       <h>253</h>
     </coordinates>
@@ -244,7 +244,7 @@ valign=top</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1111</x>
-      <y>132</y>
+      <y>242</y>
       <w>110</w>
       <h>187</h>
     </coordinates>
@@ -255,7 +255,7 @@ valign=top</panel_attributes>
     <id>UMLSpecialState</id>
     <coordinates>
       <x>781</x>
-      <y>209</y>
+      <y>319</y>
       <w>44</w>
       <h>44</h>
     </coordinates>
@@ -266,12 +266,36 @@ valign=top</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>671</x>
-      <y>209</y>
+      <y>319</y>
       <w>132</w>
       <h>44</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 完成任务</panel_attributes>
     <additional_attributes>100.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>352</x>
+      <y>253</y>
+      <w>737</w>
+      <h>363</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+重新领取任务</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;310.0;650.0;310.0;650.0;280.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>385</x>
+      <y>253</y>
+      <w>649</w>
+      <h>319</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+接受者放弃任务</panel_attributes>
+    <additional_attributes>570.0;270.0;10.0;270.0;10.0;10.0</additional_attributes>
   </element>
 </diagram>

@@ -1168,6 +1168,13 @@ paths:
           schema:
             type: string
             example: '5c9ecbbba4a3f52e3195fa68'
+        - name: brief
+          in: query
+          required: false
+          description: |
+            是否只获取任务简介，默认为false<br/>
+            没有关于用户点赞/收藏/状态等信息和附件信息<br/>
+            图片信息只提供一张<br/>
       responses:
         '200':
           description: 获取成功
@@ -1250,7 +1257,7 @@ paths:
       tags: [Tasks]
       summary: 获取单个任务详情
       description: |
-        分页获取所有任务列表
+        获取单个任务详情
       parameters:
         - name: task_id
           in: path
@@ -1260,6 +1267,16 @@ paths:
           schema:
             type: string
             example: '5c9ecbbba4a3f52e3195fa68'
+        - name: brief
+          in: query
+          required: false
+          description: |
+            是否只获取任务简介，默认为false<br/>
+            没有关于用户点赞/收藏/状态等信息和附件信息<br/>
+            图片信息只提供一张<br/>
+          schema:
+            type: string
+            example: 'false'
       responses:
         '200':
           description: 获取成功
@@ -1367,7 +1384,6 @@ paths:
   /tasks/{task_id}/wechat:
     get:
       tags: [Tasks]
-      deprecated: true
       summary: 生成活动微信小程序码
       description: |
         生成活动微信小程序码，用于分享，可扫码查看活动详情
@@ -1388,9 +1404,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  data:
-                    description: 图片的Base64字符串
+                  url:
+                    description: 图片的URL
                     type: string
+                    example: "http://xx.com/xx.png"
         '400':
           $ref: '#/components/responses/400InvalidValue'
         '403':
@@ -1557,14 +1574,15 @@ paths:
                   description: |
                     用户状态<br/>
                     give_up   - 用户已放弃 [任务执行者可修改]<br/>
-                    running   - 任务进行中 [任务发布者可修改]<br/>
+                    refuse    - 拒绝参与任务 [任务发布者可修改]<br/>
+                    running   - 同意参与任务 [任务发布者可修改]<br/>
                     finish    - 已完成任务 [任务发布者可修改]<br/>
                     failure   - 任务失败 [任务发布者可修改]<br/>
                   example: 'running'
                 note:
                   type: string
                   description: |
-                    申请备注 [任务执行者可修改]
+                    修改备注(申请备注/拒绝原因/同意原因/失败原因/...)
                   example: '我要加入'
                 accept:
                   type: boolean
@@ -1614,82 +1632,6 @@ paths:
                     example: 'faked_task'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-    delete:
-      tags: [Tasks]
-      summary: 退出任务
-      description: |
-        自己退出任务或者被发布者踢出任务
-        需要任务处于[wait]状态
-      parameters:
-        - name: task_id
-          in: path
-          required: true
-          description: 任务ID
-          schema:
-            type: string
-            example: '5c9ecbbba4a3f52e3195fa68'
-        - name: user_id
-          in: path
-          required: true
-          description: |
-            用户ID，为`me`是默认为当前登陆用户ID
-          schema:
-            type: string
-            example: '5c9ecbbba4a3f52e3195fa68'
-      responses:
-        '200':
-          description: 退出成功
-        '400':
-          $ref: '#/components/responses/400InvalidValue'
-        '403':
-          description: 退出失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      not_allow_status  - 任务还没发布<br/>
-                      permission_deny   - 权限不足<br/>
-                      faked_task        - 任务不存在<br/>
-                      faked_user        - 用户不存在活动中<br/>
-                      not_allow_status  - 当前任务状态不允许该状态<br/>
-                    example: 'faked_task'
-        '401':
-          $ref: '#/components/responses/401NotLoginError'
-  /tasks/{task_id}/view:
-    post:
-      tags: [Tasks]
-      summary: 为任务添加阅读量
-      description: |
-        为任务添加阅读量
-      parameters:
-        - name: task_id
-          in: path
-          required: true
-          description: 任务ID
-          schema:
-            type: string
-            example: '5c9ecbbba4a3f52e3195fa68'
-      responses:
-        '200':
-          description: 阅读量+1
-        '400':
-          $ref: '#/components/responses/400InvalidValue'
-        '403':
-          description: 添加阅读失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      faked_task_id         - 任务不存在<br/>
-                    example: 'faked_task_id'
   /tasks/{task_id}/top:
     post:
       tags: [Tasks]
@@ -4114,7 +4056,6 @@ components:
           description: |
             任务点赞数
           example: 30
-
     BaseTaskInfo:
       type: object
       description: 任务简短信息
