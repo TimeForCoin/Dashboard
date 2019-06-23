@@ -1510,6 +1510,17 @@ paths:
           schema:
             type: string
             example: '5c9ecbbba4a3f52e3195fa68'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                note:
+                  type: string
+                  description: |
+                    申请备注
+                  example: '我要参加'
       responses:
         '200':
           description: 参加成功
@@ -1543,6 +1554,53 @@ paths:
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /tasks/{task_id}/player/{user_id}:
+    get:
+      tags: [Tasks]
+      summary: 获取用户对于某任务的状态
+      description: |
+        获取用户对于某任务的状态
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: 任务ID
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
+        - name: user_id
+          in: path
+          required: true
+          description: 用户ID，若为me为当前用户
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            'application/json':
+              schema:
+                data:
+                  $ref: '#/components/schemas/Players'
+        '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
+          description: 获取失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      permission_deny   - 权限不足<br/>
+                      faked_task        - 任务不存在<br/>
+                      faked_user        - 用户不存在<br/>
+                    example: 'faked_task'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
+
     put:
       tags: [Tasks]
       summary: 修改任务参与者状态
@@ -1559,7 +1617,7 @@ paths:
         - name: user_id
           in: path
           required: true
-          description: 用户ID
+          description: 用户ID，若为me为当前用户
           schema:
             type: string
             example: '5c9ecbbba4a3f52e3195fa68'
