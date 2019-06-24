@@ -750,7 +750,7 @@ paths:
       description: |
         取消关注指定用户
       parameters:
-        - name: task_id
+        - name: user_id
           in: path
           required: true
           description: 用户ID
@@ -1175,6 +1175,9 @@ paths:
             是否只获取任务简介，默认为false<br/>
             没有关于用户点赞/收藏/状态等信息和附件信息<br/>
             图片信息只提供一张<br/>
+          schema:
+            type: boolean
+            example: false
       responses:
         '200':
           description: 获取成功
@@ -1344,6 +1347,7 @@ paths:
                       reward_object_too_long  - 任务酬劳不能超过32个字符<br/>
                       location_too_long - 任务地点不能超过64个字符<br/>
                       tag_too_long  - 任务标签不能超过16个字符<br/>
+                      not_allow_finish - 不允许关闭，参与人员尚未处理完毕<br/>
                     example: 'not_allow_max_player'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -1581,8 +1585,10 @@ paths:
           content:
             'application/json':
               schema:
-                data:
-                  $ref: '#/components/schemas/Players'
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Players'
         '400':
           $ref: '#/components/responses/400InvalidValue'
         '403':
@@ -2795,40 +2801,6 @@ paths:
           $ref: '#/components/responses/400InvalidValue'
         '403':
           description: 获取用户失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      permission_deny - 权限不足<br/>
-                      faked_message   - 会话不存在<br/>
-                    example: 'invalid_id'
-        '401':
-          $ref: '#/components/responses/401NotLoginError'
-    put:
-      tags: [Messages]
-      summary: 将会话标记为已读
-      description: |
-        将会话标记为已读
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: |
-            会话ID
-          schema:
-            type: string
-            example: '5c9ecbbba4a3f52e3195fa68'
-      responses:
-        '200':
-          description: 标记成功
-        '400':
-          $ref: '#/components/responses/400InvalidValue'
-        '403':
-          description: 标记失败
           content:
             'application/json':
               schema:
