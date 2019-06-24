@@ -1550,6 +1550,7 @@ paths:
                       not_allow_status  - 任务还没发布<br/>
                       faked_task    - 任务不存在<br/>
                       exist_player  - 你已经参加了，不要重复参加了呀</br>
+                      max_player  - 参与人数已经到达上限啦</br>
                     example: 'faked_task'
         '401':
           $ref: '#/components/responses/401NotLoginError'
@@ -3078,7 +3079,6 @@ paths:
   /article:
     get:
       tags: [Article]
-      deprecated: true
       summary: 获取公告列表
       description: |
         获取公告列表
@@ -3117,7 +3117,6 @@ paths:
           $ref: '#/components/responses/400InvalidValue'
     post:
       tags: [Article]
-      deprecated: true
       summary: 新建公告文章
       description: |
         新建公告文章
@@ -3136,7 +3135,6 @@ paths:
   /article/{id}:
     get:
       tags: [Article]
-      deprecated: true
       summary: 公告详情
       description: 获取公告详情
       parameters:
@@ -3170,7 +3168,6 @@ paths:
                     example: 'faked_article'
     put:
       tags: [Article]
-      deprecated: true
       summary: 修改公告信息
       description: |
         修改公告信息，须管理员权限
