@@ -1,7 +1,7 @@
 openapi: 3.0.0
 servers:
   - description: TimeForCoin
-    url: https://coin.xmatrix.studio/api/v1/
+    url: https://love.zhenly.cn/api/
 info:
   description: |
     TimeForCoin API document<br/>
@@ -29,10 +29,10 @@ tags:
     description: 文件系统
   - name: Certification
     description: 认证相关
-  - name: Utils
-    description: 其他
   - name: Article
     description: 公告文章
+  - name: Utils
+    description: 其他
 
 paths:
   /session:
@@ -3412,20 +3412,6 @@ components:
             score  - 评分题<br/>
             sort   - 排序题<br/>
           example: choose
-        images:
-          type: array
-          description: 图片附件id
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                description: 图片ID
-                example: '5c9ecbbba4a3f52e3195fa68'
-              url:
-                type: string
-                description: 图片URL
-                example: 'https://xxx.com/xxx.jpg'
         choose_problem:
           type: object
           description: 选择题数据
@@ -3450,10 +3436,6 @@ components:
                     type: string
                     description: 选项内容
                     example: 是
-                  image:
-                    type: string
-                    description: 选项图片附件ID
-                    example: '5c9ecbbba4a3f52e3195fa68'
             max_choose:
               type: integer
               description: 最大可选项
@@ -3570,8 +3552,9 @@ components:
           description: 评分题数据
           example: 4
         file_value:
-          $ref: '#/components/schemas/FileInfo'
-
+          type: string
+          description: 文件ID
+          example: '5c9ecbbba4a3f52e3195fa68'
     BaseCommentData:
       type: object
       description: 评论的回复
