@@ -2814,6 +2814,66 @@ paths:
                     example: 'invalid_id'
         '401':
           $ref: '#/components/responses/401NotLoginError'
+  /messages/user/{user_id}:
+    get:
+      tags: [Messages]
+      summary: 获取会话消息
+      description: |
+        根据用户ID分页获取指定会话消息内容
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: |
+            用户ID
+          schema:
+            type: string
+            example: '5c9ecbbba4a3f52e3195fa68'
+        - name: page
+          in: query
+          required: true
+          description: |
+            获取列表页面，从1开始计数
+          schema:
+            type: number
+            example: 1
+        - name: size
+          in: query
+          required: true
+          description: |
+            每页获取的内容数量
+          schema:
+            type: number
+            example: 10
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  data:
+                    $ref: '#/components/schemas/MessageSession'
+        '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
+          description: 获取用户失败
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: |
+                      permission_deny - 权限不足<br/>
+                      faked_message   - 会话不存在<br/>
+                    example: 'invalid_id'
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
     post:
       tags: [Messages]
       summary: 发送消息
