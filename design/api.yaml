@@ -1243,6 +1243,9 @@ paths:
                   error:
                     type: string
                     description: |
+                      no_money - 你没有足够的钱发布任务<br/>
+                      now_allow_change_reward_type - 发布后不允许改变酬劳类型<br/>
+                      no_value - 你没有足够的积分发布任务<br/>
                       faked_file   - 图片/文件不存在<br/>
                       permission_deny   - 不允许添加他人的附件<br/>
                       error_file_type - 文件类型(图片/附件)错误<br/>
