@@ -8,7 +8,7 @@
 
 4、[Vision](docs/vision.md)（项目愿景）
 
-5、[Product Backlog](doc/05/product-backlog.md)（产品特性库）
+5、[Product Backlog](docs/product-backlog.md)（产品特性库）
 
 6、[Requirement specification](docs/requirement.md)（需求规格说明书）
 
