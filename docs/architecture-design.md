@@ -1,5 +1,27 @@
 # 架构设计
 
+## 技术选型
+
+服务端：Golang
+
+路由框架：[iris](https://github.com/kataras/iris)
+
+数据库：MongoDB (驱动：[mongo-go-driver](https://github.com/mongodb/mongo-go-driver/))
+
+缓存：Redis( 驱动：[go-redis](https://github.com/go-redis/redis))
+
+日志库：[zerolog](https://github.com/rs/zerolog)
+
+API 规范：RESTful API
+
+API 文档：Swagger
+
+Web 端：Vue2.6 + Webpack
+
+Ajax 请求：axios
+
+微信小程序：wxss + wxml + js
+
 ## 逻辑架构
 
 ![ch6-08-frontend-backend](architecture-design/ch6-08-frontend-backend.png)
@@ -22,6 +44,257 @@
 - 使用 腾讯云的对象存储服务(COS) 保存图片/任务附件等文件
 
 ## 代码结构
+
+### 服务端目录结构
+
+```bash
+.
+├── app # 服务
+│   ├── app.go # 应用主体(初始化服务)
+│   ├── controllers # 控制路由、数据校验
+│   │   ├── article.go
+│   │   ├── certification.go
+│   │   ├── comment.go
+│   │   ├── controllers.go
+│   │   ├── file.go
+│   │   ├── message.go
+│   │   ├── questionnaire.go
+│   │   ├── session.go
+│   │   ├── task.go
+│   │   └── user.go
+│   ├── libs # 基本库
+│   │   ├── config.go # 应用配置
+│   │   ├── cos.go # 云对象存储
+│   │   ├── email.go # 邮件服务
+│   │   ├── error.go # 错误处理
+│   │   ├── json.go
+│   │   ├── utils.go
+│   │   ├── verify.go # 数据校验
+│   │   ├── violet.go # OAuth2 授权
+│   │   └── wechat.go # 微信 授权
+│   ├── models # 数据操作以及测试
+│   │   ├── article.go
+│   │   ├── cache.go
+│   │   ├── cache_test.go
+│   │   ├── comment.go
+│   │   ├── comment_test.go
+│   │   ├── file.go
+│   │   ├── file_test.go
+│   │   ├── flow.go
+│   │   ├── log.go
+│   │   ├── message.go
+│   │   ├── message_test.go
+│   │   ├── mongo.go
+│   │   ├── mongo_test.go
+│   │   ├── questionnaire.go
+│   │   ├── redis.go
+│   │   ├── redis_test.go
+│   │   ├── set.go
+│   │   ├── set_test.go
+│   │   ├── statistics.go
+│   │   ├── system.go
+│   │   ├── system_test.go
+│   │   ├── task.go
+│   │   ├── task_status.go
+│   │   ├── task_test.go
+│   │   ├── user.go
+│   │   └── user_test.go
+│   └── services # 业务逻辑
+│       ├── article.go
+│       ├── comment.go
+│       ├── file.go
+│       ├── message.go
+│       ├── questionnaire.go
+│       ├── service.go
+│       ├── task.go
+│       └── user.go
+├── config.yaml # 程序配置
+├── docker-compose.yml # 容器编排
+├── dockerfile # 容器部署
+├── env.ps1 # 测试环境变量
+├── go.mod # Golang 库管理
+├── go.sum
+├── main.go # 程序入口
+└── test.ps1
+```
+
+### 服务端代码结构
+
+其中`Controllers`, `Service`, `Models`再按照不同的业务划分为不同的模块
+
+![1553527547945](architecture-design/1553527547945.png)
+
+### Web端
+
+```bash
+.
+├── babel.config.js
+├── package-lock.json
+├── package.json
+├── public
+│   ├── favicon.ico
+│   └── index.html
+├── src # 页面代码
+│   ├── App.vue # 页面入口
+│   ├── assets # 素材
+│   │   ├── HomePage
+│   │   │   ├── errand.png
+│   │   │   ├── notice.png
+│   │   │   ├── page1-background.jpg
+│   │   │   └── questionnaire.png
+│   │   ├── MissionPage
+│   │   │   ├── head.jpg
+│   │   │   └── test.jpg
+│   │   ├── logo.png
+│   │   └── logo_vue.png
+│   ├── components # 组件
+│   │   ├── Discover
+│   │   │   ├── MissionBlock.vue
+│   │   │   └── MissionCardLong.vue
+│   │   ├── HomePage
+│   │   │   ├── Banner.vue
+│   │   │   └── DisplayPage1.vue
+│   │   ├── Mission
+│   │   │   ├── CreateMission
+│   │   │   │   ├── FileUploader.vue
+│   │   │   │   ├── ImgUploader.vue
+│   │   │   │   └── TagBlock.vue
+│   │   │   ├── MissionCard.vue
+│   │   │   └── MissionDetail
+│   │   │       ├── FileList.vue
+│   │   │       ├── ImgList.vue
+│   │   │       └── PlayerList.vue
+│   │   ├── NavBar.vue
+│   │   ├── Presentation
+│   │   │   ├── Choice.vue
+│   │   │   ├── Fill.vue
+│   │   │   └── Score.vue
+│   │   └── Question
+│   │       ├── Choice.vue
+│   │       ├── Fill.vue
+│   │       └── Score.vue
+│   ├── main.js # 程序入口
+│   ├── plugins # 插件
+│   │   ├── ant-design-vue.js
+│   │   └── axios.js
+│   ├── router.js # 路由
+│   ├── services # API 服务
+│   │   ├── modules
+│   │   │   ├── file.js
+│   │   │   ├── questionnaire.js
+│   │   │   ├── task.js
+│   │   │   └── user.js
+│   │   └── service.js
+│   ├── store # Vuex 存储
+│   │   ├── modules
+│   │   │   └── user.js
+│   │   └── store.js
+│   ├── utils # 工具
+│   │   ├── modules
+│   │   │   └── verify.js
+│   │   └── utils.js
+│   └── views # 视图页面
+│       ├── About.vue
+│       ├── Discover.vue
+│       ├── Home.vue
+│       ├── Mission.vue
+│       ├── MissionCenter
+│       │   ├── MissionInformation.vue
+│       │   └── MissionTypeChoice.vue
+│       ├── MissionDetail.vue
+│       ├── Presentation.vue
+│       ├── Questionnaire.vue
+│       └── User.vue
+├── violet.config.js
+└── vue.config.js
+```
+
+### 微信小程序
+
+```bash
+.
+├── README.md
+├── app.js # 程序入口
+├── app.json
+├── app.wxss
+├── images # 图片资源
+│   └── ...
+├── miniprogram_npm
+│   └── moment
+│       └── ...
+├── package-lock.json
+├── package.json
+├── pages # 页面
+│   ├── AddItem
+│   │   ├── AddItem.js
+│   │   ├── AddItem.json
+│   │   ├── AddItem.wxml
+│   │   └── AddItem.wxss
+│   ├── AddedItems
+│   │   ├── AddedItems.js
+│   │   ├── AddedItems.json
+│   │   ├── AddedItems.wxml
+│   │   └── AddedItems.wxss
+│   ├── CollectList
+│   │   ├── CollectList.js
+│   │   ├── CollectList.json
+│   │   ├── CollectList.wxml
+│   │   └── CollectList.wxss
+│   ├── Comment
+│   │   ├── Comment.js
+│   │   ├── Comment.json
+│   │   ├── Comment.wxml
+│   │   └── Comment.wxss
+│   ├── Detail
+│   │   ├── Detail.js
+│   │   ├── Detail.json
+│   │   ├── Detail.wxml
+│   │   └── Detail.wxss
+│   ├── Message
+│   │   ├── Message.js
+│   │   ├── Message.json
+│   │   ├── Message.wxml
+│   │   └── Message.wxss
+│   ├── MessageDetail
+│   │   ├── MessageDetail.js
+│   │   ├── MessageDetail.json
+│   │   ├── MessageDetail.wxml
+│   │   └── MessageDetail.wxss
+│   ├── ParticipateTask
+│   │   ├── ParticipateTask.js
+│   │   ├── ParticipateTask.json
+│   │   ├── ParticipateTask.wxml
+│   │   └── ParticipateTask.wxss
+│   ├── Questionnaire
+│   │   ├── Questionnaire.js
+│   │   ├── Questionnaire.json
+│   │   ├── Questionnaire.wxml
+│   │   └── Questionnaire.wxss
+│   ├── SearchResult
+│   │   ├── SearchResult.js
+│   │   ├── SearchResult.json
+│   │   ├── SearchResult.wxml
+│   │   └── SearchResult.wxss
+│   ├── index
+│   │   ├── index.js
+│   │   ├── index.json
+│   │   ├── index.wxml
+│   │   └── index.wxss
+│   └── userInfo
+│       ├── userInfo.js
+│       ├── userInfo.json
+│       ├── userInfo.wxml
+│       └── userInfo.wxss
+├── project.config.json
+├── services # 请求封装
+│   └── server.js
+├── sitemap.json
+└── utils # 通用工具方法
+    └── util.js
+
+```
+
+
 
 ## ECB 关系
 
