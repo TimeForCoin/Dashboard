@@ -24,14 +24,14 @@
 - 7.1 UI design（界面设计）
 - 7.2 [Database design](design/db-design.md)（数据库设计）
 - 7.3 [Interface API design](http://xm.zhenly.cn//docs/swagger/?url=https://raw.githubusercontent.com/TimeForCoin/Dashboard/master/design/api.yaml#/)（接口 API 设计）
-- 7.4 [Architecture design](design/back-end.md)（架构设计）
+- 7.4 [Architecture design](docs/architecture-design.md)（架构设计）
 - 7.5 Use Case Diagram（用例设计）
 
 8、生产规范与指南
 
 - 8.1 [Golang 代码规范](https://golang.org/doc/effective_go.html)
 - 8.2 [REST API 设计规范](http://www.ruanyifeng.com/blog/2014/05/restful_api.html)
-- 8.3 架构设计、详细设计（BCE 方法）到应用程序框架映射指南
+- 8.3 [架构设计、详细设计（BCE 方法）到应用程序框架映射指南](docs/architecture-design.md)
 - 8.4 [部署说明](docs/deploy.md)
 
 X1 meeting-records
@@ -41,9 +41,5 @@ X1 meeting-records
 X2 [KANBAN](https://github.com/orgs/TimeForCoin/projects)
 
 X3 Final Report
-
-- 学号-title
-
-X4 周报
 
 - 学号-title

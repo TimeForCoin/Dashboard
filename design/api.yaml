@@ -84,6 +84,7 @@ paths:
                       running   - 登陆中<br/>
                       violet    - 已通过Violet登录<br/>
                       wechat    - 已通过微信登录<br/>
+                      wechat_new  - 已通过微信登录，并且是新用户<br/>
                     example: none
   /session/violet:
     get:
@@ -92,7 +93,6 @@ paths:
       operationId: postLoginCode
       description: |
         使用 Violet 返回的数据进行 OAuth2 授权登陆
-        如果当前已经使用微信登陆，则自动绑定当前账号
       parameters:
         - name: code
           in: query
@@ -132,30 +132,72 @@ paths:
   /session/wechat:
     get:
       tags: [Session]
-      summary: 生成微信小程序码
+      summary: 生成登陆二维码
       description: |
-        生成特定的微信小程序码，通过扫码可以实现在PC端登陆
+        生成特定的二维码，通过扫码可以实现在PC端登陆（等小程序发布之后替换成小程序码，可以在微信界面直接扫码登陆而不需要进入小程序）
       responses:
         '200':
           description: 获取成功
+          content:
+            image/png:
+              schema:
+                type: string
+                description: 图片二进制数据
+    put:
+      tags: [Session]
+      summary: 微信扫码登陆
+      description: |
+        通过小程序扫码登陆PC端页面 <br/>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - session
+              properties:
+                session:
+                  description: |
+                    会话ID，通过扫码二维码解析内容得到
+                  type: string
+                  example: 5c9ecbbba4a3f52e3195fa68
+      responses:
+        '200':
+          description: 登陆成功
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  data:
-                    description: 图片Base64字符串
+                  new:
+                    type: boolean
+                    description: |
+                      是否为新用户，新用户首次登陆建议设置用户信息
+                    example: true
+        '400':
+          $ref: '#/components/responses/400InvalidValue'
+        '403':
+          description: 登陆失败
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
                     type: string
-        '401':
-          $ref: '#/components/responses/401NotLoginError'
+                    description: |
+                      error_code     - code不正确<br/>
+                    example: error_code
+    
     post:
       tags: [Session]
       summary: 使用微信登陆
       operationId: postWeChatLogin
       description: |
         使用微信授权后得到的Code进行登陆 <br/>
-        如果当前已经使用Violet登陆，则自动绑定为当前账号绑定微信登陆 <br/>
-        否则登陆后检测账号是否存在，不存在则跳转到Violet绑定，存在则直接登陆
       requestBody:
         required: true
         content:
@@ -611,7 +653,17 @@ paths:
           $ref: '#/components/responses/400InvalidValue'
         '401':
           $ref: '#/components/responses/401NotLoginError'
-
+  /users/pay:
+    post:
+      tags: [Users]
+      summary: 用户充值
+      description: |
+        用户充值接口，当前未接入充值服务，随机提高用户金钱，最高为💰20
+      responses:
+        '200':
+          description: 获取成功
+        '401':
+          $ref: '#/components/responses/401NotLoginError'
   /users/follower/{user_id}:
     get:
       tags: [Users]
@@ -2448,7 +2500,7 @@ paths:
     get:
       tags: [Questionnaires]
       summary: 获取问卷问题
-      description: 获取指定问卷问题，需要检验权限，允许微信临时用户使用
+      description: 获取指定问卷问题
       parameters:
         - name: task_id
           in: path
@@ -2619,7 +2671,7 @@ paths:
       tags: [Questionnaires]
       summary: 添加回答
       description: |
-        回答问卷，需要任务处于[wait]状态，允许微信临时用户使用
+        回答问卷，需要任务处于[wait]状态
       parameters:
         - name: task_id
           in: path
@@ -2883,7 +2935,7 @@ paths:
       description: |
         发送消息
       parameters:
-        - name: id
+        - name: user_id
           in: path
           required: true
           description: 对方用户ID
@@ -3404,7 +3456,7 @@ components:
             task     - 任务通知
             comment  - 评论通知
           example: 'chat'
-        user:
+        target_user:
           $ref: '#/components/schemas/UserBaseInfo'
         unread:
           type: integer
