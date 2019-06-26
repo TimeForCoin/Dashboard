@@ -247,11 +247,42 @@ sudo docker-compose down
 sudo docker-compose up -d
 ```
 
-### 多实例部署
+### 负载均衡
 
 根据应用的部署架构，我们可以通过扩充系统的任意一部分获得更高的性能。
 
 - 部署Redis集群
 - 部署MongoDB集群
-- 部署HTTP服务集群
+- 部署HTTP服务集群，使用Nginx实现负载均衡
 - 使用CDN加速静态文件
+
+## 直接使用
+
+本项目在Release提供`Windows`以及`linux`可执行文件，可以通过直接使用可执行文件进行部署
+
+```bash
+.
+├── Server
+│   ├── Server.exe
+│   └── config.yaml
+└── Web
+    ├── ProxyServer.exe
+    ├── config.yaml
+    └── public
+        ├── css
+        │   ├── ...
+        │   └── xx.1bbf20be.css
+        ├── favicon.ico
+        ├── img
+        │   └── ...
+        ├── index.html
+        └── js
+            ├── ...
+            └── xx.bda1ced7.js
+```
+
+修改`Server`和`Web`下的配置文件`config.yaml`后执行相应的可执行文件即可运行。
+
+也可以使用`-c`指定配置文件路径
+
+PS：小程序端的可执行文件不提供

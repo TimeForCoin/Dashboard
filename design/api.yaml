@@ -1,7 +1,7 @@
 openapi: 3.0.0
 servers:
   - description: TimeForCoin
-    url: https://love.zhenly.cn/api/
+    url: https://coin.zhenly.cn/api/
 info:
   description: |
     TimeForCoin API document<br/>
@@ -191,7 +191,7 @@ paths:
                     description: |
                       error_code     - code不正确<br/>
                     example: error_code
-    
+
     post:
       tags: [Session]
       summary: 使用微信登陆
