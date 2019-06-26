@@ -119,8 +119,6 @@ Violet 是 XMatrix 团队开发的基于OAuth 2.0 的用户授权系统。可以
 
 通过outlook的邮箱向用户的教育邮箱发送认证邮件认证学生信息，保证平台的安全性。
 
-
-
 ## 代码结构
 
 ### 服务端目录结构
@@ -400,15 +398,15 @@ Violet 是 XMatrix 团队开发的基于OAuth 2.0 的用户授权系统。可以
 
 ```go
 type ArticleController struct {
-	BaseController
-	Service services.ArticleService
+  BaseController
+  Service services.ArticleService
 }
 
 func (c *ArticleController) GetBy(id string) int {
-	articleID, err := primitive.ObjectIDFromHex(id)
-	utils.AssertErr(err, "invalid_id", 400)
-	c.Service.GetArticleByID(articleID)
-	return iris.StatusOK
+  articleID, err := primitive.ObjectIDFromHex(id)
+  utils.AssertErr(err, "invalid_id", 400)
+  c.Service.GetArticleByID(articleID)
+  return iris.StatusOK
 }
 ```
 
@@ -416,11 +414,11 @@ func (c *ArticleController) GetBy(id string) int {
 
 ```go
 func BindArticleController(app *iris.Application) {
-	articleService := services.GetServiceManger().Article
+  articleService := services.GetServiceManger().Article
 
-	articleRoute := mvc.New(app.Party("/article"))
-	articleRoute.Register(articleService, getSession().Start)
-	articleRoute.Handle(new(ArticleController))
+  articleRoute := mvc.New(app.Party("/article"))
+  articleRoute.Register(articleService, getSession().Start)
+  articleRoute.Handle(new(ArticleController))
 }
 ```
 
@@ -431,18 +429,18 @@ func BindArticleController(app *iris.Application) {
 ```go
 // ArticleService 公告服务
 type ArticleService interface {
-	GetArticles(page, size int64) (int64, []ArticleBrief)
-	AddArticle(userID primitive.ObjectID, title string, content string, publisher string, images []primitive.ObjectID) primitive.ObjectID
-	GetArticleByID(id primitive.ObjectID) ArticleDetail
-	SetArticleByID(userID primitive.ObjectID, id primitive.ObjectID, title, content, publisher string, images []primitive.ObjectID)
+  GetArticles(page, size int64) (int64, []ArticleBrief)
+  AddArticle(userID primitive.ObjectID, title string, content string, publisher string, images []primitive.ObjectID) primitive.ObjectID
+  GetArticleByID(id primitive.ObjectID) ArticleDetail
+  SetArticleByID(userID primitive.ObjectID, id primitive.ObjectID, title, content, publisher string, images []primitive.ObjectID)
 }
 
 func newArticleService() ArticleService {
-	return &articleService{
-		model:     models.GetModel().Article,
-		userModel: models.GetModel().User,
-		fileModel: models.GetModel().File,
-	}
+  return &articleService{
+    model:     models.GetModel().Article,
+    userModel: models.GetModel().User,
+    fileModel: models.GetModel().File,
+  }
 }
 ```
 
@@ -451,14 +449,12 @@ func newArticleService() ArticleService {
 ```go
 // BaseController 控制基类
 type BaseController struct {
-	Ctx     iris.Context
-	Session *sessions.Session
+  Ctx     iris.Context
+  Session *sessions.Session
 }
 ```
 
 在基类中定义了请求的上下文对象以及Session管理器和一些基本的方法。
-
-
 
 ### Aspect-Oriented Programming
 
@@ -469,23 +465,23 @@ type BaseController struct {
 ```go
 // NewApp 创建服务器实例并绑定控制器
 func NewApp() *iris.Application {
-	app := iris.New()
+  app := iris.New()
 
-	app.Use(logger.New())
+  app.Use(logger.New())
 
-	app.Use(irisRecover.New())
+  app.Use(irisRecover.New())
 
-	app.Use(utils.NewErrorHandler())
+  app.Use(utils.NewErrorHandler())
 
-	BindUserController(app)
-	BindArticleController(app)
-	BindTaskController(app)
-	BindFileController(app)
-	BindQuestionnaireController(app)
-	BindCommentController(app)
-	BindMessageController(app)
+  BindUserController(app)
+  BindArticleController(app)
+  BindTaskController(app)
+  BindFileController(app)
+  BindQuestionnaireController(app)
+  BindCommentController(app)
+  BindMessageController(app)
 
-	return app
+  return app
 }
 ```
 
@@ -505,13 +501,13 @@ utils.Assert(a == b, "invalid_id", 400)
 
 ```go
 func Assert(condition bool, msg string, code ...int) {
-	if !condition {
-		statusCode := 400
-		if len(code) > 0 {
-			statusCode = code[0]
-		}
-		panic("knownError&" + strconv.Itoa(statusCode) + "&" + msg)
-	}
+  if !condition {
+    statusCode := 400
+    if len(code) > 0 {
+      statusCode = code[0]
+    }
+    panic("knownError&" + strconv.Itoa(statusCode) + "&" + msg)
+  }
 }
 ```
 
@@ -519,23 +515,21 @@ func Assert(condition bool, msg string, code ...int) {
 
 ```go
 func NewErrorHandler() context.Handler {
-	return func(ctx context.Context) {
-		defer func() {
-			if err := recover(); err != nil {
+  return func(ctx context.Context) {
+    defer func() {
+      if err := recover(); err != nil {
 
-				switch errStr := err.(type) {
-				case string:
-					// 处理已知错误并直接返回错误请求信息
-				}
-				panic(err)
-			}
-		}()
-		ctx.Next()
-	}
+        switch errStr := err.(type) {
+        case string:
+          // 处理已知错误并直接返回错误请求信息
+        }
+        panic(err)
+      }
+    }()
+    ctx.Next()
+  }
 }
 ```
-
-
 
 ### Service Oriented Architecture
 
@@ -546,8 +540,6 @@ func NewErrorHandler() context.Handler {
 在客户端使用Ajax构造HTTP请求发送到服务端，服务端进行处理之后也通过HTTP发送回复数据到客户端中。
 
 服务端通过TCP请求与MongoDB、Redis等数据库通信，通过HTTP请求与授权系统等外部服务进行通信。
-
-
 
 ### Singleton Pattern
 
@@ -560,29 +552,29 @@ var service *ServiceManger
 
 // ServiceManger 服务管理器
 type ServiceManger struct {
-	User          UserService
-	Article		  ArticleService
-	Task          TaskService
-	File          FileService
-	Questionnaire QuestionnaireService
-	Comment       CommentService
-	Message       MessageService
+  User          UserService
+  Article      ArticleService
+  Task          TaskService
+  File          FileService
+  Questionnaire QuestionnaireService
+  Comment       CommentService
+  Message       MessageService
 }
 
 // GetServiceManger 获取服务管理器
 func GetServiceManger() *ServiceManger {
-	if service == nil {
-		service = &ServiceManger{
-			User:          newUserService(),
-			Article:	   	 newArticleService(),
-			Task:          newTaskService(),
-			File:          newFileService(),
-			Questionnaire: newQuestionnaireService(),
-			Comment:       newCommentService(),
-			Message:       newMessageService(),
-		}
-	}
-	return service
+  if service == nil {
+    service = &ServiceManger{
+      User:          newUserService(),
+      Article:       newArticleService(),
+      Task:          newTaskService(),
+      File:          newFileService(),
+      Questionnaire: newQuestionnaireService(),
+      Comment:       newCommentService(),
+      Message:       newMessageService(),
+    }
+  }
+  return service
 }
 ```
 
@@ -596,15 +588,12 @@ func GetServiceManger() *ServiceManger {
 
 ```go
 func BindArticleController(app *iris.Application) {
-	articleService := services.GetServiceManger().Article
+  articleService := services.GetServiceManger().Article
 
-	articleRoute := mvc.New(app.Party("/article"))
-	articleRoute.Register(articleService, getSession().Start)
-	articleRoute.Handle(new(ArticleController))
+  articleRoute := mvc.New(app.Party("/article"))
+  articleRoute.Register(articleService, getSession().Start)
+  articleRoute.Handle(new(ArticleController))
 }
 ```
 
 这里通过Golang中的反射实现，拿到参数的类型，然后根据调用者传来的参数和类型匹配上之后，最后通过reflect.Call()执行具体的函数。
-
-
-
