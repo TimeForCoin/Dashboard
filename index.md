@@ -13,7 +13,7 @@
 6、[Requirement specification](docs/requirement.md)（需求规格说明书）
 
 - 6.1 [Use Case Diagram](docs/use-case.md)（用例图）
-- 6.2 Use Cases（用例+活动图）
+- 6.2 [Use Cases](docs/use-case-and-activity)（用例+活动图）
 - 6.3 [Domain Models]((docs/demon.md))（领域模型）
 - 6.4 [State Models]((docs/status.md))（状态模型）
 - 6.5 System Sequence Diagrams（功能模型）
@@ -24,14 +24,14 @@
 - 7.1 UI design（界面设计）
 - 7.2 [Database design](design/db-design.md)（数据库设计）
 - 7.3 [Interface API design](http://xm.zhenly.cn//docs/swagger/?url=https://raw.githubusercontent.com/TimeForCoin/Dashboard/master/design/api.yaml#/)（接口 API 设计）
-- 7.4 [Architecture design](docs/architecture-design.md)（架构设计）
+- 7.4 [Architecture design](design/architecture-design.md)（架构设计）
 - 7.5 Use Case Diagram（用例设计）
 
 8、生产规范与指南
 
 - 8.1 [Golang 代码规范](https://golang.org/doc/effective_go.html)
 - 8.2 [REST API 设计规范](http://www.ruanyifeng.com/blog/2014/05/restful_api.html)
-- 8.3 [架构设计、详细设计（BCE 方法）到应用程序框架映射指南](docs/architecture-design.md)
+- 8.3 [架构设计、详细设计（BCE 方法）到应用程序框架映射指南](design/architecture-design.md)
 - 8.4 [部署说明](docs/deploy.md)
 
 X1 meeting-records
