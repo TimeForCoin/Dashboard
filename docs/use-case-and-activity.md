@@ -4,7 +4,7 @@
 
 下图为整个系统的用例一览
 
-![](use-case-and-activity.assets/requirement.jpg)
+![](use-case/requirement.jpg)
 
 
 
