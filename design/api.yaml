@@ -2753,18 +2753,6 @@ paths:
                       $ref: '#/components/schemas/MessageSession'
         '400':
           $ref: '#/components/responses/400InvalidValue'
-        '403':
-          description: 获取用户失败
-          content:
-            'application/json':
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |
-                      faked_users   - 用户不存在<br/>
-                    example: 'faked_users'
         '401':
           $ref: '#/components/responses/401NotLoginError'
   /messages/system:

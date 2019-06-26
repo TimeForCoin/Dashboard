@@ -4,7 +4,7 @@
 
 - 服务端：Golang
 
-选型理由：Golang 在近些年来在服务端比较流行，相对于其他语言，Golang 具有更高的开发效率以及并行的支持，可以很容易地构建高性能的服务端程序。Golang 是一种非常现代化的语言，吸收了不同领域的编程哲学，具有函数式编程的匿名函数和闭包，同样有面向消息编程的通道和goroutine，也有垃圾回收机制。最主要的是，Golang 是一种强类型的编译型语言，同时也有很好的跨平台特性。个人觉得相对于JavaScript、Python等主流语言，Golang的开发效率和运行效率都更胜一筹。
+选型理由：Golang 在近些年来在服务端比较流行，相对于其他语言，Golang 具有更高的开发效率以及并行的支持，可以很容易地构建高性能的服务端程序。Golang 是一种非常现代化的语言，吸收了不同领域的编程哲学，具有函数式编程的匿名函数和闭包，同样有面向消息编程的通道和goroutine，也有运行时和垃圾回收机制。最主要的是，Golang 是一种强类型的编译型语言，同时也有很好的跨平台特性。个人觉得相对于JavaScript、Python等主流语言，Golang的开发效率和运行效率都更胜一筹。
 
 - 路由框架：[iris](https://github.com/kataras/iris)
 
@@ -390,7 +390,221 @@ Violet 是 XMatrix 团队开发的基于OAuth 2.0 的用户授权系统。可以
 
 ## 软件设计技术
 
+正是因为 Golang 简洁的特性，才带来了高效的开发效率。Golang 中没有复杂的语法和结构，吸收了不同领域的编程哲学，具有函数式编程的匿名函数和闭包，同样有面向消息编程的通道和goroutine，也有运行时和垃圾回收机制。由于本项目是一个简单的Web应用项目，因此仅使用了最朴素的软件设计技术和编程哲学，以最简单的方式高效地实现软件的功能。
+
 ### Object-Oriented Programming
 
-在Golang中，通过`struct`可以定义对象，
+在Golang中，通过`struct`可以定义对象，通过`Interface`定义方法。
+
+在业务逻辑层中每一层各个业务都是独立的对象，比如`Controller`中的公告模块
+
+```go
+type ArticleController struct {
+	BaseController
+	Service services.ArticleService
+}
+
+func (c *ArticleController) GetBy(id string) int {
+	articleID, err := primitive.ObjectIDFromHex(id)
+	utils.AssertErr(err, "invalid_id", 400)
+	c.Service.GetArticleByID(articleID)
+	return iris.StatusOK
+}
+```
+
+通过在`struct`中绑定方法，构造一个持有业务服务模块的对象
+
+```go
+func BindArticleController(app *iris.Application) {
+	articleService := services.GetServiceManger().Article
+
+	articleRoute := mvc.New(app.Party("/article"))
+	articleRoute.Register(articleService, getSession().Start)
+	articleRoute.Handle(new(ArticleController))
+}
+```
+
+然后在将`Controller`对象绑定在公告路由上，通过注册服务将`Session`管理器以及公告服务**注入**到`Controller`中。
+
+而公告控制对象持有的服务也是一个对象，可以通过调用上面的方法`GetArticleByID` 获取信息，通过`interface`定义服务的**接口**
+
+```go
+// ArticleService 公告服务
+type ArticleService interface {
+	GetArticles(page, size int64) (int64, []ArticleBrief)
+	AddArticle(userID primitive.ObjectID, title string, content string, publisher string, images []primitive.ObjectID) primitive.ObjectID
+	GetArticleByID(id primitive.ObjectID) ArticleDetail
+	SetArticleByID(userID primitive.ObjectID, id primitive.ObjectID, title, content, publisher string, images []primitive.ObjectID)
+}
+
+func newArticleService() ArticleService {
+	return &articleService{
+		model:     models.GetModel().Article,
+		userModel: models.GetModel().User,
+		fileModel: models.GetModel().File,
+	}
+}
+```
+
+对于`ArticleController`，是**继承**于`BaseController`的
+
+```go
+// BaseController 控制基类
+type BaseController struct {
+	Ctx     iris.Context
+	Session *sessions.Session
+}
+```
+
+在基类中定义了请求的上下文对象以及Session管理器和一些基本的方法。
+
+
+
+### Aspect-Oriented Programming
+
+在服务端编程中，我们经常会用到中间件，而中间件就是一种面向切面的程序设计。把一些关注点分离开来，提高程序代码的模块化程度。
+
+在创建HTTP服务的时候程序绑定了日志、错误处理等中间件。
+
+```go
+// NewApp 创建服务器实例并绑定控制器
+func NewApp() *iris.Application {
+	app := iris.New()
+
+	app.Use(logger.New())
+
+	app.Use(irisRecover.New())
+
+	app.Use(utils.NewErrorHandler())
+
+	BindUserController(app)
+	BindArticleController(app)
+	BindTaskController(app)
+	BindFileController(app)
+	BindQuestionnaireController(app)
+	BindCommentController(app)
+	BindMessageController(app)
+
+	return app
+}
+```
+
+在每个请求到来的时候，会经过这些中间件，然后再进入我们的程序逻辑当中，而这种结构就类似于`koa`的洋葱圈结构
+
+![165d21b34c3f3768](architecture-design/165d21b34c3f3768.png)
+
+每一层中间件都处理他们相关的事情，将日志、错误处理、业务逻辑等关注点分离开来。
+
+本项目自定义了一个**错误处理的中间件**，通过Golang中的panic和recover机制实现了断言。
+
+当不满足某个条件时，直接返回错误信息到客户端并结束当前请求，极大地减少了代码的冗余程序。
+
+```go
+utils.Assert(a == b, "invalid_id", 400)
+```
+
+```go
+func Assert(condition bool, msg string, code ...int) {
+	if !condition {
+		statusCode := 400
+		if len(code) > 0 {
+			statusCode = code[0]
+		}
+		panic("knownError&" + strconv.Itoa(statusCode) + "&" + msg)
+	}
+}
+```
+
+通过抛出特定格式的错误，然后在错误处理模块中捕获异常并将异常信息封装成HTTP回复发送到客户端中。如果是未知的错误则再次抛出，让默认的错误处理模块进行处理。
+
+```go
+func NewErrorHandler() context.Handler {
+	return func(ctx context.Context) {
+		defer func() {
+			if err := recover(); err != nil {
+
+				switch errStr := err.(type) {
+				case string:
+					// 处理已知错误并直接返回错误请求信息
+				}
+				panic(err)
+			}
+		}()
+		ctx.Next()
+	}
+}
+```
+
+
+
+### Service Oriented Architecture
+
+本项目使用面向服务的体系结构，将程序分为Web端、微信小程序以及服务端
+
+在本项目当中，表示层与业务逻辑层通过HTTP协议进行通信。
+
+在客户端使用Ajax构造HTTP请求发送到服务端，服务端进行处理之后也通过HTTP发送回复数据到客户端中。
+
+服务端通过TCP请求与MongoDB、Redis等数据库通信，通过HTTP请求与授权系统等外部服务进行通信。
+
+
+
+### Singleton Pattern
+
+在业务逻辑层的`Service`, `Models`层中，每个模块都是以单例的模式存在。
+
+比如在`Service`中，具有一个服务管理器专门管理服务
+
+```go
+var service *ServiceManger
+
+// ServiceManger 服务管理器
+type ServiceManger struct {
+	User          UserService
+	Article		  ArticleService
+	Task          TaskService
+	File          FileService
+	Questionnaire QuestionnaireService
+	Comment       CommentService
+	Message       MessageService
+}
+
+// GetServiceManger 获取服务管理器
+func GetServiceManger() *ServiceManger {
+	if service == nil {
+		service = &ServiceManger{
+			User:          newUserService(),
+			Article:	   	 newArticleService(),
+			Task:          newTaskService(),
+			File:          newFileService(),
+			Questionnaire: newQuestionnaireService(),
+			Comment:       newCommentService(),
+			Message:       newMessageService(),
+		}
+	}
+	return service
+}
+```
+
+其中所有的服务的初始化方法都是小写开头的`newXXXService`，在Golang中表示私有方法，不允许外部调用。
+
+因为服务向`Controller`的注入是在应用启动的初始化阶段进行的，此时应用是处于单线程状态，因此可以简单地使用**懒汉式**实现单例。
+
+### Dependency injection
+
+在控制层中，通过依赖注入将控制器需要的上下文、Session管理器和Service注入到Controller实例中
+
+```go
+func BindArticleController(app *iris.Application) {
+	articleService := services.GetServiceManger().Article
+
+	articleRoute := mvc.New(app.Party("/article"))
+	articleRoute.Register(articleService, getSession().Start)
+	articleRoute.Handle(new(ArticleController))
+}
+```
+
+这里通过Golang中的反射实现，拿到参数的类型，然后根据调用者传来的参数和类型匹配上之后，最后通过reflect.Call()执行具体的函数。
+
+
 
