@@ -40,7 +40,9 @@ X1 meeting-records
 
 X2 [KANBAN](https://github.com/orgs/TimeForCoin/projects)
 
-X3 Final Report
+X3 [auditing-records](docs/auditing-records)
+
+X4 Final Report
 
 - 15335055 huangscar
 - [16340027 ZhenlyChen](docs/personal/16340027)
