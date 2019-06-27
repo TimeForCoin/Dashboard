@@ -43,7 +43,7 @@ X2 [KANBAN](https://github.com/orgs/TimeForCoin/projects)
 X3 Final Report
 
 - 15335055 huangscar
-- 16340027 ZhenlyChen
+- [16340027 ZhenlyChen](docs/personal/16340027)
 - 16340028 chensh236
 - 16340029 CookiesChen
 - 16340032 T-Machine
