@@ -37,8 +37,8 @@
 9、成果展示
 
 - 9.1 小程序视频：
-  - [视频1](https://www.chensh236.com:10003/d/s/495488235988853364/K1CuxxYBwgAKW1iiZSO2pgxjCa4wvW9x-fCKA2htb4AY_)
-  - [视频2](https://www.chensh236.com:10003/d/s/495488253642678902/8jcB4Np1KrwyqVx6SmKoWFL3K-xu_GHU-fSIA5kJb4AY_)
+  - [视频1](https://www.bilibili.com/video/av57046289)
+  - [视频2](https://www.bilibili.com/video/av57046458)
 
 X1 meeting-records
 
