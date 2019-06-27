@@ -6,6 +6,8 @@ Web端的UI使用Adobe Experience Design来设计，其设计图位于`design/ui
 
 **该设计为最初版本的Web UI设计图，最终成果将根据开发进度、用户体验、需求进行调整。**
 
+![web](ui-design/web.png)
+
 **如果需要查看不同场景之间的关联，请使用Adobe XD查看设计图。**
 
 ![main page](ui-design/mainpage.png)

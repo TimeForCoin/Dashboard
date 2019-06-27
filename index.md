@@ -42,4 +42,10 @@ X2 [KANBAN](https://github.com/orgs/TimeForCoin/projects)
 
 X3 Final Report
 
-- 学号-title
+- 15335055 huangscar
+- 16340027 ZhenlyChen
+- 16340028 chensh236
+- 16340029 CookiesChen
+- 16340032 T-Machine
+- 16340040 MegaShow
+- 16340280 yuyuforest
