@@ -11,3 +11,5 @@
 [Client Repository](https://github.com/TimeForCoin/Client)
 
 [Mini Program Repository](https://github.com/TimeForCoin/MiniProgram)
+
+[SE-308](https://timeforcoin.github.io/Dashboard/docs/catalog.html)
