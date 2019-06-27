@@ -21,7 +21,7 @@
 
 7、Design（设计说明书）
 
-- 7.1 UI design（界面设计）
+- 7.1 [UI design](design/ui-design.md)（界面设计）
 - 7.2 [Database design](design/db-design.md)（数据库设计）
 - 7.3 [Interface API design](http://xm.zhenly.cn//docs/swagger/?url=https://raw.githubusercontent.com/TimeForCoin/Dashboard/master/design/api.yaml#/)（接口 API 设计）
 - 7.4 [Architecture design](design/architecture-design.md)（架构设计）
@@ -42,4 +42,10 @@ X2 [KANBAN](https://github.com/orgs/TimeForCoin/projects)
 
 X3 Final Report
 
-- 学号-title
+- 15335055 huangscar
+- 16340027 ZhenlyChen
+- 16340028 chensh236
+- 16340029 CookiesChen
+- 16340032 T-Machine
+- 16340040 MegaShow
+- 16340280 yuyuforest
