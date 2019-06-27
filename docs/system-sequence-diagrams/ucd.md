@@ -27,7 +27,7 @@
 
 ![](img/Index.png)
 
-![](img/indexClass.png)
+![](img/IndexClass.png)
 
 ## 查看任务详情
 
@@ -45,7 +45,7 @@
 - 用户进入消息管理页面，加载消息。消息分为两类：系统消息与个人消息。个人消息可以回复而系统消息不可以回复。
 - 用户点击消息项，进入对应消息的会话页面。根据消息的id获取对应的会话列表。如果是个人消息可以新建新的消息。
 
-![](img/messageClass.png)
+![](img/MessageClass.png)
 
 ![](img/Message.png)
 
@@ -53,9 +53,9 @@
 
 - 根据用户的输入以及筛选（类型筛选以及排序方式），获取对应的任务列表。用户点击任务列表中的项目可以进入任务详情页。
 
-![](img/search.png)
-
 ![](img/searchClass.png)
+
+![](img/search.png)
 
 ## 用户信息管理
 
