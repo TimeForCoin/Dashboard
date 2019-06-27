@@ -1,12 +1,14 @@
 # Use cases
 
+| 版本 |时间| 内容 | 贡献者 |
+| ----|-- | ---- | ------ |
+| 1.0 | 2019-6-24 | 初始版本 | CookiesChen |
+
 ## 用例图
 
 下图为整个系统的用例一览
 
-![](use-case/requirement.jpg)
-
-
+![requirement](use-case/requirement.jpg)
 
 ## 用例与活动图
 

@@ -1,5 +1,9 @@
 # RESTful API 设计规范
 
+| 版本 |时间| 内容 | 贡献者 |
+| ----|-- | ---- | ------ |
+| 1.0 | 2019-6-24 | 初始版本 | ZhenlyChen |
+
 本系统API依照 RESTful API 的规范设计
 
 [具体规则](http://www.ruanyifeng.com/blog/2014/05/restful_api.html)

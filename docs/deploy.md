@@ -1,5 +1,9 @@
 # 部署说明
 
+| 版本 |时间| 内容 | 贡献者 |
+| ----|-- | ---- | ------ |
+| 1.0 | 2019-6-24 | 初始版本 | ZhenlyChen |
+
 ## 应用部署架构
 
 ![deploy](deploy/deploy.png)
@@ -20,7 +24,7 @@ npm run build
 server {
   listen 443 ssl http2;
   server_name coin.zhenly.cn;
-  
+
   ssl on;
   # ...
   # SSL 配置
@@ -125,7 +129,7 @@ email:
 server {
   listen 443 ssl http2;
   server_name coin.zhenly.cn;
-  
+
   ssl on;
   # ...
   # SSL 配置
