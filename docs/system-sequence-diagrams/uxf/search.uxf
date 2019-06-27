@@ -283,4 +283,28 @@ create(task_id)</panel_attributes>
 lt=&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>330.0;20.0;10.0;20.0</additional_attributes>
   </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>450</x>
+      <y>315</y>
+      <w>108</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>search_btn
+lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>100.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>441</x>
+      <y>441</y>
+      <w>117</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>clickItem
+lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>110.0;20.0;10.0;20.0</additional_attributes>
+  </element>
 </diagram>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>13</zoom_level>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>390</x>
+      <y>494</y>
+      <w>169</w>
+      <h>91</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;boundary&gt;&gt;
+:SessionPage
+--
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>598</x>
+      <y>494</y>
+      <w>195</w>
+      <h>91</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;boundary&gt;&gt;
+:MessagePage
+--
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>585</x>
+      <y>637</y>
+      <w>299</w>
+      <h>143</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;controller&gt;&gt;
+:MessagePageCtrl
+--
+--
+getMessage(type)
+clickMessage(message_id)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>286</x>
+      <y>624</y>
+      <w>273</w>
+      <h>182</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;controller&gt;&gt;
+:SessionPageCtrl
+--
+--
+createSessionPage(message_id)
+createSession()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>663</x>
+      <y>884</y>
+      <w>260</w>
+      <h>221</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;entity&gt;&gt;
+:Message
+--
+type
+user_id
+user_ava
+content
+isRead
+...
+--
+loadMessage(type)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>325</x>
+      <y>858</y>
+      <w>273</w>
+      <h>273</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;entity&gt;&gt;
+:Session
+--
+user_id
+user_ava
+content
+time
+nickname
+--
+loadSession(message_id)
+createSession(user_id)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>442</x>
+      <y>572</y>
+      <w>52</w>
+      <h>78</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;40.0;20.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>663</x>
+      <y>559</y>
+      <w>52</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;60.0;20.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>390</x>
+      <y>793</y>
+      <w>52</w>
+      <h>91</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>20.0;50.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>715</x>
+      <y>754</y>
+      <w>52</w>
+      <h>156</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>20.0;100.0;10.0;10.0</additional_attributes>
+  </element>
+</diagram>

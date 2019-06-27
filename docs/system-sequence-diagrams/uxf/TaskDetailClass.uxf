@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>9</zoom_level>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>333</x>
+      <y>432</y>
+      <w>117</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;boundary&gt;&gt;
+:JoinInResultPage
+--
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>576</x>
+      <y>432</y>
+      <w>126</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;boundary&gt;&gt;
+:TaskDetailPage
+--
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>558</x>
+      <y>531</y>
+      <w>225</w>
+      <h>162</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;controller&gt;&gt;
+:TaskDetailPageCtrl
+--
+canJoinImmediately
+--
+loadTaskDetail(task_id)
+joinIn()
+clickLove()
+clickCollect()
+clickSession()
+clickComment()
+addComment()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>297</x>
+      <y>531</y>
+      <w>225</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;controller&gt;&gt;
+:JoinInReasonPageCtril
+--
+--
+confirmReason()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>378</x>
+      <y>774</y>
+      <w>171</w>
+      <h>171</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;entity&gt;&gt;
+:Task
+--
+title
+content
+publisher
+publish_date
+start_date
+end_date
+max_player
+...
+--
+loadTaskDetail(task_id)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>585</x>
+      <y>783</y>
+      <w>189</w>
+      <h>153</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;entity&gt;&gt;
+:Comment
+--
+user
+owner
+content
+time
+...
+--
+loadComments(task_id)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>954</x>
+      <y>819</y>
+      <w>189</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;task manage system&gt;&gt;
+:Manager
+--
+--
+joinIn(task_id)
+addReason(task_id)
+clickLove(task_id)
+clickCollect(task_id)
+putComment(task_id)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>378</x>
+      <y>477</y>
+      <w>36</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>20.0;60.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>621</x>
+      <y>477</y>
+      <w>36</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>20.0;60.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>441</x>
+      <y>684</y>
+      <w>207</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;100.0;210.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>459</x>
+      <y>666</y>
+      <w>603</w>
+      <h>171</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>650.0;170.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>630</x>
+      <y>684</y>
+      <w>432</w>
+      <h>153</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>460.0;150.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>630</x>
+      <y>684</y>
+      <w>45</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>30.0;110.0;10.0;10.0</additional_attributes>
+  </element>
+</diagram>

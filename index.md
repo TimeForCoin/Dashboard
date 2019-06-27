@@ -25,7 +25,7 @@
 - 7.2 [Database design](design/db-design.md)（数据库设计）
 - 7.3 [Interface API design](http://xm.zhenly.cn//docs/swagger/?url=https://raw.githubusercontent.com/TimeForCoin/Dashboard/master/design/api.yaml#/)（接口 API 设计）
 - 7.4 [Architecture design](design/architecture-design.md)（架构设计）
-- 7.5 Use Case Diagram（用例设计）
+- 7.5 [Use Case Diagram](docs/system-sequence-diagrams/ucd.md)（用例设计）
 
 8、生产规范与指南
 

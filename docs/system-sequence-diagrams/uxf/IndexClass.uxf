@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>7</zoom_level>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>413</x>
+      <y>854</y>
+      <w>119</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;boundary&gt;&gt;
+:IndexPage
+--
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>420</x>
+      <y>938</y>
+      <w>126</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;controller&gt;&gt;
+:IndexPageCtrl
+--
+--
+getRecommand(type)
+clickItem(task_id)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>448</x>
+      <y>1050</y>
+      <w>182</w>
+      <h>154</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;entity&gt;&gt;
+:Task
+--
+title
+content
+publisher
+publish_date
+start_date
+end_date
+max_player
+...
+--
+loadRecommand(type)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>469</x>
+      <y>896</y>
+      <w>21</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>476</x>
+      <y>994</y>
+      <w>49</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>50.0;80.0;10.0;10.0</additional_attributes>
+  </element>
+</diagram>

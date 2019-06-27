@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="14.3.0">
-  <zoom_level>11</zoom_level>
+  <zoom_level>9</zoom_level>
   <element>
     <id>UMLActor</id>
     <coordinates>
-      <x>55</x>
-      <y>297</y>
-      <w>66</w>
-      <h>121</h>
+      <x>216</x>
+      <y>351</y>
+      <w>54</w>
+      <h>99</h>
     </coordinates>
     <panel_attributes>:用户</panel_attributes>
     <additional_attributes/>
@@ -15,10 +15,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>88</x>
-      <y>396</y>
-      <w>33</w>
-      <h>198</h>
+      <x>243</x>
+      <y>432</y>
+      <w>27</w>
+      <h>162</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;160.0</additional_attributes>
@@ -26,10 +26,10 @@
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>198</x>
-      <y>363</y>
-      <w>110</w>
-      <h>33</h>
+      <x>333</x>
+      <y>405</y>
+      <w>90</w>
+      <h>27</h>
     </coordinates>
     <panel_attributes>_:系统_</panel_attributes>
     <additional_attributes/>
@@ -37,10 +37,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>242</x>
-      <y>385</y>
-      <w>33</w>
-      <h>220</h>
+      <x>369</x>
+      <y>423</y>
+      <w>27</w>
+      <h>180</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;180.0</additional_attributes>
@@ -48,10 +48,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>88</x>
-      <y>418</y>
-      <w>187</w>
-      <h>44</h>
+      <x>243</x>
+      <y>450</y>
+      <w>153</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
 查看主页推荐任务</panel_attributes>
@@ -60,10 +60,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>88</x>
-      <y>462</y>
-      <w>187</w>
-      <h>44</h>
+      <x>243</x>
+      <y>486</y>
+      <w>153</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 返回主页推荐任务</panel_attributes>
@@ -72,10 +72,10 @@
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>440</x>
-      <y>319</y>
-      <w>121</w>
-      <h>44</h>
+      <x>531</x>
+      <y>369</y>
+      <w>99</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>&lt;&lt;boundary&gt;&gt;
 :IndexPage</panel_attributes>
@@ -84,10 +84,10 @@
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>682</x>
-      <y>319</y>
-      <w>121</w>
-      <h>44</h>
+      <x>729</x>
+      <y>369</y>
+      <w>99</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>&lt;&lt;controller&gt;&gt;
 :IndexPageCtrl</panel_attributes>
@@ -96,10 +96,10 @@
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>1023</x>
-      <y>319</y>
-      <w>121</w>
-      <h>44</h>
+      <x>1008</x>
+      <y>369</y>
+      <w>99</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>&lt;&lt;entity&gt;&gt;
 :Task</panel_attributes>
@@ -108,10 +108,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>484</x>
-      <y>352</y>
-      <w>33</w>
-      <h>330</h>
+      <x>567</x>
+      <y>396</y>
+      <w>27</w>
+      <h>270</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;280.0</additional_attributes>
@@ -119,10 +119,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>495</x>
-      <y>385</y>
-      <w>253</w>
-      <h>44</h>
+      <x>576</x>
+      <y>423</y>
+      <w>207</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>getRecommand(type)
 lt=&lt;&lt;&lt;-</panel_attributes>
@@ -131,10 +131,10 @@ lt=&lt;&lt;&lt;-</panel_attributes>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>484</x>
-      <y>374</y>
-      <w>22</w>
-      <h>275</h>
+      <x>567</x>
+      <y>414</y>
+      <w>18</w>
+      <h>225</h>
     </coordinates>
     <panel_attributes/>
     <additional_attributes/>
@@ -142,10 +142,10 @@ lt=&lt;&lt;&lt;-</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>726</x>
-      <y>352</y>
-      <w>33</w>
-      <h>330</h>
+      <x>765</x>
+      <y>396</y>
+      <w>27</w>
+      <h>270</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;280.0</additional_attributes>
@@ -153,10 +153,10 @@ lt=&lt;&lt;&lt;-</panel_attributes>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>726</x>
-      <y>374</y>
-      <w>22</w>
-      <h>275</h>
+      <x>765</x>
+      <y>414</y>
+      <w>18</w>
+      <h>225</h>
     </coordinates>
     <panel_attributes/>
     <additional_attributes/>
@@ -164,10 +164,10 @@ lt=&lt;&lt;&lt;-</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1078</x>
-      <y>352</y>
-      <w>33</w>
-      <h>330</h>
+      <x>1053</x>
+      <y>396</y>
+      <w>27</w>
+      <h>270</h>
     </coordinates>
     <panel_attributes>lt=.</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;280.0</additional_attributes>
@@ -175,10 +175,10 @@ lt=&lt;&lt;&lt;-</panel_attributes>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>1078</x>
-      <y>374</y>
-      <w>22</w>
-      <h>275</h>
+      <x>1053</x>
+      <y>414</y>
+      <w>18</w>
+      <h>225</h>
     </coordinates>
     <panel_attributes/>
     <additional_attributes/>
@@ -186,10 +186,10 @@ lt=&lt;&lt;&lt;-</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>737</x>
-      <y>418</y>
-      <w>363</w>
-      <h>44</h>
+      <x>774</x>
+      <y>450</y>
+      <w>297</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 List&lt;Task&gt;</panel_attributes>
@@ -198,10 +198,10 @@ List&lt;Task&gt;</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>495</x>
-      <y>451</y>
-      <w>253</w>
-      <h>44</h>
+      <x>576</x>
+      <y>477</y>
+      <w>207</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 List&lt;Task&gt;</panel_attributes>
@@ -210,10 +210,10 @@ List&lt;Task&gt;</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>737</x>
-      <y>396</y>
-      <w>363</w>
-      <h>44</h>
+      <x>774</x>
+      <y>432</y>
+      <w>297</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>loadRecommand(type)
 lt=&lt;&lt;&lt;-</panel_attributes>
@@ -222,10 +222,10 @@ lt=&lt;&lt;&lt;-</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>88</x>
-      <y>495</y>
-      <w>187</w>
-      <h>44</h>
+      <x>243</x>
+      <y>513</y>
+      <w>153</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
 点击其中项目</panel_attributes>
@@ -234,10 +234,10 @@ lt=&lt;&lt;&lt;-</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>88</x>
-      <y>528</y>
-      <w>187</w>
-      <h>44</h>
+      <x>243</x>
+      <y>540</y>
+      <w>153</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 返回任务详情</panel_attributes>
@@ -246,10 +246,10 @@ lt=&lt;&lt;&lt;-</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>495</x>
-      <y>495</y>
-      <w>253</w>
-      <h>44</h>
+      <x>576</x>
+      <y>513</y>
+      <w>207</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>clickItem(task_id)
 lt=&lt;&lt;&lt;-</panel_attributes>
@@ -258,10 +258,10 @@ lt=&lt;&lt;&lt;-</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>638</x>
-      <y>528</y>
-      <w>132</w>
-      <h>44</h>
+      <x>693</x>
+      <y>540</y>
+      <w>108</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
 create(task_id)</panel_attributes>
@@ -270,15 +270,39 @@ create(task_id)</panel_attributes>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>517</x>
-      <y>528</y>
-      <w>143</w>
-      <h>77</h>
+      <x>594</x>
+      <y>540</y>
+      <w>117</w>
+      <h>63</h>
     </coordinates>
     <panel_attributes>&lt;&lt;boundary&gt;&gt;
 :TaskDetailPage
 --
 --</panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>495</x>
+      <y>504</y>
+      <w>99</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>click
+lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>90.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>477</x>
+      <y>414</y>
+      <w>117</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>enterIn
+lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>110.0;20.0;10.0;20.0</additional_attributes>
   </element>
 </diagram>
