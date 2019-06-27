@@ -3,7 +3,8 @@
 
 | 版本 | 日期       | 描述     | 作者   |
 | ---- | ---------- | -------- | ------ |
-| V1.0 | 2019-06-27 | SSD图 | chensh236 |
+| V1.0 | 2019-06-27 | Use Case Diagram | chensh236 |
+
 
 - 主页获取推荐任务
 - 查看任务详情
@@ -24,7 +25,9 @@
 
 在主页中，用户根据不同的类型（所有、跑腿、信息、问卷）获取推荐列表。点击列表项目进入详情页。
 
-![Index](img/Index.png)
+![](img/Index.png)
+
+![](img/IndexClass.png)
 
 ## 查看任务详情
 
@@ -33,24 +36,32 @@
 - 用户可以点击收藏按钮 以及 点赞按钮，收藏或者点赞任务
 - 用户可以点击会话按钮，进入对应的会话页面新建或者获取对应的会话列表。
 
-![TaskDetail](img/TaskDetail.png)
+![](img/TaskDetailClass.png)
+
+![](img/TaskDetail.png)
 
 ## 消息管理
 
 - 用户进入消息管理页面，加载消息。消息分为两类：系统消息与个人消息。个人消息可以回复而系统消息不可以回复。
 - 用户点击消息项，进入对应消息的会话页面。根据消息的id获取对应的会话列表。如果是个人消息可以新建新的消息。
 
-![Message](img/Message.png)
+![](img/MessageClass.png)
+
+![](img/Message.png)
 
 ## 任务搜索
 
 - 根据用户的输入以及筛选（类型筛选以及排序方式），获取对应的任务列表。用户点击任务列表中的项目可以进入任务详情页。
 
-![search](img/search.png)
+![](img/searchClass.png)
+
+![](img/search.png)
 
 ## 用户信息管理
 
 - 在该页面中用户可以获取对应的任务列表（发布的任务列表、草稿列表、参加过的任务列表、收藏列表）。
 - 该界面中用户还可以进行个人信息的修改。
 
-![userInfo](img/userInfo.png)
+![](img/userInfoClass.png)
+
+![](img/userInfo.png)

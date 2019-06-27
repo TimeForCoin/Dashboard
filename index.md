@@ -25,7 +25,7 @@
 - 7.2 [Database design](design/db-design.md)（数据库设计）
 - 7.3 [Interface API design](http://xm.zhenly.cn//docs/swagger/?url=https://raw.githubusercontent.com/TimeForCoin/Dashboard/master/design/api.yaml#/)（接口 API 设计）
 - 7.4 [Architecture design](design/architecture-design.md)（架构设计）
-- 7.5 Use Case Diagram（用例设计）
+- 7.5 [Use Case Diagram](docs/system-sequence-diagrams/ucd.md)（用例设计）
 
 8、生产规范与指南
 
@@ -44,7 +44,7 @@ X3 Final Report
 
 - 15335055 huangscar
 - [16340027 ZhenlyChen](docs/personal/16340027)
-- 16340028 chensh236
+- [16340028 chensh236](docs/personal/16340028)
 - 16340029 CookiesChen
 - 16340032 T-Machine
 - 16340040 MegaShow
