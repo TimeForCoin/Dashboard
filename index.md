@@ -34,6 +34,12 @@
 - 8.3 [架构设计、详细设计（BCE 方法）到应用程序框架映射指南](design/architecture-design.md)
 - 8.4 [部署说明](docs/deploy.md)
 
+9、成果展示
+
+- 9.1 小程序视频：
+  - [视频1](https://www.chensh236.com:10003/d/s/495488235988853364/K1CuxxYBwgAKW1iiZSO2pgxjCa4wvW9x-fCKA2htb4AY_)
+  - [视频2](https://www.chensh236.com:10003/d/s/495488253642678902/8jcB4Np1KrwyqVx6SmKoWFL3K-xu_GHU-fSIA5kJb4AY_)
+
 X1 meeting-records
 
 - [inception meeting (2019-03-17)](meetings/meeting-01-20190317.md)
