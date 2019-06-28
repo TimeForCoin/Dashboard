@@ -54,7 +54,7 @@ X4 Final Report
 - [16340027 ZhenlyChen](docs/personal/16340027)
 - [16340028 chensh236](docs/personal/16340028)
 - [16340029 CookiesChen](docs/personal/16340029)
-- 16340032 T-Machine
+- [16340032 T-Machine](docs/personal/16340032)
 - 16340040 MegaShow
 - 16340280 yuyuforest
 
