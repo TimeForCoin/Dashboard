@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="MongoDb" id="Project_3c9b2c7" template="Default" database="MongoDb" >
+	<schema name="coin-test" catalogname="coin-test" >
+		<table name="comments" >
+			<column name="_id" type="oid" length="800" decimal="0" jt="-8" mandatory="y" autoincrement="y" />
+			<column name="content_id" type="oid" length="800" decimal="0" jt="-8" mandatory="y" />
+			<column name="content_own" type="oid" length="800" decimal="0" jt="-8" mandatory="y" />
+			<column name="user_id" type="oid" length="800" decimal="0" jt="-8" mandatory="y" />
+			<column name="reply_count" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<column name="like_count" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<column name="content" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="time" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<column name="is_delete" type="boolean" length="800" decimal="0" jt="16" mandatory="y" />
+			<column name="id_reply" type="boolean" length="800" decimal="0" jt="16" mandatory="y" />
+			<index name="_id_" unique="PRIMARY_KEY" >
+				<column name="_id" />
+			</index>
+			<index name="content_id_1" unique="UNIQUE" >
+				<column name="content_id" />
+			</index>
+			<fk name="Ref" virtual="y" to_schema="coin-test" to_table="users" >
+				<fk_column name="user_id" pk="_id" />
+			</fk>
+			<fk name="Ref" virtual="y" to_schema="coin-test" to_table="tasks" >
+				<fk_column name="content_id" pk="_id" />
+			</fk>
+			<fk name="fk_comments_comments" virtual="y" to_schema="coin-test" to_table="comments" >
+				<fk_column name="content_id" pk="_id" />
+			</fk>
+			<fk name="fk_comments_users_2" virtual="y" to_schema="coin-test" to_table="users" >
+				<fk_column name="content_own" pk="_id" />
+			</fk>
+		</table>
+		<table name="files" >
+			<column name="_id" type="oid" length="800" decimal="0" jt="-8" mandatory="y" autoincrement="y" />
+			<column name="time" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<column name="used" type="integer" length="800" decimal="0" jt="4" mandatory="y" />
+			<column name="owner_id" type="oid" length="800" decimal="0" jt="-8" mandatory="y" />
+			<column name="owner" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="type" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="name" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="description" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="size" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<column name="public" type="boolean" length="800" decimal="0" jt="16" mandatory="y" />
+			<column name="url" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="cosname" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="hash" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<index name="_id_" unique="PRIMARY_KEY" >
+				<column name="_id" />
+			</index>
+			<index name="owner_id_1" unique="UNIQUE" >
+				<column name="owner_id" />
+			</index>
+			<fk name="Ref" virtual="y" to_schema="coin-test" to_table="users" >
+				<fk_column name="owner_id" pk="_id" />
+			</fk>
+			<fk name="fk_files_tasks" virtual="y" to_schema="coin-test" to_table="tasks" >
+				<fk_column name="owner_id" pk="_id" />
+			</fk>
+		</table>
+		<table name="logs" />
+		<table name="messages" >
+			<column name="_id" type="oid" length="800" decimal="0" jt="-8" mandatory="y" autoincrement="y" />
+			<column name="type" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="user_1" type="oid" length="800" decimal="0" jt="-8" mandatory="y" />
+			<column name="user_2" type="oid" length="800" decimal="0" jt="-8" mandatory="y" />
+			<column name="messages" type="list" length="800" decimal="0" jt="4999545" mandatory="y" >
+				<column name="user" type="oid" length="800" decimal="0" jt="-8" mandatory="y" />
+				<column name="time" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+				<column name="title" type="string" length="800" decimal="0" jt="12" />
+				<column name="content" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+				<column name="about" type="oid" length="800" decimal="0" jt="-8" />
+			</column>
+			<column name="last_message" type="map" length="800" decimal="0" jt="4999544" >
+				<column name="user" type="oid" length="800" decimal="0" jt="-8" />
+				<column name="time" type="long" length="800" decimal="0" jt="-1" />
+				<column name="title" type="string" length="800" decimal="0" jt="12" />
+				<column name="content" type="string" length="800" decimal="0" jt="12" />
+				<column name="about" type="oid" length="800" decimal="0" jt="-8" />
+			</column>
+			<column name="unread_1" type="integer" length="800" decimal="0" jt="4" />
+			<column name="unread_2" type="integer" length="800" decimal="0" jt="4" />
+			<index name="_id_" unique="PRIMARY_KEY" >
+				<column name="_id" />
+			</index>
+			<index name="user_1_1" unique="UNIQUE" >
+				<column name="user_1" />
+			</index>
+			<index name="user_2_1" unique="UNIQUE" >
+				<column name="user_2" />
+			</index>
+			<fk name="Ref" virtual="y" to_schema="coin-test" to_table="users" >
+				<fk_column name="user_1" pk="_id" />
+			</fk>
+			<fk name="fk_messages_users" virtual="y" to_schema="coin-test" to_table="users" >
+				<fk_column name="user_2" pk="_id" />
+			</fk>
+		</table>
+		<table name="questionnaires" >
+			<column name="_id" type="oid" length="800" decimal="0" jt="-8" mandatory="y" autoincrement="y" />
+			<column name="title" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="description" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="owner" type="oid" length="800" decimal="0" jt="-8" mandatory="y" />
+			<column name="anonymous" type="boolean" length="800" decimal="0" jt="16" mandatory="y" />
+			<column name="problems" type="list" length="800" decimal="0" jt="4999545" >
+				<column name="index" type="long" length="800" decimal="0" jt="-1" />
+				<column name="content" type="string" length="800" decimal="0" jt="12" />
+				<column name="note" type="string" length="800" decimal="0" jt="12" />
+				<column name="type" type="string" length="800" decimal="0" jt="12" />
+				<column name="images" type="string" length="800" decimal="0" jt="12" />
+				<column name="choose_problem" type="map" length="800" decimal="0" jt="4999544" >
+					<column name="options" type="list" length="800" decimal="0" jt="4999545" >
+						<column name="index" type="long" length="800" decimal="0" jt="-1" />
+						<column name="content" type="string" length="800" decimal="0" jt="12" />
+					</column>
+					<column name="max_choose" type="long" length="800" decimal="0" jt="-1" />
+				</column>
+				<column name="fill_problem" type="map" length="800" decimal="0" jt="4999544" >
+					<column name="type" type="string" length="800" decimal="0" jt="12" />
+					<column name="multi_line" type="boolean" length="800" decimal="0" jt="16" />
+					<column name="max_word" type="long" length="800" decimal="0" jt="-1" />
+				</column>
+				<column name="score_problem" type="map" length="800" decimal="0" jt="4999544" >
+					<column name="min_text" type="string" length="800" decimal="0" jt="12" />
+					<column name="max_text" type="string" length="800" decimal="0" jt="12" />
+					<column name="score" type="long" length="800" decimal="0" jt="-1" />
+				</column>
+				<column name="matrix_problem" type="map" length="800" decimal="0" jt="4999544" >
+					<column name="content" type="string" length="800" decimal="0" jt="12" />
+					<column name="options" type="string" length="800" decimal="0" jt="12" />
+				</column>
+				<column name="sort_problem" type="map" length="800" decimal="0" jt="4999544" >
+					<column name="sort_item" type="string" length="800" decimal="0" jt="12" />
+				</column>
+			</column>
+			<column name="data" type="list" length="800" decimal="0" jt="4999545" >
+				<column name="user_id" type="oid" length="800" decimal="0" jt="-8" />
+				<column name="data" type="list" length="800" decimal="0" jt="4999545" >
+					<column name="problem_index" type="integer" length="800" decimal="0" jt="4" />
+					<column name="choose_value" type="array" length="800" decimal="0" jt="2003" />
+					<column name="string_value" type="string" length="800" decimal="0" jt="12" />
+					<column name="score_value" type="integer" length="800" decimal="0" jt="4" />
+				</column>
+				<column name="time" type="long" length="800" decimal="0" jt="-1" />
+				<column name="duration" type="long" length="800" decimal="0" jt="-1" />
+				<column name="ip" type="string" length="800" decimal="0" jt="12" />
+			</column>
+			<index name="_id_" unique="PRIMARY_KEY" >
+				<column name="_id" />
+			</index>
+			<fk name="fk_questionnaires_tasks" virtual="y" to_schema="coin-test" to_table="tasks" >
+				<fk_column name="_id" pk="_id" />
+			</fk>
+			<fk name="fk_questionnaires_users" virtual="y" to_schema="coin-test" to_table="users" >
+				<fk_column name="data.user_id" pk="_id" />
+			</fk>
+			<fk name="fk_questionnaires_users_owner" virtual="y" to_schema="coin-test" to_table="users" >
+				<fk_column name="owner" pk="_id" />
+			</fk>
+		</table>
+		<table name="sets" >
+			<column name="_id" type="oid" length="800" decimal="0" jt="-8" mandatory="y" autoincrement="y" />
+			<column name="collect_task_id" type="array" length="800" decimal="0" jt="2003" />
+			<column name="following_user_id" type="array" length="800" decimal="0" jt="2003" />
+			<column name="like_task_id" type="list" length="800" decimal="0" jt="4999545" />
+			<column name="like_comment_id" type="array" length="800" decimal="0" jt="2003" />
+			<column name="follower_user_id" type="array" length="800" decimal="0" jt="2003" />
+			<index name="_id_" unique="PRIMARY_KEY" >
+				<column name="_id" />
+			</index>
+			<fk name="fk_sets_users" virtual="y" to_schema="coin-test" to_table="users" >
+				<fk_column name="_id" pk="_id" />
+			</fk>
+			<fk name="fk_sets_users_1" virtual="y" to_schema="coin-test" to_table="users" >
+				<fk_column name="following_user_id" pk="_id" />
+			</fk>
+			<fk name="fk_sets_users_2" virtual="y" to_schema="coin-test" to_table="users" >
+				<fk_column name="follower_user_id" pk="_id" />
+			</fk>
+			<fk name="fk_sets_comments" virtual="y" to_schema="coin-test" to_table="comments" >
+				<fk_column name="like_comment_id" pk="_id" />
+			</fk>
+			<fk name="fk_sets_tasks" virtual="y" to_schema="coin-test" to_table="tasks" >
+				<fk_column name="collect_task_id" pk="_id" />
+			</fk>
+		</table>
+		<table name="task_status" >
+			<column name="_id" type="oid" length="800" decimal="0" jt="-8" mandatory="y" autoincrement="y" />
+			<column name="task" type="oid" length="800" decimal="0" jt="-8" mandatory="y" />
+			<column name="player" type="oid" length="800" decimal="0" jt="-8" mandatory="y" />
+			<column name="status" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="note" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="degree" type="integer" length="800" decimal="0" jt="4" mandatory="y" />
+			<column name="remark" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="score" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<column name="feedback" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<index name="_id_" unique="PRIMARY_KEY" >
+				<column name="_id" />
+			</index>
+			<index name="task_1" unique="UNIQUE" >
+				<column name="task" />
+			</index>
+			<index name="player_1" unique="UNIQUE" >
+				<column name="player" />
+			</index>
+			<fk name="Ref" virtual="y" to_schema="coin-test" to_table="users" >
+				<fk_column name="player" pk="_id" />
+			</fk>
+			<fk name="Ref" virtual="y" to_schema="coin-test" to_table="tasks" >
+				<fk_column name="task" pk="_id" />
+			</fk>
+		</table>
+		<table name="tasks" >
+			<column name="_id" type="oid" length="800" decimal="0" jt="-8" mandatory="y" autoincrement="y" />
+			<column name="publisher" type="oid" length="800" decimal="0" jt="-8" mandatory="y" />
+			<column name="title" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="type" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="content" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="status" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="location" type="array" length="800" decimal="0" jt="2003" mandatory="y" />
+			<column name="tags" type="array" length="800" decimal="0" jt="2003" mandatory="y" />
+			<column name="top_time" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<column name="reward" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="reward_value" type="double" length="800" decimal="0" jt="8" mandatory="y" />
+			<column name="reward_object" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="publish_date" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<column name="start_date" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<column name="end_date" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<column name="player_count" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<column name="max_player" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<column name="auto_accept" type="boolean" length="800" decimal="0" jt="16" mandatory="y" />
+			<column name="view_count" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<column name="collect_count" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<column name="comment_count" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<column name="like_count" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<column name="hot" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<index name="_id_" unique="PRIMARY_KEY" >
+				<column name="_id" />
+			</index>
+			<index name="publisher_1" unique="UNIQUE" >
+				<column name="publisher" />
+			</index>
+			<fk name="Ref" virtual="y" to_schema="coin-test" to_table="users" >
+				<fk_column name="publisher" pk="_id" />
+			</fk>
+		</table>
+		<table name="users" >
+			<column name="_id" type="oid" length="800" decimal="0" jt="-8" mandatory="y" autoincrement="y" />
+			<column name="wechat_id" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="wechat_name" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="violet_id" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="violet_name" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+			<column name="register_time" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			<column name="info" type="map" length="800" decimal="0" jt="4999544" mandatory="y" >
+				<column name="email" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+				<column name="phone" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+				<column name="avatar" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+				<column name="school" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+				<column name="nickname" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+				<column name="bio" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+				<column name="gender" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+				<column name="location" type="string" length="800" decimal="0" jt="12" mandatory="y" />
+				<column name="birthday" type="long" length="800" decimal="0" jt="-1" mandatory="y" />
+			</column>
+			<column name="data" type="map" length="800" decimal="0" jt="4999544" >
+				<column name="money" type="long" length="800" decimal="0" jt="-1" />
+				<column name="value" type="long" length="800" decimal="0" jt="-1" />
+				<column name="credit" type="long" length="800" decimal="0" jt="-1" />
+				<column name="type" type="string" length="800" decimal="0" jt="12" />
+				<column name="attendance_date" type="long" length="800" decimal="0" jt="-1" />
+				<column name="collect_tasks" type="list" length="800" decimal="0" jt="4999545" />
+				<column name="publish_count" type="long" length="800" decimal="0" jt="-1" />
+				<column name="publish_run_count" type="long" length="800" decimal="0" jt="-1" />
+				<column name="receive_count" type="long" length="800" decimal="0" jt="-1" />
+				<column name="receive_run_count" type="long" length="800" decimal="0" jt="-1" />
+				<column name="following_count" type="long" length="800" decimal="0" jt="-1" />
+				<column name="follower_count" type="long" length="800" decimal="0" jt="-1" />
+				<column name="search_history" type="array" length="800" decimal="0" jt="2003" />
+				<column name="searchHistory" type="string" length="800" decimal="0" jt="12" />
+			</column>
+			<column name="certification" type="map" length="800" decimal="0" jt="4999544" >
+				<column name="identity" type="string" length="800" decimal="0" jt="12" />
+				<column name="data" type="string" length="800" decimal="0" jt="12" />
+				<column name="status" type="string" length="800" decimal="0" jt="12" />
+				<column name="date" type="long" length="800" decimal="0" jt="-1" />
+				<column name="material" type="string" length="800" decimal="0" jt="12" />
+				<column name="feedback" type="string" length="800" decimal="0" jt="12" />
+				<column name="email" type="string" length="800" decimal="0" jt="12" />
+			</column>
+			<column name="collect_tasks" type="array" length="800" decimal="0" jt="2003" />
+			<index name="_id_" unique="PRIMARY_KEY" >
+				<column name="_id" />
+			</index>
+		</table>
+	</schema>
+	<connector name="MongoDb" database="MongoDb" driver_class="com.dbschema.MongoJdbcDriver" driver_jar="mongojdbc1.2.jar" driver_desc="Password Authentication" host="love.zhenly.cn" port="23333" instance="coin-test" user="coin" passwd="U1BlMVdWVWVnT2N0LWdFWg==" />
+	<layout name="Default Layout" id="Layout_2b2c2bb" show_relation="columns" >
+		<entity schema="coin-test" name="users" color="BED3F4" x="256" y="288" />
+		<entity schema="coin-test" name="sets" color="C7F4BE" x="96" y="640" />
+		<entity schema="coin-test" name="messages" color="C7F4BE" x="48" y="384" />
+		<entity schema="coin-test" name="logs" color="3986C1" x="80" y="192" />
+		<entity schema="coin-test" name="tasks" color="BEBEF4" x="1056" y="240" />
+		<entity schema="coin-test" name="task_status" color="BEBEF4" x="752" y="224" />
+		<entity schema="coin-test" name="comments" color="BEBEF4" x="688" y="480" />
+		<entity schema="coin-test" name="questionnaires" color="C7F4BE" x="672" y="768" />
+		<entity schema="coin-test" name="questionnaires" column="problems" color="3986C1" x="1024" y="768" />
+		<entity schema="coin-test" name="questionnaires" column="data" color="3986C1" x="384" y="800" />
+		<entity schema="coin-test" name="files" color="C7F4BE" x="448" y="48" />
+	</layout>
+	<layout name="Sample Layout with Tools" id="Layout_47e7c8d" show_column_type="y" show_relation="columns" >
+		<entity schema="coin-test" name="comments" color="BEBEF4" x="48" y="1296" />
+		<entity schema="coin-test" name="files" color="C7F4BE" x="48" y="80" />
+		<entity schema="coin-test" name="logs" color="3986C1" x="560" y="1136" />
+		<entity schema="coin-test" name="messages" color="C7F4BE" x="48" y="432" />
+		<entity schema="coin-test" name="messages" column="messages" color="C7F4BE" x="224" y="368" />
+		<entity schema="coin-test" name="messages" column="last_message" color="C7F4BE" x="224" y="240" />
+		<entity schema="coin-test" name="questionnaires" color="C7F4BE" x="48" y="624" />
+		<entity schema="coin-test" name="questionnaires" column="problems.choose_problem" color="F4DDBE" x="560" y="1488" />
+		<entity schema="coin-test" name="questionnaires" column="problems.choose_problem.options" color="F4DDBE" x="560" y="1488" />
+		<entity schema="coin-test" name="questionnaires" column="problems.fill_problem" color="F4DDBE" x="560" y="1584" />
+		<entity schema="coin-test" name="questionnaires" column="problems.score_problem" color="C7F4BE" x="304" y="528" />
+		<entity schema="coin-test" name="questionnaires" column="problems.matrix_problem" color="F4DDBE" x="560" y="1584" />
+		<entity schema="coin-test" name="questionnaires" column="problems.sort_problem" color="F4DDBE" x="560" y="1296" />
+		<entity schema="coin-test" name="questionnaires" column="data.data" color="C7F4BE" x="304" y="624" />
+		<entity schema="coin-test" name="sets" color="C7F4BE" x="48" y="1040" />
+		<entity schema="coin-test" name="task_status" color="BEBEF4" x="48" y="2704" />
+		<entity schema="coin-test" name="tasks" color="BEBEF4" x="48" y="2928" />
+		<entity schema="coin-test" name="users" color="BED3F4" x="560" y="272" />
+		<entity schema="coin-test" name="users" column="info" color="BED3F4" x="736" y="80" />
+		<entity schema="coin-test" name="users" column="data" color="BED3F4" x="736" y="272" />
+		<entity schema="coin-test" name="users" column="certification" color="BED3F4" x="736" y="560" />
+		<callout x="48" y="528" pointer="NO" >
+			<comment><![CDATA[This is a sample layout with tools. 
+ You can create multiple layouts with the same or different collections. 
+ Layouts are saved together with the database structure to project file and can be later reopen. 
+ Inside layouts double-click any collection or field to edit. 
+ On the bottom there are three tools: 
+ Relational Data Browse for exploring data from multiple collections and two query editors.]]></comment>
+		</callout>
+		<group name="questionnaires" color="EEF7EC" >
+			<entity schema="coin-test" name="questionnaires" />
+			<entity schema="coin-test" name="messages" column="messages" />
+			<entity schema="coin-test" name="messages" column="last_message" />
+			<entity schema="coin-test" name="sets" />
+			<entity schema="coin-test" name="questionnaires" column="data.data" />
+			<entity schema="coin-test" name="questionnaires" column="problems.score_problem" />
+			<entity schema="coin-test" name="messages" />
+			<entity schema="coin-test" name="files" />
+		</group>
+		<group name="data" color="ECF0F7" >
+			<entity schema="coin-test" name="users" column="data" />
+			<entity schema="coin-test" name="users" column="info" />
+			<entity schema="coin-test" name="users" column="certification" />
+			<entity schema="coin-test" name="users" />
+		</group>
+		<group name="problems.fill_problem" color="F7F2EC" >
+			<entity schema="coin-test" name="questionnaires" column="problems.fill_problem" />
+			<entity schema="coin-test" name="questionnaires" column="problems.choose_problem.options" />
+			<entity schema="coin-test" name="questionnaires" column="problems.choose_problem" />
+			<entity schema="coin-test" name="questionnaires" column="problems.matrix_problem" />
+			<entity schema="coin-test" name="questionnaires" column="problems.sort_problem" />
+		</group>
+		<group name="tasks" color="ECECF7" >
+			<entity schema="coin-test" name="tasks" />
+			<entity schema="coin-test" name="task_status" />
+			<entity schema="coin-test" name="comments" />
+		</group>
+		<script name="Sample Query Editor" id="Editor_216fbaf" language="SQL" >
+			<string><![CDATA[// PLACE THE CARET OVER EACH LINE AND PRESS EXECUTE ( F8 )
+
+client.getDatabase('coin-test').questionnaires.find()
+
+//OR
+
+USE client.getDatabase('coin-test');
+db.questionnaires.find()
+
+//OR
+
+USE client.getDatabase('coin-test');
+db.getCollection('questionnaires').find()]]></string>
+		</script>
+		<browser id="Browse_407d534" name="Sample Relational Data Browse" confirm_updates="y" >
+			<browse_table schema="coin-test" entity="questionnaires" x="20" y="20" width="400" height="300" record_view="y" />
+		</browser>
+		<query id="Query_35b42ef" name="Sample Query Builder" >
+			<query_table schema="coin-test" name="questionnaires" alias="questionnaires" x="48" y="48" >
+				<column name="_id" />
+				<column name="title" />
+				<column name="description" />
+				<column name="owner" />
+				<column name="anonymous" />
+				<column name="problems" />
+				<column name="data" />
+			</query_table>
+		</query>
+	</layout>
+</project>
