@@ -9,6 +9,9 @@
 | 16340029 | CookiesChen | [需求审计](<https://github.com/sysu-abi/docs/issues/10>) | <https://github.com/sysu-abi/docs/issues/10> |
 | 16340032 | T-Machine | [需求审计](<https://github.com/xianyu-team/Dashboard/issues/4>) | <https://github.com/xianyu-team/Dashboard/issues/4> |
 | 16340040 | MegaShow | [需求审计](<https://github.com/earn-me-some-money/Dashboard/issues/5>) | <https://github.com/earn-me-some-money/Dashboard/issues/5> |
+| 15335055 | Huangscar | [需求审计](<https://github.com/system-design2019/system-design/issues/95>) | <https://github.com/system-design2019/system-design/issues/95> |
+| 16340280 | yuyuforest | [需求审计](https://github.com/sysu-abi/docs/issues/11) | https://github.com/sysu-abi/docs/issues/11 |
+
 
 
 ## 设计审计
@@ -20,4 +23,6 @@
 | 16340029 | CookiesChen | [API 审计](<https://github.com/sysu-abi/docs/issues/9>) | <https://github.com/sysu-abi/docs/issues/9> |
 | 16340032 | T-Machine | [API设计审计](<https://github.com/sysu-abi/docs/issues/7>) | <https://github.com/sysu-abi/docs/issues/7> |
 | 16340040 | MegaShow | [设计审计](<https://github.com/earn-me-some-money/emtm-server/issues/4>) |<https://github.com/earn-me-some-money/emtm-server/issues/4>|
+| 15335055 | Huangscar | [设计审计](<https://github.com/system-design2019/system-design/issues/96>) |<https://github.com/system-design2019/system-design/issues/96>|
+| 16340280 | yuyuforest | [API审计](https://github.com/sysu-abi/docs/issues/12) |https://github.com/sysu-abi/docs/issues/12|
 
